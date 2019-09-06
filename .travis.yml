@@ -1,0 +1,20 @@
+language: r
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.npm
+    - _book
+  packages: true
+
+script:
+  - Rscript -e 'bookdown::render_book("index.Rmd")'
+
+after_success:
+  - nvm install stable
+  - npm install netlify-cli -g
+
+deploy:
+  provider: script
+  script: netlify deploy --prod --dir _book
+  skip_cleanup: true
