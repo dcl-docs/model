@@ -3,6 +3,7 @@ delete_merged_file: true
 
 rmd_files: [
   "index.Rmd",
+  "model_basics.Rmd",
   "references.Rmd"
 ]
 

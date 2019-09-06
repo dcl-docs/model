@@ -1,0 +1,394 @@
+
+# Model basics
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE
+)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Libraries
+library(tidyverse)
+library(modelr)
+library(tidymodels)
+
+# Parameters
+file_anscombe <- here::here("data/anscombe/anscombe_1.rds")
+file_anscombe_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
+
+#===============================================================================
+
+df <- read_rds(file_anscombe)
+df_outlier <- read_rds(file_anscombe_outlier)
+
+base_plot <- 
+  df %>% 
+  ggplot(aes(x, y)) +
+  geom_point() 
+
+get_axis_limits <- function(plot, axis) {
+  as.list(
+    ggplot_build(plot)$layout[[str_glue("panel_scales_{axis}")]][[1]]$range
+  )$range
+}
+
+coord_df <- 
+  coord_cartesian(
+    xlim = c(get_axis_limits(base_plot, "x")), 
+    ylim = c(get_axis_limits(base_plot, "y"))
+  )
+```
+
+## What is a model?
+
+The world is complicated and messy, and there are endless details to even simple phenomena. To understand and navigate the world, you construct and use models. 
+
+For example, think about traffic. You probably have a simple mental model that says, for example, traffic will be worse at rush hour than at two in the morning. You can use this model to describe how traffic varies throughout the day, but you can also use it to predict the level of traffic at a given hour. 
+
+Your mental model of traffic, like any model, is an approximation. It tries to capture relevant information while ignoring noise or less important details. Your traffic mental model will never fully explain traffic, and so you'll never be a perfect predictor of how many cars will be on the road at any given time. However, if it's a good model, it will be useful.
+
+The type of models we'll discuss in this book are similar to your mental model of traffic. They are approximations; you can use them to both describe and predict the world; and, while they will never be completely accurate, they can be useful.
+
+## Function families
+
+In this chapter, we'll introduce the idea of functions as a type of mathematical model. There are other types of mathematical models that aren't functions, but we're not going to cover those in this book. 
+
+Functions map from one variable (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to predict what you don't already know.
+
+Here's the first thing to know about model-building: your job as a modeler is to find the function that best approximates your data. 
+
+There is an infinite number of functions, so how do you know where to look? The first step is to decide on a _function family_. Function families are sets of functions with similar forms. One of the most common function families in modeling is family of linear functions, which all take the following form:
+
+`y = a_0 + a_1 * x`
+
+`x` is your input variable, the variable that you supply to the function in hopes of approximating some other variable. In our traffic example, `x` is the time of day.
+
+`a_0` and `a_1` are the _parameters_. These two numbers define the line. The only difference between distinct functions in the family of linear functions are their values of _a_0_ and _a_1_.
+
+To visualize this, here's a plot of many different lines, each of which has a different combination of `a_0` and `a_1`.
+
+```{r warning=FALSE, echo=FALSE}
+ab_lines <-
+  tribble(
+    ~slope, ~intercept, 
+    1,    1,
+    1.4,   -30,
+    .1,    15,
+    -.9, 50
+  ) %>%
+  pmap(~ geom_abline(slope = ..1, intercept = ..2))
+
+tibble(x = 25, y = 25) %>%
+  ggplot(aes(x, y)) + 
+  #geom_point() +
+  ab_lines +
+  geom_label(
+    aes(label = "label"),
+    color = "black",
+    size = 3,
+    hjust = 0,
+    nudge_y = -0.1
+  ) +
+  scale_x_continuous(breaks = seq(0, 50, 10)) +
+  scale_y_continuous(breaks = seq(0, 50, 10)) +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 50))
+```
+
+`a_0` defines the y-intercept, the y-value your function will produce with `x` is 0. `a_1` is the slope, or how much increase in `y` the function says results from a one unit increase in `x`. 
+
+In order to determine which function best approximates the relationship you're trying to model, you first have to determine the functional form of your data, which is another way of saying which function family best describes you data. If the relationship looks linear, you'll probably want to look in the linear family for you function. We'll talk more about visualizing your data to determine functional form in the next chapter, when we talk about exploratory data analysis. 
+
+For now, just now that, if the relationship looks linear, it's a good idea to use a linear function to approximate your data. Because linear functions are defined by their two parameters, _a_0_ and _a_1_, your task becomes figuring out which values of _a_0_ (the intercept) and _a_1_ (the slope) to use. In the next section, we'll talk about how to find these two parameters.  
+
+## Finding parameters
+
+Anscombe's quartet is a set of four small data sets, all of which can be described by roughly the same function, but which visually appear very different. In this section, we'll use a modified version of the first data set in the quartet. 
+
+```{r}
+df
+```
+
+We want to describe the relationship between `x` and `y`. Here it is in a scatter plot:
+
+```{r}
+df %>% 
+  ggplot(aes(x, y)) +
+  geom_point() 
+```
+
+The relationship between `x` and `y` clearly appears linear, so a function in the linear family will likely make a good approximation. Now, we just need to figure out exactly which function in the linear family to use.
+
+There are many different functions we could use to approximate the relationship between `x` and `y`.
+
+```{r}
+ab_lines <-
+  tribble(
+    ~intercept, ~slope,
+    -1.5,       1,
+    3,          0.5,
+    0.75,       0.75,
+    3.37,       0.52,
+    2.27,       0.51
+  ) %>% 
+  pmap(~ geom_abline(intercept = ..1, slope = ..2, color = "blue"))
+  
+df %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  ab_lines 
+```
+
+How do we decide which one is best? Let's just pick one of the lines and take a closer look.
+
+```{r}
+model_guess <- list(a_0 = -1.5, a_1 = 1)
+
+df %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_abline(
+    slope = model_guess$a_1, 
+    intercept = model_guess$a_0, 
+    color = "blue"
+  ) +
+  annotate(
+    geom = "label",
+    x = 9.8, 
+    y = 10.2,
+    label = 
+      str_glue("a_0 = {model_guess$a_0}\na_1 = {model_guess$a_1}"),
+    hjust = 0
+  )
+```
+
+Just by glancing at the plot, you can tell that this function isn't doing the best job of approximating our data. Most of the points where `x < 9` fall above our line, and most of the points where `x > 9` fall below the line.
+
+To compare our chosen line to other possibilities, we need a way of quantifying how well the model approximates our data. One common way of measuring model fit involves calculating the distances from the line to each of the data points.
+
+```{r}
+df %>%
+  mutate(resid = y - (model_guess$a_0 + model_guess$a_1 * x)) %>% 
+  ggplot(aes(x, y)) +
+  geom_abline(
+    slope = model_guess$a_1, intercept = model_guess$a_0, 
+    color = "blue"
+  ) +
+  geom_segment(aes(xend = x, yend = y - resid), linetype = "dotted") +
+  geom_point() 
+```
+
+These distances are called _residuals_. Each residual represents the difference between the actual data point and the model's prediction for a given `x` value. The larger a residual, the worse your model approximates at that given `x`.  
+
+We want to minimize all residuals, so we need to combine the individual distances into a single metric. One common option is to find the _root mean-square error (RMSE)_ (another name for a residual is an error). To calculate the RMSE, square each residual, find the mean, and then take the square root of that mean:
+
+```{r eval=FALSE, echo=TRUE}
+sqrt(mean(residuals ^ 2))
+```
+
+Because you square the residuals and then take the square root of the mean, the RMSE will be in the same units as `y`, making it easily interpretable. 
+
+When working in R, you'll never have to hand calculate the RMSE. There are various functions that will do that for you, which we'll cover in later chapters. 
+
+```{r echo=FALSE}
+rmse_guess <-
+  df %>% 
+  mutate(pred = model_guess$a_0 + model_guess$a_1 * x) %>% 
+  yardstick::rmse(truth = y, estimate = pred) %>% 
+  pull(.estimate)
+```
+
+The RMSE of our model is `r rmse_guess`. We could calculate the RMSE of each function we originally plotted and then pick the best one, but that method won't necessary result in the model with the _best_ RMSE. There is an infinite number of possible functions, so we could never consider them all. 
+
+Instead, we can hand off the work to an algorithm (implemented in an R function) that will return the values of `a_0` and `a_1` that minimize RMSE for our data. 
+
+We'll use the function `lm()`. `lm()` needs two arguments: a function family and your data. Then, it finds the parameters that define the function with the specified family that minimizes RMSE for your data.
+
+In later chapters, you'll learn how to actually carry this out in R. For now, we'll just show you the results.
+
+```{r}
+model_lm <- lm(y ~ x, data = df)
+a_0_model_lm <- coef(model_lm)[["(Intercept)"]]
+a_1_model_lm <- coef(model_lm)[["x"]]
+```
+
+Here's the function that `lm()` came up with:
+
+`y =` `r a_0_model_lm` `+` `r a_1_model_lm` `*x`.
+
+And here's the function plotted against our data:
+
+```{r}
+df %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_abline(intercept = a_0_model_lm, slope = a_1_model_lm, color = "blue") +
+  annotate(
+    geom = "label",
+    x = 10.8, 
+    y = 9.5,
+    label = 
+      str_glue("a_0 = {a_0_model_lm}\na_1 = {a_1_model_lm}"),
+    hjust = 0
+  )
+```
+
+The RMSE of the model found with `lm()` is `r modelr::rmse(model_lm, df)`, and you can see from the visualization that this line does a much better job of approximating our data than our previous attempt.
+
+
+Again, `a_0` is the intercept, so we know that our model predicts that `y` will be `r a_0_model_lm` when `x = 0`. `a_1` is the slope, which means that our model predicts a `r a_1_model_lm` increase in `y` each time `x` increases by 1.   
+
+Here were the steps to creating this model:
+
+1. Decide which function family best approximates our data.
+2. Decide which metric to use to find a function within that function family.
+3. Use an algorithm (implemented in an R function) to find the specific function within our chosen function family that minimizes our metric. 
+
+Now, we'll talk a little bit more about metric choice. 
+
+## Metric choice
+
+Earlier, we introduced the idea of residuals and RMSE, but didn't really justify using RMSE to find our model. Let's look at one downside of using RMSE to fit our model. 
+
+We've added another point our data.
+
+```{r}
+df_outlier %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_point(
+    color = "red", 
+    data = df_outlier %>% filter(near(y, min(y)))
+  )
+```
+
+Let's see what happens to our model if we try to use `lm()` to again find the function that minimizes RMSE. Here's the new model plotted alongside our original one:
+
+```{r}
+model_lm_outlier <- lm(y ~ x, data = df_outlier)
+
+df_outlier %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_abline(
+    intercept = coef(model_lm_outlier)[["(Intercept)"]], 
+    slope = coef(model_lm_outlier)[["x"]],
+    color = "#f7766d"
+  ) +
+  geom_abline(
+    intercept = a_0_model_lm,
+    slope = a_1_model_lm,
+    color = "#00bfc4"
+  ) +
+  annotate(
+    geom = "text", 
+    x = 12, 
+    y = 9.5, 
+    angle = 10, 
+    label = "Original model"
+  ) +
+  annotate(
+    geom = "text",
+    x = 11.5,
+    y = 7,
+    label = "Model with outlier",
+    angle = 1
+  ) 
+```
+
+A single point significantly changed our model, pulling the slope down and the intercept up, and the model no longer approximates the rest of the data very well. 
+
+We want to approximate the linear trend of our data, not the linear trend weighed down by our added outlier. Here are two possible remedies:
+
+1. We can go back to the "choose your metric" step and choose a new metric.
+2. We can remove the outlier from our data.
+
+Let's try approach #1 first. 
+
+Any algorithm that minimizes RMSE will be sensitive to outliers. Squaring each residual essentially weights each residual by itself. The larger the residual, the more that single point influences the eventual model fit. 
+
+Other metrics are less sensitive to outliers. Instead of minimizing plain RMSE, `MASS::rlm()` first re-weights every point, reducing the influence of outliers. 
+
+Here's a plot of the `rlm()` model vs. our `lm()` model.
+
+```{r}
+model_rlm_outlier <- MASS::rlm(y ~ x, data = df_outlier)
+
+df_outlier %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_abline(
+    intercept = coef(model_rlm_outlier)[["(Intercept)"]], 
+    slope = coef(model_rlm_outlier)[["x"]],
+    color = "#00bfc4"
+  ) +
+  geom_abline(
+    intercept = coef(model_lm_outlier)[["(Intercept)"]],
+    slope = coef(model_lm_outlier)[["x"]],
+    color = "#f7766d"
+  ) +
+  annotate(
+    geom = "text", 
+    x = 12, 
+    y = 9.1, 
+    angle = 10, 
+    label = "rlm() model"
+  ) +
+  annotate(
+    geom = "text",
+    x = 11.5,
+    y = 7,
+    label = "lm() model",
+    angle = 1
+  ) 
+```
+
+The `rlm()` model isn't as affected by our outlier. In fact, it's similar to the `lm()` model that we fit on the data without the outlier. 
+
+```{r}
+df_outlier %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_abline(
+    intercept = coef(model_rlm_outlier)[["(Intercept)"]], 
+    slope = coef(model_rlm_outlier)[["x"]],
+    color = "#f7766d"
+  ) +
+  geom_abline(
+    intercept = a_0_model_lm,
+    slope = a_1_model_lm,
+    color = "#00bfc4"
+  ) +
+  annotate(
+    geom = "text", 
+    x = 12, 
+    y = 9.5, 
+    angle = 10, 
+    label = "Original lm() model"
+  ) +
+  annotate(
+    geom = "text",
+    x = 11.5,
+    y = 7,
+    label = "rlm() model,\nincluding outlier"
+  ) 
+```
+
+This brings us to approach #2: remove the outlier. You might wonder why it's okay to change the data before fitting your model. Couldn't you use this process to produce any model you wanted? You could, but that's okay. Any model you create will be an approximation of the data you use to fit that model, so you should figure out which data you actually care about approximating. If you don't want to approximate outliers, don't include them in your data. 
+
+Here, we can clearly see that there's a linear trend in most of the data. If that trend is what we care about approximating, it makes sense to exclude our outlying point.
+
+Another reason to exclude outliers like ours is that they might be errors. Our data doesn't measure anything, and so there's no way to tell if the outlier is an error or not. Often, however, extreme outliers will represent errors in your data. In the next chapter, we'll talk more about looking for outliers and errors before building models. 
+
+## Summary
+
+In this chapter, we went over the basic process of building a model, without really going into any of the actual code that would allow you to do so.
+
+Here's the steps again:
+
+1. Choose a function family that you think would approximate your data well. Usually, this is done by visualizing the relationship you're trying to capture.
+2. Choose a metric to use to pick a model. 
+3. Use an R function to find find the specific function in your chosen function family that minimizes your chosen metric. 
+
+
+
