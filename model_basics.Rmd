@@ -21,23 +21,6 @@ file_anscombe_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
 
 df <- read_rds(file_anscombe)
 df_outlier <- read_rds(file_anscombe_outlier)
-
-base_plot <- 
-  df %>% 
-  ggplot(aes(x, y)) +
-  geom_point() 
-
-get_axis_limits <- function(plot, axis) {
-  as.list(
-    ggplot_build(plot)$layout[[str_glue("panel_scales_{axis}")]][[1]]$range
-  )$range
-}
-
-coord_df <- 
-  coord_cartesian(
-    xlim = c(get_axis_limits(base_plot, "x")), 
-    ylim = c(get_axis_limits(base_plot, "y"))
-  )
 ```
 
 ## What is a model?
@@ -46,9 +29,9 @@ The world is complicated and messy, and there are endless details to even simple
 
 For example, think about traffic. You probably have a simple mental model that says, for example, traffic will be worse at rush hour than at two in the morning. You can use this model to describe how traffic varies throughout the day, but you can also use it to predict the level of traffic at a given hour. 
 
-Your mental model of traffic, like any model, is an approximation. It tries to capture relevant information while ignoring noise or less important details. Your traffic mental model will never fully explain traffic, and so you'll never be a perfect predictor of how many cars will be on the road at any given time. However, if it's a good model, it will be useful.
+Your mental model of traffic, like any model, is an approximation. It tries to capture relevant information while ignoring noise and less important details. Your traffic mental model will never fully explain traffic, and so you'll never be a perfect predictor of how many cars will be on the road at any given time. However, if it's a good model, it will be useful.
 
-The type of models we'll discuss in this book are similar to your mental model of traffic. They are approximations; you can use them to both describe and predict the world; and, while they will never be completely accurate, they can be useful.
+The type of models we'll discuss in this book are similar to your mental model of traffic: they are approximations; you can use them to both describe and predict the world; and, while they will never be completely accurate, they can be useful.
 
 ## Function families
 
@@ -69,39 +52,26 @@ There is an infinite number of functions, so how do you know where to look? The 
 To visualize this, here's a plot of many different lines, each of which has a different combination of `a_0` and `a_1`.
 
 ```{r warning=FALSE, echo=FALSE}
-ab_lines <-
-  tribble(
-    ~slope, ~intercept, 
-    1,    1,
-    1.4,   -30,
-    .1,    15,
-    -.9, 50
-  ) %>%
-  pmap(~ geom_abline(slope = ..1, intercept = ..2))
-
-tibble(x = 25, y = 25) %>%
+tribble(
+    ~a_1, ~a_0,  ~x, ~y,
+    1,      1,   39, 48,
+    1.4,    -30, 45, 23.5,
+    -.1,    15,  5,  19,
+    -.9,    50,  11, 48
+  ) %>% 
   ggplot(aes(x, y)) + 
-  #geom_point() +
-  ab_lines +
-  geom_label(
-    aes(label = "label"),
-    color = "black",
-    size = 3,
-    hjust = 0,
-    nudge_y = -0.1
-  ) +
-  scale_x_continuous(breaks = seq(0, 50, 10)) +
-  scale_y_continuous(breaks = seq(0, 50, 10)) +
+  geom_label(aes(label = str_glue("a_0 = {a_0}\na_1 = {a_1}"))) +
+  geom_abline(aes(slope = a_1, intercept = a_0)) +
   coord_cartesian(xlim = c(0, 50), ylim = c(0, 50))
 ```
 
 `a_0` defines the y-intercept, the y-value your function will produce with `x` is 0. `a_1` is the slope, or how much increase in `y` the function says results from a one unit increase in `x`. 
 
-In order to determine which function best approximates the relationship you're trying to model, you first have to determine the functional form of your data, which is another way of saying which function family best describes you data. If the relationship looks linear, you'll probably want to look in the linear family for you function. We'll talk more about visualizing your data to determine functional form in the next chapter, when we talk about exploratory data analysis. 
+In order to determine which function best approximates the relationship you're trying to model, you first determine which function family best describes your data. We'll talk more about visualizing your data to determine functional form in the next chapter, when we talk about exploratory data analysis. For now, just now that, if the relationship looks linear, it's a good idea to use a linear function to approximate your data. 
 
-For now, just now that, if the relationship looks linear, it's a good idea to use a linear function to approximate your data. Because linear functions are defined by their two parameters, _a_0_ and _a_1_, your task becomes figuring out which values of _a_0_ (the intercept) and _a_1_ (the slope) to use. In the next section, we'll talk about how to find these two parameters.  
+Because linear functions are defined by their two parameters, _a_0_ and _a_1_, your task becomes figuring out which values of _a_0_ (the intercept) and _a_1_ (the slope) to use. In the next section, we'll talk about how to find these two parameters.  
 
-## Finding parameters
+## Model-building steps
 
 Anscombe's quartet is a set of four small data sets, all of which can be described by roughly the same function, but which visually appear very different. In this section, we'll use a modified version of the first data set in the quartet. 
 
@@ -109,7 +79,11 @@ Anscombe's quartet is a set of four small data sets, all of which can be describ
 df
 ```
 
-We want to describe the relationship between `x` and `y`. Here it is in a scatter plot:
+### Decide on a function family
+
+Earlier, we said that the first step in model-building is to determine which function family would describe your data well. 
+
+Let's visualize the relationship between `x` and `y`.
 
 ```{r}
 df %>% 
@@ -119,7 +93,9 @@ df %>%
 
 The relationship between `x` and `y` clearly appears linear, so a function in the linear family will likely make a good approximation. Now, we just need to figure out exactly which function in the linear family to use.
 
-There are many different functions we could use to approximate the relationship between `x` and `y`.
+### Decide on a metric
+
+Now, we need a way of determining which linear function best approximates the relationship between `x` and `y`. There are many different functions we could use.
 
 ```{r}
 ab_lines <-
@@ -200,9 +176,11 @@ rmse_guess <-
 
 The RMSE of our model is `r rmse_guess`. We could calculate the RMSE of each function we originally plotted and then pick the best one, but that method won't necessary result in the model with the _best_ RMSE. There is an infinite number of possible functions, so we could never consider them all. 
 
-Instead, we can hand off the work to an algorithm (implemented in an R function) that will return the values of `a_0` and `a_1` that minimize RMSE for our data. 
+Instead, we can hand off the work to an algorithm (implemented in an R function) that will return the values of `a_0` and `a_1` that minimize RMSE for our data.
 
-We'll use the function `lm()`. `lm()` needs two arguments: a function family and your data. Then, it finds the parameters that define the function with the specified family that minimizes RMSE for your data.
+### Find your parameters
+
+To determine which `a_0` and `a_1` minimize RMSE, we'll use the function `lm()`. `lm()` needs two arguments: a function family and your data. Then, it finds the parameters that define the function with the specified family that minimizes RMSE for your data.
 
 In later chapters, you'll learn how to actually carry this out in R. For now, we'll just show you the results.
 
@@ -378,7 +356,7 @@ This brings us to approach #2: remove the outlier. You might wonder why it's oka
 
 Here, we can clearly see that there's a linear trend in most of the data. If that trend is what we care about approximating, it makes sense to exclude our outlying point.
 
-Another reason to exclude outliers like ours is that they might be errors. Our data doesn't measure anything, and so there's no way to tell if the outlier is an error or not. Often, however, extreme outliers will represent errors in your data. In the next chapter, we'll talk more about looking for outliers and errors before building models. 
+Another reason to exclude outliers like ours is that they might be errors. Our data doesn't measure anything, and so there's no way to tell if the outlier is an error or not. Often, however, extreme outliers will represent errors in your data. In the next chapter, we'll talk more about looking for outliers and errors in your data before building models. 
 
 ## Summary
 
@@ -386,9 +364,9 @@ In this chapter, we went over the basic process of building a model, without rea
 
 Here's the steps again:
 
-1. Choose a function family that you think would approximate your data well. Usually, this is done by visualizing the relationship you're trying to capture.
-2. Choose a metric to use to pick a model. 
-3. Use an R function to find find the specific function in your chosen function family that minimizes your chosen metric. 
+* Find the functional form of your data. Visualize your data to determine which function family would approximate your data well.
+* Choose a metric. 
+* Use an R function to find find the specific function in your chosen function family that minimizes your chosen metric. 
 
 
 
