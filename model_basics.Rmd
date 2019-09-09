@@ -46,7 +46,7 @@ The type of models we'll discuss in this book are similar to your mental model o
 
 ## Function families
 
-In this chapter, we'll introduce the idea of functions as a type of mathematical model. There are other types of mathematical models that aren't functions, but we're not going to cover those in this book. 
+The type of mathematical model we'll talk about in this book are functions. There are other types of mathematical models that aren't functions, but we're not going to cover those in this book. 
 
 Functions map from one variable (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to predict what you don't already know.
 
@@ -85,7 +85,7 @@ Because linear functions are defined by their two parameters, _a_0_ and _a_1_, y
 
 ## Fitting a model
 
-[Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) is a set of four small data sets. Each of the four data set can be described by the same linear function, but they are visually very different. In this section, we'll use a modified version of the first data set in the quartet. 
+[Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) is a set of four small data sets. The data sets have very similar descriptive statistics, but are visually very different. In this section, we'll use a modified version of the first data set in the quartet. 
 
 ```{r}
 df %>% 
