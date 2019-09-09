@@ -32,7 +32,7 @@ df %>%
   write_rds(file_out_1)
 
 df %>% 
-  add_row(x = 13, y = -6) %>% 
+  add_row(x = 20.0, y = 0.15) %>% 
   write_rds(file_out_1_outlier)
 
 
