@@ -7,13 +7,13 @@ options(
 )
 
 knitr::opts_chunk$set(
-  echo = FALSE
-  # cache = TRUE,
-  # collapse = TRUE,
-  # comment = "#>",
-  # fig.align = 'center',
-  # fig.asp = 0.618,  # 1 / phi
-  # fig.show = "hold"
+  echo = FALSE,
+  cache = TRUE,
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = 'center',
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
 )
 
 image_dpi <- 125
