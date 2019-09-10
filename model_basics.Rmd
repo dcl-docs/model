@@ -189,13 +189,13 @@ To determine which `a_0` and `a_1` minimize RMSE, we'll use the function `lm()`.
 
 ```{r}
 model_lm <- lm(y ~ x, data = df)
-a_0_model_lm <- coef(model_lm)[["(Intercept)"]]
-a_1_model_lm <- coef(model_lm)[["x"]]
+a_0_rmse <- coef(model_lm)[["(Intercept)"]]
+a_1_rmse <- coef(model_lm)[["x"]]
 ```
 
 Here's the model that `lm()` came up with:
 
-`y = `r a_0_model_lm` + `r a_1_model_lm` * x`
+`y = `r a_0_rmse` + `r a_1_rmse` * x`
 
 And here's the model plotted against our data:
 
@@ -203,20 +203,20 @@ And here's the model plotted against our data:
 df %>% 
   ggplot(aes(x, y)) +
   geom_point() +
-  geom_abline(intercept = a_0_model_lm, slope = a_1_model_lm, color = "blue") +
+  geom_abline(intercept = a_0_rmse, slope = a_1_rmse, color = "blue") +
   annotate(
     geom = "label",
     x = 17.5, 
     y = 10.1,
-    label = label_model_line("RMSE", a_0_model_lm, a_1_model_lm),
+    label = label_model_line("RMSE", a_0_rmse, a_1_rmse),
     hjust = 0
   ) +
   plot_format 
 ```
 
-The RMSE of the model found with `lm()` is `r modelr::rmse(model_lm, df)`. You can also tell from the plot that this fitted model does a much better job of approximating our data than our previous attempt.
+The RMSE of the model found with `lm()` is `r round(modelr::rmse(model_lm, df), 2)`. You can also tell from the plot that this fitted model does a much better job of approximating our data than our previous attempt.
 
-Again, `a_0` is the intercept, so we know that our model predicts that `y` will be `r a_0_model_lm` when `x = 0`. `a_1` is the slope, which means that our model predicts a `r a_1_model_lm` increase in `y` each time `x` increases by 1.   
+Again, `a_0` is the intercept, so we know that our model predicts that `y` will be `r a_0_rmse` when `x = 0`. `a_1` is the slope, which means that our model predicts a `r a_1_rmse` increase in `y` each time `x` increases by 1.   
 
 Now, we'll talk more about error metric choice. 
 
@@ -247,8 +247,8 @@ df_outlier %>%
   ggplot(aes(x, y)) +
   geom_point() +
   geom_abline(
-    intercept = a_0_model_lm,
-    slope = a_1_model_lm,
+    intercept = a_0_rmse,
+    slope = a_1_rmse,
     alpha = 0.3
   ) +
   geom_abline(
@@ -310,8 +310,8 @@ df_outlier %>%
   ggplot(aes(x, y)) +
   geom_point() +
   geom_abline(
-    intercept = coef(model_lm_outlier)[["(Intercept)"]],
-    slope = coef(model_lm_outlier)[["x"]],
+    intercept = a_0_rmse_outlier,
+    slope = a_1_rmse_outlier,
     color = "blue"
   ) +
   geom_abline(
