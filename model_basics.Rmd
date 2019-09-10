@@ -5,8 +5,6 @@
 ```{r message=FALSE, warning=FALSE}
 # Libraries
 library(tidyverse)
-library(modelr)
-library(tidymodels)
 
 # Parameters
 file_anscombe <- here::here("data/anscombe/anscombe_1.rds")
