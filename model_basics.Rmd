@@ -1,5 +1,4 @@
 
-
 # Model basics
 
 ```{r message=FALSE, warning=FALSE}
