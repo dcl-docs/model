@@ -22,11 +22,12 @@ file_anscombe_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
 df <- read_rds(file_anscombe)
 df_outlier <- read_rds(file_anscombe_outlier)
 
-df_limits_coord <-
+plot_format <-
   list(
     scale_x_continuous(limits = c(0, 20)),
     scale_y_continuous(limits = c(0, 15)),
-    coord_fixed()
+    coord_fixed(),
+    labs(title = "")
   )
 
 label_model_line <- function(error_metric, a_0, a_1) {
@@ -36,7 +37,7 @@ label_model_line <- function(error_metric, a_0, a_1) {
 
 ## What is a model?
 
-The world is complicated and messy, and there are endless details to even simple phenomena. To understand and navigate the world, you construct and use models. 
+The world is complicated and messy, and there are endless details to even simple phenomena. To understand and navigate the world, we construct and use models. 
 
 For example, think about traffic. You probably have a simple mental model that says traffic will be worse at rush hour than at two in the morning. You can use this model to describe how traffic varies throughout the day, but you can also use it to predict the level of traffic at a given hour. 
 
@@ -46,46 +47,39 @@ The type of models we'll discuss in this book are similar to your mental model o
 
 ## Function families
 
-The type of mathematical model we'll talk about in this book are functions. There are other types of mathematical models that aren't functions, but we're not going to cover those in this book. 
+The type of mathematical model we'll talk about in this book are functions. Your job as a modeler is to find the function that best approximates your data. 
 
-Functions map from one variable (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to predict what you don't already know.
+Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to make predictions.
 
-Here's the first thing to know about model-building: your job as a modeler is to find the function that best approximates your data. 
-
-There is an infinite number of functions, so how do you know where to look? The first step is to decide on a _function family_. Function families are sets of functions with similar forms. One of the most common function families in modeling is family of linear functions, which all take the following form:
+There are an infinite number of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with similar forms. One of the most common function families in modeling is the family of linear functions. Linear functions of one variable take the following form: 
 
 `y = a_0 + a_1 * x`
 
 `x` is your input variable, the variable that you supply to the function in hopes of approximating some other variable. In our traffic example, `x` is the time of day.
 
-`a_0` and `a_1` are the _parameters_. These two numbers define the line. The only difference between distinct functions in the family of linear functions are their values of _a_0_ and _a_1_.
+`a_0` and `a_1` are the _parameters_. These two numbers define the line. The only difference between functions in the family of linear functions are their values of `a_0` and `a_1`.
 
 To visualize this, here's a plot of many different lines, each of which has a different combination of `a_0` and `a_1`.
 
 ```{r}
 tribble(
-    ~a_1, ~a_0, #~x, ~y,
-    1,    3,    #39, 48,
-    5,    -50,  #45, 23.5,
-    -.1,  15,   #5,  19,
-    -.7,  12,   #11, 48,
-    0.1,  4,    #10, 12 
+    ~a_1, ~a_0, 
+    1,    3,   
+    5,    -50,  
+    -.1,  15,  
+    -.7,  12,  
+    0.1,  4,    
   ) %>% 
   ggplot(aes(x, y)) + 
-  #geom_label(aes(label = str_glue("a_0 = {a_0}\na_1 = {a_1}"))) +
   geom_abline(aes(slope = a_1, intercept = a_0)) +
-  df_limits_coord
+  plot_format
 ```
 
-`a_0` defines the y-intercept, the y-value your function will produce with `x` is 0. `a_1` is the slope, or how much increase in `y` the function says results from a one unit increase in `x`. 
-
-In order to determine which function best approximates the relationship you're trying to model, you first determine which function family best describes your data. We'll talk more about visualizing your data to determine functional form in the next chapter, when we talk about exploratory data analysis. For now, just now that, if the relationship looks linear, it's a good idea to use a linear function to approximate your data. 
-
-Because linear functions are defined by their two parameters, _a_0_ and _a_1_, your task becomes figuring out which values of _a_0_ (the intercept) and _a_1_ (the slope) to use. In the next section, we'll talk about how to find these two parameters.  
+`a_0` defines the y-intercept, the y-value your function will produce when `x` is 0. `a_1` is the slope, which tells you how much `y` increases for every one unit increase in `x`. Because linear functions are defined by these two parameters, your next task as a modeler is to figure out which values of `a_0` and `a_1` best approximate your data. In the next section, we'll discuss finding these two parameters.
 
 ## Fitting a model
 
-[Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) is a set of four small data sets. The data sets have very similar descriptive statistics, but are visually very different. In this section, we'll use a modified version of the first data set in the quartet. 
+[Anscombe's quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) is a set of four small data sets. In this section, we'll use a slightly modified version of the first data set in the quartet. 
 
 ```{r}
 df %>% 
@@ -94,13 +88,13 @@ df %>%
 
 ### Decide on a function family
 
-Recall that we said the first step to fitting a model involves determining the functional form of your data. Let's visualize the relationship between `x` and `y`.
+Recall that we said the first step to fitting a model involves understanding the functional form of your data. Let's visualize the relationship between `x` and `y`.
 
 ```{r}
 df %>% 
   ggplot(aes(x, y)) +
   geom_point() +
-  df_limits_coord
+  plot_format
 ```
 
 The relationship between `x` and `y` looks linear, so a function in the linear family will likely make a good approximation. 
@@ -125,7 +119,7 @@ df %>%
   ggplot(aes(x, y)) +
   geom_point() +
   ab_lines +
-  df_limits_coord
+  plot_format
 ```
 
 How do we decide which one is best? Let's just pick one of the lines and take a closer look.
@@ -143,12 +137,12 @@ df %>%
   ) +
   annotate(
     geom = "label",
-    x = 17.5, 
+    x = 17.3, 
     y = 14.6,
     label = str_glue("a_0 = {model_guess$a_0}\na_1 = {model_guess$a_1}"),
     hjust = 0
   ) +
-  df_limits_coord
+  plot_format
 ```
 
 By glancing at the plot, you can tell that this function isn't doing the best job of approximating our data. Most of the points where `x < 9` fall above our line, and most of the points where `x > 9` fall below the line.
@@ -172,19 +166,17 @@ df %>%
     label = str_glue("a_0 = {model_guess$a_0}\na_1 = {model_guess$a_1}"),
     hjust = 0
   ) +
-  df_limits_coord +
+  plot_format +
   labs(title = "Residuals")
 ```
 
-These distances are called _residuals_ (or errors). Each residual represents the difference between the `y` value that the model predicts for a given `x` and the actual `y` associated with that `x`. The larger a residual, the worse your model approximates `y` at that given `x`.  
+These distances are called _residuals_ (or errors). Each residual represents the difference between the `y` value that the model predicts for a given `x` and the actual `y` associated with that `x`. The larger a residual, the worse your model approximates `y` at that value of `x`.  
 
 We want to minimize all residuals, so we need to combine the individual distances into a single error metric. One common option is to find the _root mean-square error (RMSE)_. To calculate the RMSE, square each residual, find the mean, and then take the square root of that mean:
 
 ```{r eval=FALSE, echo=TRUE}
 sqrt(mean(residuals^2))
 ```
-
-We'll cover the R functions that calculate RMSE in later chapters.
 
 ```{r echo=FALSE}
 rmse_guess <-
@@ -194,15 +186,11 @@ rmse_guess <-
   pull(.estimate)
 ```
 
-The RMSE of our chosen model is `r rmse_guess`. We could calculate the RMSE of each model we originally plotted and pick the one with lowest value. However, that method won't necessarily result in finding the model that minimizes RMSE for our data because there is an infinite number of possible models. 
-
-Instead, we'll hand off the work to an algorithm (implemented in an R function) that will return the values of `a_0` and `a_1` that minimize RMSE for our data.
+The RMSE of our chosen model is `r round(rmse_guess, 2)`. We could calculate the RMSE of each model we originally plotted and pick the one with lowest value. However, because there are an infinite number of possible models, that method won't necessarily result in finding the model that minimizes RMSE. Instead, we'll hand off the work to an algorithm (implemented in an R function) that will return the values of `a_0` and `a_1` that minimize RMSE for our data.
 
 ### Find your parameters
 
-To determine which `a_0` and `a_1` minimize RMSE, we'll use the function `lm()`. `lm()` needs two arguments: a function family and your data. Then, it finds the parameters that define the function with the specified family that minimizes RMSE for your data.
-
-In later chapters, you'll learn how to actually carry this out in R. For now, we'll just show you the results.
+To determine which `a_0` and `a_1` minimize RMSE, we'll use the function `lm()`. `lm()` needs two arguments: a function family and your data. Then, it finds the parameters of the function within your specified family that minimize RMSE for your data. In later chapters, you'll learn how to actually carry this out in R. For now, we'll just show you the results.
 
 ```{r}
 model_lm <- lm(y ~ x, data = df)
@@ -212,7 +200,7 @@ a_1_model_lm <- coef(model_lm)[["x"]]
 
 Here's the model that `lm()` came up with:
 
-`y = `r a_0_model_lm` + `r a_1_model_lm`x`
+`y = `r a_0_model_lm` + `r a_1_model_lm` * x`
 
 And here's the model plotted against our data:
 
@@ -223,19 +211,19 @@ df %>%
   geom_abline(intercept = a_0_model_lm, slope = a_1_model_lm, color = "blue") +
   annotate(
     geom = "label",
-    x = 17.75, 
-    y = 10.3,
+    x = 17.5, 
+    y = 10.1,
     label = label_model_line("RMSE", a_0_model_lm, a_1_model_lm),
     hjust = 0
   ) +
-  df_limits_coord 
+  plot_format 
 ```
 
-The RMSE of the model found with `lm()` is `r modelr::rmse(model_lm, df)`, and you can see from the visualization that this model does a much better job of approximating our data than our previous attempt.
+The RMSE of the model found with `lm()` is `r modelr::rmse(model_lm, df)`. You can also tell from the plot that this fitted model does a much better job of approximating our data than our previous attempt.
 
 Again, `a_0` is the intercept, so we know that our model predicts that `y` will be `r a_0_model_lm` when `x = 0`. `a_1` is the slope, which means that our model predicts a `r a_1_model_lm` increase in `y` each time `x` increases by 1.   
 
-Now, we'll talk a little bit more about error metric choice. 
+Now, we'll talk more about error metric choice. 
 
 ## Error metric choice
 
@@ -249,7 +237,7 @@ df_outlier %>%
     color = "red", 
     data = df_outlier %>% filter(near(y, min(y)))
   ) +
-  df_limits_coord +
+  plot_format +
   labs(title = "Data with outlier")
 ```
 
@@ -275,9 +263,9 @@ df_outlier %>%
   ) +
   annotate(
     geom = "text", 
-    label = "Original model, no outlier",
-    x = 14, 
-    y = 10.5, 
+    label = "RMSE, no outlier",
+    x = 16, 
+    y = 11.5, 
     hjust = 0,
     angle = 26,
     color = "gray"
@@ -286,23 +274,21 @@ df_outlier %>%
     geom = "label",
     label = label_model_line("RMSE", a_0_rmse_outlier, a_1_rmse_outlier),
     x = 17,
-    y = 4.4,
+    y = 4.3,
     hjust = 0
   ) +
-  df_limits_coord +
+  plot_format +
   labs(title = "Data with outlier")
 ```
 
-The outlier pulls the slope down and the intercept up, and the model no longer approximates the rest of the data well. 
+The outlier pulls the slope down and the intercept up, and the model no longer approximates the rest of the data well. This plot demonstrates why it's important to visualize your model's predictions. If you only looked at the model's RMSE, you might think it was doing a good job of approximating your data.  
 
-We want to approximate the linear trend present in the rest of the data, so we'll need to find a way to build a better model. There are two options:
+We want to approximate the linear trend present in the rest of the data, so we need a way to build a better model. There are two options:
 
-* Use a different error metric
-* Exclude the outlier from the data
+* Use a different error metric.
+* Exclude the outlier from the data.
 
-First, we'll try using a different error metric. Because RMSE squares each residual, models that fit most of the data well can still have high RMSE values due to outliers. The large outlier residuals pull the model away from the majority of the data and towards the outliers.
-
-Other error metric, such as _mean absolute error (MAE)_ are less sensitive to outliers. Instead of squaring each residual, MAE finds their absolute values:
+First, we'll try a different error metric. Because RMSE squares each residual, a single large residual can disproportionately influence the model. Other error metrics, such as _mean absolute error (MAE)_, are less sensitive to outliers. Instead of squaring each residual, MAE finds their absolute values:
 
 ```{r eval=FALSE, echo=TRUE}
 mean(abs(residuals))
@@ -352,61 +338,22 @@ df_outlier %>%
     label = label_model_line("RMSE", a_0_rmse_outlier, a_1_rmse_outlier),
     hjust = 0
   ) +
-  df_limits_coord +
+  plot_format +
   labs(title = "Data with outlier")
 ```
 
-The MAE model isn't as affected by our outlier. You can't adapt `lm()` to use MAE, but the R function `rlm()` is more flexible, and allows for various different error metrics.
+The MAE model isn't as disproportionately affected by our outlier as the RMSE model. You can't adapt `lm()` to use MAE, but the R function `rlm()` is more flexible, and allows for many different error metrics.
 
-The MAE model is actually very similar to the model that we fit on the original data without the outlier.
-
-```{r}
-df_outlier %>% 
-  ggplot(aes(x, y)) +
-  geom_point() +
-  geom_abline(
-    intercept = a_0_mae, 
-    slope = a_1_mae,
-    color = "#f7766d"
-  ) +
-  geom_abline(
-    intercept = a_0_model_lm,
-    slope = a_1_model_lm,
-    alpha = 0.5
-  ) +
-  annotate(
-    geom = "text", 
-    label = "Original model, no outlier",
-    x = 14, 
-    y = 10.5, 
-    hjust = 0,
-    angle = 26,
-    color = "gray"
-  ) +
-  annotate(
-    geom = "label",
-    label = label_model_line("MAE", a_0_mae, a_1_mae),
-    x = 17.2, 
-    y = 9.4, 
-    hjust = 0
-  ) +
-  df_limits_coord +
-  labs(title = "Data with outlier")
-```
-
-This brings us to a second approach: remove the outlier. You might wonder why it's okay to change the data before fitting your model. Couldn't you use this process to produce any model you wanted? You could, but that's okay. Any model you create will be an approximation of your data, so you should only include data that you care about approximating. If you don't want to approximate outliers, don't include them in your data.
-
-In our data, we can clearly see a linear trend in most of the data. If that trend is what we care about approximating, it makes sense to exclude the outlier. 
-
-Another reason to exclude outliers is that they sometimes represent errors. Our data doesn't measure anything, and so there's no clear way to tell if the outlier is an error or not. In the next chapter, we'll talk more about looking for outliers and errors in your data before building models.
+The MAE model is similar to the model that we fit on the data without the outlier, which brings us to the second approach: remove the outlier. We'll talk more about this in the next chapter. 
 
 ## Summary
 
 In this chapter, we went over the basic process of fitting a model. Here's the steps again:
 
-* Determine which function family would approximate your data well.
-* Choose a error metric. 
-* Use an R function to find the specific function in your chosen function family that minimizes your chosen error metric. 
+* Explore your data to understand its functional form.
+* Choose a function family that will approximate your data well.
+* Choose an error metric. 
+* Use an R function to find the specific function in the function family that minimizes the error metric. 
 
 
 
