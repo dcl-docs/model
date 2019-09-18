@@ -252,7 +252,7 @@ df_outlier %>%
   annotate(
     geom = "text", 
     label = "RMSE, no outlier",
-    x = 16, 
+    x = 15.9, 
     y = 11.5, 
     hjust = 0,
     angle = 26,
@@ -261,7 +261,7 @@ df_outlier %>%
   annotate(
     geom = "label",
     label = label_model_line("RMSE", a_0_rmse_outlier, a_1_rmse_outlier),
-    x = 17,
+    x = 16.85,
     y = 4.3,
     hjust = 0
   ) +
@@ -315,14 +315,14 @@ df_outlier %>%
   annotate(
     geom = "label", 
     label = label_model_line("MAE", a_0_mae, a_1_mae),
-    x = 17.2, 
+    x = 17, 
     y = 14.2, 
     hjust = 0
   ) +
   annotate(
     geom = "label",
-    x = 17,
-    y = 4.4,
+    x = 16.8,
+    y = 4.38,
     label = label_model_line("RMSE", a_0_rmse_outlier, a_1_rmse_outlier),
     hjust = 0
   ) +
