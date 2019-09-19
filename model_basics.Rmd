@@ -35,9 +35,15 @@ The type of models we'll discuss in this book are similar to your mental model o
 
 ## Function families
 
-The type of mathematical model we'll talk about in this book are functions. Your job as a modeler is to find the function that best approximates your data. 
+### Supervised and unsupervised learning
 
-Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to make predictions.
+You can divide up the world of models into two categories: _supervised_ and _unsupervised_. In this book, we'll only discuss supervised learning, but it's useful to understand the difference between the two. 
+
+Supervised learning models are functions. They approximate the relationship of one variable to others. The variable you want to explain (e.g., traffic) is called the _response_ and the the variables (e.g, time of day) you use to explain the response are called _predictors_. 
+
+Unsupervised models don't have a response variable. Instead of trying to understand a relationship between predictors and a response, unsupervised models try to find patterns in data. 
+
+When building a supervised learning model, your job as the modeler is to find the function that best approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to make predictions.
 
 There are an infinite number of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with similar forms. One of the most common function families in modeling is the family of linear functions. Linear functions of one variable take the following form: 
 
