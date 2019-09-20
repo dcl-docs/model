@@ -1,19 +1,18 @@
-
 # Model basics
 
-```{r message=FALSE, warning=FALSE}
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 # Libraries
 library(tidyverse)
-
 # Parameters
 file_anscombe <- here::here("data/anscombe/anscombe_1.rds")
 file_anscombe_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
-
 #===============================================================================
-
 df <- read_rds(file_anscombe)
 df_outlier <- read_rds(file_anscombe_outlier)
-
 plot_format <-
   list(
     scale_x_continuous(limits = c(0, 20)),
@@ -120,7 +119,6 @@ How do we decide which one is best? Let's just pick one of the lines and take a 
 
 ```{r}
 model_guess <- list(a_0 = -1.5, a_1 = 1)
-
 df %>% 
   ggplot(aes(x, y)) +
   geom_point() +
@@ -241,7 +239,6 @@ If we keep using RMSE as our error metric, this single point changes the model s
 model_lm_outlier <- lm(y ~ x, data = df_outlier)
 a_0_rmse_outlier <- coef(model_lm_outlier)[["(Intercept)"]]
 a_1_rmse_outlier <- coef(model_lm_outlier)[["x"]]
-
 df_outlier %>% 
   ggplot(aes(x, y)) +
   geom_point() +
@@ -295,16 +292,12 @@ mae <- function(a, data) {
   resid <- data$y - pred(a, data)
   mean(abs(resid))
 }
-
 pred <- function(a, data) {
   a[1] + a[2] * data$x 
 }
-
 best_mae <- optim(c(0, 0), mae, data = df_outlier)
 a_0_mae <- best_mae$par[1]
 a_1_mae <- best_mae$par[2]
-
-
 df_outlier %>% 
   ggplot(aes(x, y)) +
   geom_point() +
@@ -348,6 +341,3 @@ In this chapter, we went over the basic process of fitting a model. Here's the s
 * Choose a function family that will approximate your data well.
 * Choose an error metric. 
 * Use an R function to find the specific function in the function family that minimizes the error metric. 
-
-
-
