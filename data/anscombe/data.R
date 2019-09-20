@@ -14,7 +14,7 @@ file_out_1_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
 
 df <-
   tribble(
-    ~x,    ~y,
+    ~x_1,    ~y,
     10.0,  8.04,
     8.0,  6.95,
     13.0,  7.64,
@@ -32,7 +32,7 @@ df %>%
   write_rds(file_out_1)
 
 df %>% 
-  add_row(x = 20.0, y = 0.15) %>% 
+  add_row(x_1 = 20.0, y = 0.15) %>% 
   write_rds(file_out_1_outlier)
 
 

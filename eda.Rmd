@@ -1,7 +1,7 @@
 
 # EDA
 
-```{r message=FALSE, warning=FALSE, echo=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Libraries
 library(tidyverse)
 ```
@@ -37,7 +37,7 @@ Diamonds have a set of features called the "Four C's": `carat`, `cut`, `clarity`
 
 `x`, `y`, `z`, `depth`, and `table` are various measures of a diamonds size. 
 
-## Summary
+## `summary()`
 
 Now that we understand what the variables mean, we can dig into the data. `summary()` is a good place to start.
 
@@ -111,7 +111,7 @@ df %>%
   geom_histogram(binwidth = 0.01)
 ```
 
-From the histogram, you can tell that almost all dimonds are under 3 carats. There might not be enough data to model the carats larger than that, so we'll restrict our attention to just the 99% of carats by calculating the 99th quantile, which is `r quantile(diamonds$carat, probs = 0.99).
+From the histogram, you can tell that almost all dimonds are under 3 carats. There might not be enough data to model the carats larger than that, so we'll restrict our attention to just the 99% of carats by calculating the 99th quantile, which is `r quantile(diamonds$carat, probs = 0.99)`.
 
 ```{r}
 df <-
