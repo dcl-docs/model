@@ -5,6 +5,7 @@ rmd_files: [
   "index.Rmd",
   "model_basics.Rmd",
   "eda_to_understand_data.Rmd",
+  "eda_to_determine_functional_form.Rmd",
   "references.Rmd"
 ]
 
