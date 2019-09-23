@@ -1,18 +1,23 @@
-# Model basics
 
-```{r setup, echo=FALSE}
+```{r echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r message=FALSE, warning=FALSE}
+# Model basics
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 # Libraries
 library(tidyverse)
+
 # Parameters
 file_anscombe <- here::here("data/anscombe/anscombe_1.rds")
 file_anscombe_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
+
 #===============================================================================
+
 df <- read_rds(file_anscombe)
 df_outlier <- read_rds(file_anscombe_outlier)
+
 plot_format <-
   list(
     scale_x_continuous(limits = c(0, 20)),
@@ -38,15 +43,15 @@ The type of models we'll discuss in this book are similar to your mental model o
 
 ## Supervised learning
 
-You can divide up the world of models into two categories: _supervised_ and _unsupervised_. In this book, we'll only discuss supervised learning, but it's useful to understand the difference between the two. 
+You can divide up the world of models into two categories: _supervised_ and _unsupervised_. In the following, we'll discuss supervised learning, but it's useful to understand the difference between the two. 
 
-Supervised learning models are functions. They approximate the relationship of one variable to others. The variable you want to explain (e.g., traffic) is called the _response_ and the the variables (e.g, time of day) you use to explain the response are called _predictors_. 
+Supervised models are functions. They approximate the relationship of one variable to others. The variable you want to explain (e.g., traffic) is called the _response_ and the variables (e.g, time of day) you use to explain the response are called _predictors_. 
 
 Unsupervised models don't have a response variable. Instead of trying to understand a relationship between predictors and a response, unsupervised models try to find patterns in data. 
 
-When building a supervised learning model, your job as the modeler is to find the function that best approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). Because functions have a form that you can write down, you can use them to describe the relationship between variables, but you can also plug values into your function to make predictions.
+When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). You can use your approximation function to understand and describe your data, as well as make predictions about your response variable. 
 
-There are an infinite number of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with similar forms. We'll talk more about function families in the next section.
+There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), we'll discuss how to use EDA to choose a function family to approximate your data. 
 
 ## Fitting a model
 
@@ -83,9 +88,9 @@ tribble(
   plot_format
 ```
 
-`a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` increases for every one unit increase in `x_1`. Because linear functions are defined by these two parameters, your next task as a modeler is to figure out which values of `a_0` and `a_1` best approximate your data.
+`a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` increases for every one unit increase in `x_1`. These two parameters define a linear function, and so to fit a linear model, you just have to determine which `a_0` and `a_1` best approximate your data.
 
-To determine the functional form of our Anscombe data, we'll visualize the relationship between `x_1` and `y`.
+As you'll learn in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), visualization is crucial to determining functional form. Let's visualize the relationship between `x_1` (the predictor) and `y` (the response).
 
 ```{r}
 df %>% 
@@ -123,6 +128,7 @@ How do we decide which one is best? Let's just pick one of the lines and take a 
 
 ```{r}
 model_guess <- list(a_0 = -1.5, a_1 = 1)
+
 df %>% 
   ggplot(aes(x_1, y)) +
   geom_point() +
@@ -168,13 +174,13 @@ df %>%
 
 These distances are called _residuals_ (or errors). Each residual represents the difference between the `y` value that the model predicts for a given `x_1` and the actual `y` associated with that `x_1`. The larger a residual, the worse your model approximates `y` at that value of `x_1`.  
 
-We want to minimize all residuals, so we need to combine the individual distances into a single error metric. One common option is to find the _root mean-square error (RMSE)_. To calculate the RMSE, square each residual, find the mean, and then take the square root of that mean:
+We need to turn all those residuals into a single error metric. One common option is to find the _root mean-square error (RMSE)_. To calculate the RMSE, square each residual, find the mean, and then take the square root of that mean:
 
 ```{r eval=FALSE, echo=TRUE}
 sqrt(mean(residuals^2))
 ```
 
-```{r echo=FALSE}
+```{r}
 rmse_guess <-
   df %>% 
   mutate(pred = model_guess$a_0 + model_guess$a_1 * x_1) %>% 
@@ -243,6 +249,7 @@ If we keep using RMSE as our error metric, this single point changes the model s
 model_lm_outlier <- lm(y ~ x_1, data = df_outlier)
 a_0_rmse_outlier <- coef(model_lm_outlier)[["(Intercept)"]]
 a_1_rmse_outlier <- coef(model_lm_outlier)[["x_1"]]
+
 df_outlier %>% 
   ggplot(aes(x_1, y)) +
   geom_point() +
@@ -302,6 +309,7 @@ pred <- function(a, data) {
 best_mae <- optim(c(0, 0), mae, data = df_outlier)
 a_0_mae <- best_mae$par[1]
 a_1_mae <- best_mae$par[2]
+
 df_outlier %>% 
   ggplot(aes(x_1, y)) +
   geom_point() +
@@ -333,7 +341,7 @@ df_outlier %>%
   labs(title = "Data with outlier")
 ```
 
-The MAE model isn't as disproportionately affected by our outlier as the RMSE model. You can't adapt `lm()` to use MAE, but the R function `rlm()` is more flexible, and allows for many different error metrics.
+The MAE model isn't as disproportionately affected by our outlier as the RMSE model. `lm()` does not allow you to use MAE as your error metric, but `MASS::rlm()` (the "r" is for "robust") offers a range of error metrics that, like MAE, are less sensitive to outliers than RMSE.
 
 The MAE model is similar to the model that we fit on the data without the outlier, which brings us to the second approach: remove the outlier. We'll talk more about this in the next chapter. 
 
