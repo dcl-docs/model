@@ -49,9 +49,9 @@ Supervised models are functions. They approximate the relationship of one variab
 
 Unsupervised models don't have a response variable. Instead of trying to understand a relationship between predictors and a response, unsupervised models try to find patterns in data. 
 
-When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). The approximation function can be used to understand and describe your data. It can also be used to make predictions of the response variable for a given set of predictor variables.
+When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). You can use your approximation function to understand and describe your data, as well as make predictions about your response variable. 
 
-There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with the same functional form. In [link to EDA on functional form], we'll talk more about function families and how to use EDA to choose a function family with which to approximate your data.
+There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), we'll discuss how to use EDA to choose a function family to approximate your data. 
 
 ## Fitting a model
 
@@ -88,9 +88,9 @@ tribble(
   plot_format
 ```
 
-`a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` increases for every one unit increase in `x_1`. Because linear functions are defined by these two parameters, the task of modeling data with this function family is to figure out which values of `a_0` and `a_1` best approximate your data.
+`a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` increases for every one unit increase in `x_1`. These two parameters define a linear function, and so to fit a linear model, you just have to determine which `a_0` and `a_1` best approximate your data.
 
-To determine the functional form of our Anscombe data, we'll visualize the relationship between `x_1` and `y`.
+As you'll learn in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), visualization is crucial to determining functional form. Let's visualize the relationship between `x_1` (the predictor) and `y` (the response).
 
 ```{r}
 df %>% 
@@ -174,7 +174,7 @@ df %>%
 
 These distances are called _residuals_ (or errors). Each residual represents the difference between the `y` value that the model predicts for a given `x_1` and the actual `y` associated with that `x_1`. The larger a residual, the worse your model approximates `y` at that value of `x_1`.  
 
-From the many residuals, we need a single error metric. One common option is to find the _root mean-square error (RMSE)_. To calculate the RMSE, square each residual, find the mean, and then take the square root of that mean:
+We need to turn all those residuals into a single error metric. One common option is to find the _root mean-square error (RMSE)_. To calculate the RMSE, square each residual, find the mean, and then take the square root of that mean:
 
 ```{r eval=FALSE, echo=TRUE}
 sqrt(mean(residuals^2))
@@ -341,7 +341,7 @@ df_outlier %>%
   labs(title = "Data with outlier")
 ```
 
-The MAE model isn't as disproportionately affected by our outlier as the RMSE model. `lm()` does not have the option of using the MAE error metric, but the R function `MASS::rlm()` (where the "r" is for "robust") offers are range of different error metrics that are less sensitive to outliers than RSME.
+The MAE model isn't as disproportionately affected by our outlier as the RMSE model. `lm()` does not allow you to use MAE as your error metric, but `MASS::rlm()` (the "r" is for "robust") offers a range of error metrics that, like MAE, are less sensitive to outliers than RMSE.
 
 The MAE model is similar to the model that we fit on the data without the outlier, which brings us to the second approach: remove the outlier. We'll talk more about this in the next chapter. 
 
