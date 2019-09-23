@@ -6,19 +6,19 @@
 library(tidyverse)
 ```
 
-The `diamonds` dataset, in the ggplot2 package, contains information on 53,940 round diamonds from the [Loose Diamonds Search Engine](https://www.diamondse.info). 
+The `diamonds` data set, in the ggplot2 package, contains information on 53,940 round diamonds from the [Loose Diamonds Search Engine](https://www.diamondse.info). 
 
-Each row of `diamonds` represents the features of a single diamond, including a set of characteristics called the four C's: `carat`, `cut`, `clarity`, and `color`. 
+Each row of `diamonds` represents the features of a single diamond, including a set of characteristics called the four Cs: `carat`, `cut`, `clarity`, and `color`. 
 
-Over the next several chapters, we'll model the relationship between the four C's and diamond price. Before diving into modeling, however, it's critical to understand your data. In this chapter, we'll conduct exploratory data analysis to understand `diamonds`, look for errors and outliers, and create a dataset that is ready for modeling. 
+Over the next several chapters, we'll model the relationship between the four Cs and diamond price, but before we dive into modeling, it's important to understand our data. In this chapter, we'll explore `diamonds`, visualize the important variables, look for errors and outliers, and create a data set that is ready for modeling. 
 
 ## Understand your variables
 
 ### Read the documentation
 
-When working with a new dataset, the first step is to read the documentation. `diamonds` is built into ggplot2, and so you can find the documentation at `?diamonds`. The [Loose Diamonds Search Engine](https://www.diamondse.info), the original source, also contains helpful information about the variables.  
+When working with a new data set, the first step is to read the documentation. `diamonds` is built into ggplot2 and you can find the documentation at `?diamonds`. The [Loose Diamonds Search Engine](https://www.diamondse.info), the original source, also contains helpful information about the variables.  
 
-As we said earlier, diamonds have a set of features called the 4 C's: carat, cut, clarity, and color. `diamonds` contains these four features, as well as information on price and dimenson. Here's an overview of the different variables that we got by studying the `?diamonds` page and the original website.
+As we said earlier, diamonds have a set of features called the four Cs: carat, cut, clarity, and color. `diamonds` contains these four features, as well as information on price and dimension. Here's an overview of the different variables, obtained from the `?diamonds` page and the original website.
 
 * `carat` is a measure of diamond weight. One carat is equivalent to 0.2 grams. 
 
@@ -26,19 +26,19 @@ As we said earlier, diamonds have a set of features called the 4 C's: carat, cut
 
 * `color` refers to the color of the diamond. Colorless diamonds are considered better than diamonds with a yellow tint. `diamonds` contains diamonds of 7 different colors, represented  by different letters. "D" - "F" diamonds are considered colorless, while "G" - "J" diamonds have a very faint color.
 
-* `clarity` refers to how clear a diamond is. Diamonds often contain imperfections like cracks or mineral desposits. The fewer and less noticeable a diamond's imperfections, the better its clarity. `clarity` contains 8 ordered levels, from "I1" (the worst) to "IF" (the best).
+* `clarity` refers to how clear a diamond is. Diamonds often contain imperfections like cracks or mineral deposits. The fewer and less noticeable a diamond's imperfections, the better its clarity. `clarity` contains 8 ordered levels, from "I1" (the worst) to "IF" (the best).
 
 * `x`, `y`, `z`, `depth`, and `table` are various measures of a diamonds size, in millimeters. 
 
 ### `glimpse()`
 
-`glimpse()` returns a useful snapshot of a dataset. 
+`glimpse()` returns a useful snapshot of a data set. 
 
 ```{r}
 glimpse(diamonds)
 ```
 
-We can quickly see the number of rows (`r nrow(diamonds)`) and variables (`r ncol(diamonds)`), and a peak at the values in each column. We can also see the different variables types: double (`dbl`), ordered (`ord`), and integer (`int`). We'll talk more about variable type later on in this chapter. 
+`glimpse()` shows us the number of diamonds (`r nrow(diamonds)`) and variables (`r ncol(diamonds)`), and a peak at the values in each column. We can also see the different variables types: double (`dbl`), ordered (`ord`), and integer (`int`). We'll talk more about variable type later on in this chapter. 
 
 ### `summary()`
 
@@ -48,15 +48,15 @@ We can quickly see the number of rows (`r nrow(diamonds)`) and variables (`r nco
 summary(diamonds)
 ```
 
-Notice that there are no `NA`'s in the data (`summary()` shows the number of `NA`'s in each column if there are any). 
+Notice that there are no `NA`'s in the data (`summary()` displays the number of `NA`'s in each column if any exist). 
 
-Also take a look at the minimum and maximum values for each variable. `carat` and `price` both cover a large range of values. `x`, `y`, and `z` all have 0 as a minimum value, even though it's impossible for a diamond to actually have a length, width, or depth of 0 mm. `y` and `z` also have very large maximums. We'll investigate these implausible and impossible values in the next section. 
+Take a look at the minimum and maximum values for each variable. `carat` and `price` both cover a large range of values. `x`, `y`, and `z` all have 0 as a minimum value, even though it's impossible for a diamond to actually have a length, width, or depth of 0 mm. `y` and `z` also have very large maximums. We'll investigate these values in the next sections.
 
 ## Check for problems
 
 `x`, `y`, and `z` all contain some suspicious values. There are diamonds with 0's for these dimensions, which is impossible. There are also diamonds with large, improbable dimensions. A diamond with a `y` (width) of 58.9 mm, or 2.32 inches, would be similar in size to [some of the largest diamonds in the world](https://en.wikipedia.org/wiki/Cullinan_Diamond#Diamonds_cut_from_the_Cullinan), and would surely cost more than \$18,000.
 
-We should check how many diamonds have an `x`, `y`, or `z` of 0. If there are lots of them, we might have a problem. 
+We should check how many diamonds have an `x`, `y`, or `z` of 0. 
 
 ```{r}
 diamonds %>% 
@@ -72,7 +72,7 @@ df <-
   filter(x > 0, y > 0, z > 0)
 ```
 
-Now, let's visualize the distributions to get a closer look at any outliers. Boxplots are a good choice when looking for outliers. 
+Now, we can visualize the distributions to investigate the suspiciously high values. Boxplots are a good choice when you're looking for outliers.
 
 ```{r}
 df %>% 
@@ -110,24 +110,27 @@ df <-
   filter(y < 20, z < 10)
 ```
 
-
-We also noted that the range of `carat` and `price` is very large. We'll take a closer look in the next section.
+We also noted that `carat` and `price` both cover a large range of values. We'll take a closer look in the next section.
 
 ## 1D EDA
 
-It's important to understand the difference between _continuous_ and _discrete_ variables. 
+Now that we've removed problematic data, we can explore each of our variables. "1D" refers to the fact that, for now, we'll just look at each variable by itself. In the next chapter, we'll start exploring the relationships between variables. 
 
-Continuous variables can take on an infinite number of possible values. `carat` is a continuous value because a diamond can weigh 1.00 carats, 1.001 carats, 1.0001 carats, etc. R considers both integers and doubles to be continuous variables.
+### Variable types
+
+First, it's important to understand the difference between _continuous_ and _discrete_ variables. 
+
+Continuous variables can take on an infinite number of possible values. `carat`, for example, is a continuous variable. A diamond can be 1.00 carats, 1.001 carats, 1.0001 carats, etc. R considers both integers and doubles to be continuous variables.
 
 Discrete variables can take on only a finite number of possible values. In `diamonds`, `cut` is a discrete variable, as a diamond can only be one of 6 different cuts. 
 
 Characters, logicals, and factors are discrete variables. R also further divides factors in ordered and unordered factors. Recall from the `glimpse()` output that `cut`, `color`, and `clarity` all have type `<ord>`, which indicates an ordered factor. 
 
-Many modeling algorithms treat ordered factors differently than unordered factors or character variables. If you have a discrete varaibles whose values, like those of `cut`, `clarity`, and `color`, have an intrinsic order, you'll probably want to store it as an ordered factor. 
+Many modeling algorithms treat ordered factors differently than unordered factors or character variables. If you have a discrete variable whose values, like those of `cut`, `clarity`, and `color`, have an intrinsic order, you'll likely want to store it as an ordered factor. 
 
 ### Continuous variables
 
-We'll use histograms to understand the distribution of our continuous variables. First, let's look at `carat`.
+We'll use histograms to understand our continuous variables' distributions. First, let's look at `carat`.
 
 ```{r}
 diamonds %>% 
@@ -135,9 +138,9 @@ diamonds %>%
   geom_histogram(binwidth = 0.01) 
 ```
 
-Earlier, we mentioned that `carat` has a large range. Our histogram makes it clear that most of the diamonds are under around 2.5 carats, but the distribution has a very long tail.
+Earlier, we mentioned that `carat` has a large range. Our histogram makes it clear that the distribution has a very long tail. Most diamonds are under 2.5 carats, but the diamonds above 2.5 carats still account for over half of the range.
 
-When you build a model, it's a good idea to focus on the data you care the most about. We care about modeling the relationship between price and the 4 C's for most of our diamonds, not for the outliers. Let's limit our data so that we only include 99% of the diamonds and ignore the 1% that account for over half of the range.
+When you build a model, it's a good idea to focus on the data you care the most about. We care about modeling the relationship between price and the four Cs for most of our diamonds, not for the outliers. We'll limit our data so that we only include 99% of the diamonds and ignore the largest 1%.
 
 The 99% cutoff is `r quantile(df$carat, probs = 0.99)`.
 
@@ -145,7 +148,7 @@ The 99% cutoff is `r quantile(df$carat, probs = 0.99)`.
 quantile(df$carat, probs = 0.99)
 ```
 
-We'll filter `df` to only exclude diamonds about the 99% quantile.
+We'll filter `df` to exclude diamonds above the 99% quantile.
 
 ```{r}
 df <- 
@@ -153,7 +156,7 @@ df <-
   filter(carat <= quantile(df$carat, probs = 0.99))
 ```
 
-Let's visualize the distribution again, now that we've focused the data.
+Now that we've focused the data, let's visualize the distribution again.
 
 ```{r}
 df %>% 
@@ -161,11 +164,11 @@ df %>%
   geom_histogram(binwidth = 0.01)
 ```
 
-Notice how spiky the distribution is. It's easier to see where these spikes are if we add more breaks to the `x` axis.
+Notice the spikiness of the distribution. It will be easier to tell where these spikes are if we add more x-axis breaks. 
 
 ```{r}
 df %>% 
-  ggplot(mapping = aes(x = carat)) +
+  ggplot(aes(carat)) +
   geom_histogram(binwidth = 0.01) +
   scale_x_continuous(breaks = seq(0.2, 2.2, 0.1), minor_breaks = NULL)
 ```
@@ -180,13 +183,13 @@ df %>%
   geom_histogram(binwidth = 50)
 ```
 
-Again, we see a distribution with a long tail, even though we've filtered our data to the 99% of diamonds. Interestingly, there's a gap in the distribution around $1500, probably caused by an error importing the data. 
+The `price` distribution also has a long tail, even though we've filtered out the largest diamonds. Interestingly, there's a gap in the distribution around $1500, probably caused by an error importing the data. 
 
-One thing we can see right away is that the `price` distribution does not follow the same spiky pattern as the `carat` distribution, suggesting that `price` is not a simple linear function of just carat. 
+Notice how the `price` distribution doesn't follow the same spiky pattern as the `carat` distribution, suggesting that `price` is not just a simple linear function of `carat`. We'll come back to this idea in the next chapter. 
 
 ### Discrete variables
 
-Now, we can turn to the discrete C's: `clarity`, `cut`, and `color`. For discrete variables, we'll use `geom_bar()`.
+Now, we can turn to the discrete Cs: `clarity`, `cut`, and `color`. For discrete variables, we'll use `geom_bar()`.
 
 ```{r}
 df %>%
@@ -194,7 +197,7 @@ df %>%
   geom_bar() 
 ```
 
-Diamonds with the best clarity values are relatively rare, and most diamonds are in the SI1 category, the third worst. There are also very few diamonds with the worst clarity, I1. 
+The best clarity classes are relatively rare, and most diamonds are in the SI1 category, the third worst. There are also very few diamonds with the worst clarity, I1. 
 
 ```{r}
 df %>%
@@ -202,7 +205,9 @@ df %>%
   geom_bar() 
 ```
 
-Interestingly, `cut` is very different. Most diamonds are the best cut, Ideal. The distribution evenly increases from Fair to Ideal. `cut` may be a feature that diamond manfuacturers have more control over, so they tend to create Ideal cut diamonds, whereas clarity is likely more a feature of the raw diamond.
+Interestingly, `cut` is very different. Ideal cut diamonds are very common, and the number of diamonds in each category increases as quality increases. Maybe `cut` is a feature that diamond manufacturers have more control over, whereas clarity is more a feature of the raw diamond.
+
+The factor levels of `cut` and `clarity` are both in ascending order, but `color` is in descending order. 
 
 ```{r}
 df %>% 
@@ -210,7 +215,7 @@ df %>%
   geom_bar() 
 ```
 
-From reading the documentation, we know that D is the best color and J is the worst. The factor levels of `cut` and `clarity` both go from worst to best, and we want `color` to do the same. We'll use `fct_rev()` to reverse the factor levels. 
+D is the best color and J is the worst. To transform color into ascending order, we can use `fct_rev()` to reverse the factor levels.
 
 ```{r}
 df <-
@@ -227,3 +232,9 @@ df %>%
 ```
 
 The most common color is G, which is in the middle of the distribution. There are more diamonds in the top half of the distribution than in the bottom.
+
+## Summary
+
+Before constructing a model, take the time to explore and understand your data. It's easier to build a good model if you understand what your variables actually measure, and it's important to check for errors that need to be removed. You may also, like we did, want to filter your data to focus on where most of the data lies. Otherwise, you might end up building a model for your outliers. 
+
+In the next chapter, we'll continue exploring `diamonds`, but will start examining the relationship between the four Cs and `price`. 
