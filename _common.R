@@ -6,14 +6,13 @@ options(
   dplyr.print_min = 6
 )
 
-# knitr::opts_chunk$set(
-#   cache = TRUE,
-#   collapse = TRUE,
-#   comment = "#>",
-#   fig.align = 'center',
-#   fig.asp = 0.618,  # 1 / phi
-#   fig.show = "hold"
-# )
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = 'center',
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
 
 image_dpi <- 125
 
