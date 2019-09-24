@@ -6,7 +6,7 @@
 library(tidyverse)
 ```
 
-The `diamonds` data set, in the ggplot2 package, contains information on 53,940 round diamonds from the [Loose Diamonds Search Engine](https://www.diamondse.info). 
+The `diamonds` data set, in the ggplot2 package, contains information on `r format(nrow(diamonds), big.mark = ",")` round diamonds from the [Loose Diamonds Search Engine](https://www.diamondse.info). 
 
 Each row of `diamonds` represents the features of a single diamond, including a set of characteristics called the four Cs: carat, clarity, color, and cut. 
 
@@ -140,9 +140,9 @@ df %>%
 
 Earlier, we mentioned that `carat` has a large range. Our histogram makes it clear that the distribution has a very long tail. Most diamonds are under 2.5 carats, but the diamonds above 2.5 carats still account for over half of the range.
 
-Building a model requires sufficient data, and there are so few diamonds above 2.5 carats that they are barely visible in the histogram. So we will restrict our attention to most of our diamonds and not the outliers, which could distort some models. In particular, we'll limit our data so that we only include 99% of the diamonds and ignore the largest 1%.
+Building a model requires sufficient data. We can expect to build a fairly accurate model for the diamonds under 2.5 carats, but there aren't enough diamonds above 2.5 carats. These outlier, high-carat diamonds could distort our model, so we'll restrict our attention to 99% the diamonds and ignore the largest 1%. 
 
-The 99% cutoff is `r quantile(df$carat, probs = 0.99)`.
+99% of our diamonds are less than or equal to `r quantile(df$carat, probs = 0.99)` carats. 
 
 ```{r}
 quantile(df$carat, probs = 0.99)
