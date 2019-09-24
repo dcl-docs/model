@@ -140,7 +140,7 @@ df %>%
 
 Earlier, we mentioned that `carat` has a large range. Our histogram makes it clear that the distribution has a very long tail. Most diamonds are under 2.5 carats, but the diamonds above 2.5 carats still account for over half of the range.
 
-Building a model requires sufficient data. We can expect to build a fairly accurate model for the diamonds under 2.5 carats, but there aren't enough diamonds above 2.5 carats. These outlier, high-carat diamonds could distort our model, so we'll restrict our attention to 99% the diamonds and ignore the largest 1%. 
+Building a model requires sufficient data. We can expect to build a fairly accurate model for the diamonds under 2.5 carats, but there aren't enough diamonds above 2.5 carats. These outlier, high-carat diamonds could distort our model, so we'll restrict our attention to 99% of the diamonds and ignore the largest 1%. 
 
 99% of our diamonds are less than or equal to `r quantile(df$carat, probs = 0.99)` carats. 
 
