@@ -4,8 +4,8 @@ delete_merged_file: true
 rmd_files: [
   "index.Rmd",
   "model_basics.Rmd",
-  "eda_to_understand_data.Rmd",
-  "eda_to_determine_functional_form.Rmd",
+  "understand_your_data.Rmd",
+  "determine_functional_form.Rmd",
   "references.Rmd"
 ]
 

@@ -1,5 +1,5 @@
 
-# EDA to understand your data
+# Understand your data
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 # Libraries

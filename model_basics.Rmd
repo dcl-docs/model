@@ -51,7 +51,7 @@ Unsupervised models don't have a response variable. Instead of trying to underst
 
 When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). You can use your approximation function to understand and describe your data, as well as make predictions about your response variable. 
 
-There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data, understand its functional form, and decide on a _function family_. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), we'll discuss how to use EDA to choose a function family to approximate your data. 
+There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data and determine with _function family_ (or families) would best approximate your data. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), we'll discuss how to use EDA to choose a function family to approximate your data. 
 
 ## Fitting a model
 
@@ -64,7 +64,7 @@ df %>%
 
 ### Decide on a function family
 
-Recall that we said the first step to fitting a model involves understanding the functional form of your data. Here, we'll discuss one of the most common function families in modeling: the family of linear functions. Linear functions of one variable take the following form: 
+Recall that we said the first step to fitting a model is to determine which function family best approximates your data. In modeling, some of the most common and useful function families are linear. There are an infinite number of linear function families and, later, we'll talk about how to decide exactly which family to use. For now, we'll introduce the family of linear functions of a single variable. Functions in this family take the following form:
 
 `y = a_0 + a_1 * x_1`
 
@@ -349,9 +349,8 @@ The MAE model is similar to the model that we fit on the data without the outlie
 
 In this chapter, we went over the basic process of fitting a model. Here are the steps again:
 
-* Explore your data to understand its functional form.
-* Choose a function family that will approximate your data well.
+* Explore your data and choose an appropriate function family.
 * Choose an error metric. 
 * Use an R function to find the specific function in the function family that minimizes the error metric. 
 
-Before you do any of these four steps, however, you first have to understand your data and check for any problems. The simple data used in this chapter doesn't measure anything real, but you'll typically be fitting models to complex, messy data sets. In the next chapter, we'll discuss how to use exploratory data analysis to understand and prepare your data before starting the modeling process. 
+Before you do any of these three steps, however, you first have to understand your data and check for any problems. The simple data used in this chapter doesn't measure anything real, but you'll typically be fitting models to complex, messy data sets. In the next chapter, we'll discuss how to use exploratory data analysis to understand and prepare your data before starting the modeling process. 
