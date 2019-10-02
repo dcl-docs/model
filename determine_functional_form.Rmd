@@ -1,3 +1,26 @@
+```{r include=FALSE, cache=FALSE}
+set.seed(858)
+
+options(
+  digits = 3,
+  dplyr.print_max = 6,
+  dplyr.print_min = 6
+)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = 'center',
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
+
+image_dpi <- 125
+
+
+
+
+```
 
 # Determine functional form
 
@@ -11,7 +34,7 @@ In Chapter 1, we mentioned three steps to building a model:
 * Choose an error metric. 
 * Use an R function to find the specific function within the chosen family that minimizes the error metric. 
 
-This chapter focuses on the first step. We'll explore the relationship between diamond price and the 4 Cs and, by the end of the chapter, understand which function family or families might approximate the data well. 
+This chapter focuses on the first step. Using `diamonds`, we'll explore the relationship between `price` and the 4 Cs: `clarity`, `color`, and `cut`. By the end of the chapter, we'll understand which function family or families might approximate the data well. 
 
 ## Families of linear functions
 
@@ -25,15 +48,23 @@ Recall that `a_0` is the y-intercept and `a_1` is the slope. We can also write t
 
 where `f_x_1(x_1) = a_1 * x_1`. This syntax will come in handy when we discuss discrete predictors later. To add more variables to the function, add more `f_x(x)` functions. The general form for linear functions of `n` variables is
 
-`y = a_0 + f_x_1(x_1) + f_x_2(x_2) + ... + f_x_n(x_n)`
+`y = a_0 + f_x_1(x_1) + f_x_2(x_2) + ... + f_x_n(x_n)`.
 
 ## Formulas
 
-In Chapter 1, we mentioned that the modeling function `lm()` takes two arguments: a function family and data. `lm()`, likes many other modeling functions, takes the function family as a _formula_.  
+In Chapter 1, we mentioned that the modeling function `lm()` takes two arguments: a function family and data. `lm()`, like many modeling functions, takes the function family as a _formula_.  
 
-Our model from Chapter 1 belonged to the family with the form `y = a_0 * a_1 * x_1`. As a formula, this functional form is `y ~ x_1`. You place the name of the response variable to the left of the `~` and the predictor variable(s) to the right of the `~`. To add more predictor variables, separate their names with `+`s:
+Our model from Chapter 1 belonged to the family with the form 
 
-`y ~ x_1 + x_2 + ... + x_n`
+`y = a_0 + a_1 * x_1`. 
+
+As a formula, this functional form is 
+
+`y ~ x_1`. 
+
+You place the name of the response variable to the left of the `~` and the predictor variable(s) to the right of the `~`. The general form for the formula of a linear function of `n` variables is
+
+`y ~ x_1 + x_2 + ... + x_n`.
 
 Formulas are their own class of R object, and you specify them unquoted, like the name of a variable. 
 
@@ -42,7 +73,7 @@ y ~ x_1
 class(y ~ x_1)
 ```
 
-Because y-intercepts are so common in linear models, `lm()` includes one by default. If you don't want a y-intercept, add a `0` to your formula.
+Because y-intercepts are so common in linear models, R's modeling functions, such as `lm()`, include one by default. If you don't want a y-intercept, add a `0` to your formula.
 
 `y ~ 0 + x_1`
 
@@ -61,7 +92,7 @@ df <-
   mutate(color = fct_rev(color))
 ```
 
-Now, we can visualize the relationship between `carat` and `price` and look for a linear relationship. `geom_hex()` is a good choice, since there are tens of thousands of diamonds. 
+Now, we can visualize the relationship between `carat` and `price` and look for a linear relationship. `geom_hex()` is a good choice, since plotting each diamond in a scatterplot would result in overplotting. 
 
 ```{r}
 df %>% 
@@ -72,7 +103,7 @@ df %>%
 
 The larger diamonds cover a wide range of prices, so we'll add a smooth line to show the central tendency. 
 
-```{r message=FALSE}
+```{r, message=FALSE, cache=TRUE}
 df %>% 
   ggplot(aes(carat, price)) +
   geom_hex() +
@@ -96,9 +127,9 @@ which might look familiar. Power laws are linear in terms of `log(y)` and `log(x
 
 `log(y) = a_0 + a_1 * log(x)`
 
-Power laws are common in modeling. You can determine if your data approximately follows a power law by taking the log of both the predictor and response and then visually checking if the relationship is linear.  We'll do this for `price` and `carat`.  
+Power laws are a common phenomenon. You can determine if your data approximately follows a power law by taking the log of both the predictor and response and then visually checking if the relationship is linear.  We'll do this for `price` and `carat`. Any base will work, but we'll use base 2 because it's easily interpretable: each time `log2_carat` increases by one, `carat` doubles. 
 
-```{r message=FALSE}
+```{r, message=FALSE, cache=TRUE}
 df <-
   df %>% 
   mutate(
@@ -113,7 +144,7 @@ df %>%
   scale_fill_viridis_c()
 ```
 
-The smooth line is now linear, suggesting that the functional form `log2(price) = a_0 + a_carat * log2(carat)` will approximate the relationship between `price` and `carat` well. 
+The smooth line is now linear, suggesting that the functional form `log2_price = a_0 + a_carat * log2_carat` will approximate the relationship between `price` and `carat` well. 
 
 To specify this function family in a formula, we have two options. We can refer directly to new variables created in `mutate()`:
 
@@ -127,13 +158,13 @@ Log-log transformations are common, but you can apply any transformation (to you
 
 You might wonder why you should bother transforming your data instead of just fitting a nonlinear model. Linear models are generally simpler, easier to interpret, and often produce better approximations.
 
-### Visualizing
+### Visual checks
 
 `carat` is the only continuous variable in the 4 Cs, but other data sets will have multiple possible continuous predictors. Here are two features to check for when considering adding a continuous predictor to your model. 
 
 First, as you've already seen, the relationship between the predictor and the response should be linear. If necessary, transform the data so that the relationship is linear. If the relationship is nonlinear and you can't find a transformation that makes it linear, don't add the predictor to your linear model. 
 
-Second, the predictor should influence the response. In our visualization of `price` and `carat`, we noticed that `price` increased as `carat` increased. If the predictor does not influence the response, you'll see something like this:
+Second, the predictor should influence the response. In our visualization of `price` and `carat`, we noticed that `price` increased as `carat` increased. If the predictor does not influence the response, you might see something like this:
 
 ```{r echo=FALSE, cache=TRUE}
 set.seed(234)
@@ -153,53 +184,51 @@ The `diamonds` data is relatively simple, and we've made it even simpler by rest
 
 ## Discrete predictors
 
-Earlier, we noticed that `price` varies substantially for diamonds of a given carat. In this section, we'll investigate if the other 3 Cs, `clarity`, `color`, and `cut`, account for this variation.
+Earlier, we noticed that `price` varies substantially for diamonds of a given carat. In this section, we'll investigate how the discrete Cs, `clarity`, `color`, and `cut`, influence price. 
 
 ### Functional form
 
 Discrete predictors work differently than continuous predictors. When a linear model includes a discrete predictor, a different constant will be added for each value of the variable.
 
-We'll visualize the effect of `color` by adding a smooth line for each value to our our plot of `log2_price` and `log2_carat`. We left off the individual points to focus on the trends.^[Note that we used `method = "loess"` instead of the default `method = "gam"`. "loess" can take more time and memory for large amounts of data, but often gives better results. For more information, see https://dcl-data-vis.stanford.edu/continuous-continuous.html#smoothing]. 
+We'll visualize the effect of `cut` by adding a smooth line for each value to our our plot of `log2_price` and `log2_carat`. We left off the individual points to focus on the trends.^[Note that we used `method = "loess"` instead of the default `method = "gam"`. "loess" can take more time and memory for large amounts of data, but often gives better results. For more information, see https://dcl-data-vis.stanford.edu/continuous-continuous.html#smoothing] 
 
 ```{r, cache=TRUE}
 df %>% 
-  ggplot(aes(log2_carat, log2_price, color = color)) +
+  ggplot(aes(log2_carat, log2_price, color = cut)) +
   geom_smooth(method = "loess") +
   scale_color_discrete() +
   guides(color = guide_legend(reverse = TRUE))
 ```
 
-The smooth lines look linear, and all appear to have similar slopes but different intercepts, which increase as `color` quality increases. This suggests that the following functional form, in which the intercept of the line depends on `color`, would approximate our data well. 
+The smooth lines look linear, and all appear to have similar slopes but different intercepts, which increase as `cut` quality increases. This suggests that the following functional form, in which the intercept of the line depends on `cut`, would approximate our data well. 
 
-`log2(price) = a_0 + f_carat(log2(carat)) + f_color(color)`
+`log2_price = a_0 + f_log2_carat(log2_carat) + f_cut(cut)`
 
 In formula syntax, this functional form is
 
-`log2(price) ~ log2(carat) + color`
+`log2_price ~ log2_carat + cut`.
 
-We need `f_color()` to return a different constant for each value of `color`. We can write `f_color()` in R using `case_when()`.
+We need `f_cut()` to return a different constant for each value of `cut`. We can write `f_cut()` in R using `case_when()`.
 
 ```{r}
-f_color <- function(color) {
+f_cut <- function(cut) {
   case_when(
-    color == "D" ~ a_color_D,
-    color == "E" ~ a_color_E,
-    color == "F" ~ a_color_F,
-    color == "G" ~ a_color_G,
-    color == "H" ~ a_color_H,
-    color == "I" ~ a_color_I,
-    color == "J" ~ 0,
+    cut == "Fair"      ~ 0,
+    cut == "Good"      ~ a_cut_Good,
+    cut == "Very Good" ~ a_cut_Very_Good,
+    cut == "Premium"   ~ a_cut_Premium,
+    cut == "Ideal"     ~ a_cut_Ideal
   )
 }
 ```
 
-The constant for J (the worst) diamonds is 0 because `a_0` represents the intercept for the J line. 
+Note that the constant for Fair (the worst quality) diamonds is 0. The Fair line will have the lowest y-intercept, so `a_0` represents the Fair y-intercept.  
 
-In the next section, we'll visualize `clarity` and `cut` and discuss visualizing discrete predictors in more detail. 
+In the next section, we'll visualize `clarity` and `color` and discuss visualizing discrete predictors in more detail. 
 
-### Visualizing 
+### Visual checks
 
-Now that you understand the form of `f_color()`, we can be more precise about what to look for when visualizing a discrete predictor. Here's a brief checklist:
+Now that you understand the form of `f_cut()`, we can be more precise about what to look for when visualizing a discrete predictor. Here's a brief checklist:
 
 * The smooth lines should all be approximately linear.
 
@@ -208,17 +237,56 @@ Now that you understand the form of `f_color()`, we can be more precise about wh
 
 * The smooth lines should all be approximately parallel to each other.
 
-  In our example, the slopes of the lines depend only on our continuous predictor: `log2(carat)`. Changing `color`
+  In our example, the slopes of the lines depend only on our continuous predictor: `log2_carat`. Changing `cut`
   does not change the slope. Non-parallel smooth lines suggest that slope depends on both the continuous
-  predictor and the discrete predictor. This is called an _interaction_. Interactions create nonlinear functions,
-  so we won't discuss them further in this chapter. 
+  predictor and the discrete predictor. This is called an _interaction_. Interactions aren't part of the set of 
+  function families we're looking at in this chapter, so we won't talk more about them here. 
   
 * The smooth lines should have different y-intercepts.
 
-  Smooth lines that are stacked on top of each other and don't have different y-intercepts suggest that the discrete
-  variable doesn't influence the response. 
+  Smooth lines that are stacked on top of each other and don't have different y-intercepts suggest that the 
+  discrete variable doesn't influence the response. 
   
-`color` met all three of our criteria pretty well, although the smooth lines for the 4 best colors (D, E, F, and G) are almost entirely on top of each other. 
+`cut` met all three of our criteria pretty well, although the Premium and Very Good smooth lines are very close together.
+
+```{r, cache=TRUE}
+df %>% 
+  ggplot(aes(log2_carat, log2_price, color = cut)) +
+  geom_smooth(method = "loess") +
+  scale_color_discrete() +
+  guides(color = guide_legend(reverse = TRUE))
+```
+
+This overlap suggests that there isn't much of a price difference between Very Good and Premium diamonds. We could combine these two levels into a single level.
+
+```{r, cache=TRUE}
+df <-
+  df %>% 
+  mutate(
+    cut_combined = 
+      fct_collapse(cut, Very_Good_Premium = c("Very Good", "Premium"))
+  )
+
+df %>% 
+  ggplot(aes(log2_carat, log2_price, color = cut_combined)) +
+  geom_smooth(method = "loess") +
+  scale_color_discrete() +
+  guides(color = guide_legend(reverse = TRUE))
+```
+
+Next, let's look at `clarity`.
+
+```{r, cache=TRUE}
+df %>% 
+  ggplot(aes(log2_carat, log2_price, color = clarity)) +
+  geom_smooth(method = "loess") +
+  scale_color_discrete() +
+  guides(color = guide_legend(reverse = TRUE))
+```
+
+`clarity` also mostly meets our criteria. The slope of the line for I1 looks a bit different than the rest. However, only `r round(100 * (df %>% filter(clarity == "I1") %>% nrow()) / nrow(df), 2)`% of diamonds are I1, so it will be okay if our linear model doesn't approximate them as well as other diamonds. 
+
+Finally, we'll look at `color`.
 
 ```{r, cache=TRUE}
 df %>% 
@@ -227,8 +295,8 @@ df %>%
   scale_color_discrete() +
   guides(color = guide_legend(reverse = TRUE))
 ```
-
-This overlap suggests that increasing quality above G does not influence price very much. We could try combining D, E, F, and G into one level. 
+  
+`color` also meets all three of our criteria pretty well. Again, some of the smooth lines (D, E, F, and G) are almost entirely on top of each other, suggesting that increasing quality above G does not influence price very much. We'll try combining D, E, F, and G into one level. 
 
 ```{r, cache=TRUE}
 df <-
@@ -242,40 +310,9 @@ df %>%
   guides(color = guide_legend(reverse = TRUE))
 ```
 
-The smooth lines are now more clearly separated. Later, when we fit our models, we'll compare a model that uses `color` with all 7 values to one that uses `color_combined`. 
+The smooth lines are now more clearly separated. Later, when we fit our models, we'll compare models that use `cut_combined` and `color_combined` to those that use `cut` and `color`. 
 
-Next, let's look at `clarity`.
-
-```{r, cache=TRUE}
-df %>% 
-  ggplot(aes(log2_carat, log2_price, color = clarity)) +
-  geom_smooth(method = "loess") +
-  scale_color_discrete() +
-  guides(color = guide_legend(reverse = TRUE))
-```
-
-`clarity` also mostly meets our criteria. The slope of the line for I1 looks a bit different than the rest. Let's check how many I1 diamonds there are.
-
-```{r}
-df %>% 
-  count(clarity, sort = TRUE)
-```
-
-I1 diamonds are relatively rare, so it will be okay if our linear model doesn't approximate them as well as other diamonds. 
-
-Also, notice how the `clarity` smooth lines are further apart than those for `color`. This separation suggests that `clarity` has more influence over `price` than `color`.
-
-Finally, let's look at `cut`.
-
-```{r, cache=TRUE}
-df %>% 
-  ggplot(aes(log2_carat, log2_price, color = cut)) +
-  geom_smooth(method = "loess") +
-  scale_color_discrete() +
-  guides(color = guide_legend(reverse = TRUE))
-```
-
-`cut` also meets the criteria. Premium and Very Good are close together, so we might consider combining them into a single level. The smooth lines for `cut` are even closer together than those of `clarity`, so `cut` likely has the least effect on `price` of the 3 discrete Cs. 
+The separation between the smooth lines varies between `clarity`, `cut`, and `color`. The larger the separation between smooth lines, the more that variable influences `price`, so `clarity` likely influences `price` the most, followed by `color`, then `cut`. 
 
 ## Summary
 
@@ -286,8 +323,5 @@ From our EDA, we now know that:
 * `clarity` is the most important of the 3 Cs, followed by `color`, then `cut`.
 * Increasing the quality of the color beyond G doesn't influence price very much. We could combine the top levels of `color` into one level before fitting our model. 
 
-Even though we found that `carat`, `clarity`, `color`, and `cut` all influence price, we might not want to include them all into our model. In the next chapter, we'll talk about the downsides of adding too many predictors, and discuss how to choose an appropriate number. 
-
-
-
+Even though `carat`, `clarity`, `color`, and `cut` all influence price, we shouldn't necessarily add them all into our model. In the next chapter, we'll discuss the trade-offs involved with adding additional predictors to models. Then, we'll explain a method for deciding how many predictors to include. 
 
