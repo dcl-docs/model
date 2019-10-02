@@ -122,11 +122,9 @@ First, it's important to understand the difference between _continuous_ and _dis
 
 Continuous variables can take on an infinite number of possible values. `carat`, for example, is a continuous variable. A diamond can be 1.00 carats, 1.001 carats, 1.0001 carats, etc. R considers both integers and doubles to be continuous variables.
 
-Discrete variables can take on only a finite number of possible values. In `diamonds`, `cut` is a discrete variable, as a diamond can only be one of 6 different cuts. 
+Discrete variables can take on only a finite number of possible values. In `diamonds`, `cut` is a discrete variable, as a diamond can be in only one of 6 different cut groups. 
 
-Characters, logicals, and factors are discrete variables. R also further divides factors in ordered and unordered factors. Recall from the `glimpse()` output that `clarity`, `color`, and `cut` all have type `<ord>`, which indicates an ordered factor. 
-
-Many modeling algorithms treat ordered factors differently than unordered factors or character variables. If you have a discrete variable whose values, like those of `clarity`, `color`, and `cut`, have an intrinsic order, you'll likely want to store it as an ordered factor. 
+Characters, logicals, and factors are discrete variables. R also further divides factors in ordered and unordered factors. Recall from the `glimpse()` output that `clarity`, `color`, and `cut` all have type `<ord>`, which indicates an ordered factor. As we'll explain later, many modeling algorithms treat ordered factors differently than unordered factors or character variables.
 
 ### Continuous variables
 
