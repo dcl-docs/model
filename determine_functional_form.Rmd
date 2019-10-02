@@ -24,11 +24,11 @@ In this chapter, we'll restrict our attention to families of linear functions. I
 
 `y = a_0 + a_1 * x_1`.
 
-Recall that `a_0` is the y-intercept and `a_1` is the slope. We can also write this functional form as
+Recall that `a_0` is the intercept and `a_1` is the slope. We can also write this functional form as
 
 `y = a_0 + f_x_1(x_1)` 
 
-where `f_x_1(x_1) = a_1 * x_1`. This syntax will come in handy when we discuss discrete predictors later. To add more variables to the function, add more `f_x(x)` functions. The general form for linear functions of `n` variables is
+where `f_x_1(x_1) = a_1 * x_1`. This syntax will come in handy when we discuss discrete predictors later. To add more variables to the function, add more `f_x(x)` functions. The general form for linear functions of n variables is
 
 `y = a_0 + f_x_1(x_1) + f_x_2(x_2) + ... + f_x_n(x_n)`.
 
@@ -44,18 +44,18 @@ As a formula, this functional form is
 
 `y ~ x_1`. 
 
-You place the name of the response variable to the left of the `~` and the predictor variable(s) to the right of the `~`. The general form for the formula of a linear function of `n` variables is
+You place the name of the response variable to the left of the `~` and the predictor variable(s) to the right of the `~`. The general form for the formula of a linear function of n variables is
 
 `y ~ x_1 + x_2 + ... + x_n`.
 
-Formulas are their own class of R object, and you specify them unquoted, like the name of a variable. 
+Formulas are their own class of R object, and you specify them unquoted. 
 
 ```{r}
 y ~ x_1
 class(y ~ x_1)
 ```
 
-Because y-intercepts are so common in linear models, R's modeling functions, such as `lm()`, include one by default. If you don't want a y-intercept, add a `0` to your formula.
+Because intercept terms are so common in linear models, the formulas above include one by default. If you don't want an intercept term, add a `0` to your formula.
 
 `y ~ 0 + x_1`
 
@@ -109,7 +109,7 @@ which might look familiar. Power laws are linear in terms of `log(y)` and `log(x
 
 `log(y) = a_0 + a_1 * log(x)`
 
-Power laws are a common phenomenon. You can determine if your data approximately follows a power law by taking the log of both the predictor and response and then visually checking if the relationship is linear.  We'll do this for `price` and `carat`. Any base will work, but we'll use base 2 because it's easily interpretable: each time `log2_carat` increases by one, `carat` doubles. 
+Phenomena that follow power laws are common. You can determine if your data approximately follows a power law by taking the log of both the predictor and response and then visually checking if the relationship is linear.  We'll do this for `price` and `carat`. Any base will work, but we'll use base 2 because it's easily interpretable: each time `log2_carat` increases by one, `carat` doubles. 
 
 ```{r, message=FALSE, cache=TRUE}
 df <-
@@ -126,7 +126,7 @@ df %>%
   scale_fill_viridis_c()
 ```
 
-The smooth line is now linear, suggesting that the functional form `log2_price = a_0 + a_carat * log2_carat` will approximate the relationship between `price` and `carat` well. 
+The smooth line is now linear, suggesting that the functional form `log2_price = a_0 + a_log2_carat * log2_carat` will approximate the relationship between `price` and `carat` well. 
 
 To specify this function family in a formula, we have two options. We can refer directly to new variables created in `mutate()`:
 
@@ -204,30 +204,25 @@ f_cut <- function(cut) {
 }
 ```
 
-Note that the constant for Fair (the worst quality) diamonds is 0. The Fair line will have the lowest y-intercept, so `a_0` represents the Fair y-intercept.  
+Note that the constant for Fair (the worst quality) diamonds is 0. By convention, the value that would correspond to the lowest level of a factor is added to `a_0` and the values for the other levels are relative to the value for the lowest.
 
 In the next section, we'll visualize `clarity` and `color` and discuss visualizing discrete predictors in more detail. 
 
 ### Visual checks
 
-Now that you understand the form of `f_cut()`, we can be more precise about what to look for when visualizing a discrete predictor. Here's a brief checklist:
+Now that you understand the form of `f_cut()`, we can be more precise about what to look for when visualizing a potential discrete predictor. Here's a brief checklist:
 
-* The smooth lines should all be approximately linear.
+* The smooth lines of continuous predictors for the levels of the discrete predictor should all be approximately linear.
 
-  Adding a discrete variable to the model will create a line for each value. These lines won't approximate the
-  data well if the underlying relationships are not linear. 
+  Instead of one smooth line without the discrete predictor, you would now have a smooth line for each level. Each of these smooth lines should be linear for the relationship to be approximated well by a linear function.
 
 * The smooth lines should all be approximately parallel to each other.
 
-  In our example, the slopes of the lines depend only on our continuous predictor: `log2_carat`. Changing `cut`
-  does not change the slope. Non-parallel smooth lines suggest that slope depends on both the continuous
-  predictor and the discrete predictor. This is called an _interaction_. Interactions aren't part of the set of 
-  function families we're looking at in this chapter, so we won't talk more about them here. 
+  In our example, the slopes of the lines depend only on our continuous predictor: `log2_carat`. Changing `cut` does not change the slope. Non-parallel smooth lines suggest that slope depends on both the continuous predictor and the discrete predictor. This is called an _interaction_. Interactions aren't part of the set of function families we're looking at in this chapter, so we won't talk more about them here. 
   
-* The smooth lines should have different y-intercepts.
+* The smooth lines should have different intercepts.
 
-  Smooth lines that are stacked on top of each other and don't have different y-intercepts suggest that the 
-  discrete variable doesn't influence the response. 
+  Smooth lines that are stacked on top of each other and don't have different intercepts suggest that the discrete variable doesn't influence the response. 
   
 `cut` met all three of our criteria pretty well, although the Premium and Very Good smooth lines are very close together.
 
@@ -305,5 +300,4 @@ From our EDA, we now know that:
 * `clarity` is the most important of the 3 Cs, followed by `color`, then `cut`.
 * Increasing the quality of the color beyond G doesn't influence price very much. We could combine the top levels of `color` into one level before fitting our model. 
 
-Even though `carat`, `clarity`, `color`, and `cut` all influence price, we shouldn't necessarily add them all into our model. In the next chapter, we'll discuss the trade-offs involved with adding additional predictors to models. Then, we'll explain a method for deciding how many predictors to include. 
-
+Even though `carat`, `clarity`, `color`, and `cut` all influence price, we shouldn't necessarily add them all into our model. In the next chapter, we'll discuss the trade-offs involved with adding additional predictors to models. Then, we'll explain a method for choosing between different models.
