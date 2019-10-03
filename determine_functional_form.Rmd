@@ -1,6 +1,6 @@
 
 ---
-nocite: |
+notice: |
   @kuhn-2019
 ---
 
@@ -55,7 +55,7 @@ y ~ x_1
 class(y ~ x_1)
 ```
 
-Because intercept terms are so common in linear models, the formulas above include one by default. If you don't want an intercept term, add a `0` to your formula.
+You don't need to explicitly specify an intercept term as it will be included by default. If you don't want an intercept term, add a `0` to your formula.
 
 `y ~ 0 + x_1`
 
@@ -204,17 +204,18 @@ f_cut <- function(cut) {
 }
 ```
 
-Note that the constant for Fair (the worst quality) diamonds is 0. By convention, the value that would correspond to the lowest level of a factor is added to `a_0` and the values for the other levels are relative to the value for the lowest.
+Note that the constant for Fair is 0. Fair is the worst quality cut and the lowest factor level of `cut`. By convention, the lowest factor level's constant is added to `a_0`, so we don't need a `a_cut_Fair`. The rest of the constants are then created relative to this lowest value.  
 
 In the next section, we'll visualize `clarity` and `color` and discuss visualizing discrete predictors in more detail. 
 
 ### Visual checks
 
-Now that you understand the form of `f_cut()`, we can be more precise about what to look for when visualizing a potential discrete predictor. Here's a brief checklist:
+Now that you understand the form of `f_cut()`, we can be more precise about what to look for when visualizing a potential discrete predictor. Assume you created a visualization like we did above, with a continuous predictor on the x-axis, the response on the y-axis, and a smooth line for each value of the potential discrete predictor. Here's a set of characteristics to check for: 
 
-* The smooth lines of continuous predictors for the levels of the discrete predictor should all be approximately linear.
+* The smooth lines should all be approximately linear.
 
-  Instead of one smooth line without the discrete predictor, you would now have a smooth line for each level. Each of these smooth lines should be linear for the relationship to be approximated well by a linear function.
+  For a linear function to approximate the relationship well, each of the smooth
+lines needs to be linear. 
 
 * The smooth lines should all be approximately parallel to each other.
 
