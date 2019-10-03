@@ -235,22 +235,7 @@ df %>%
   guides(color = guide_legend(reverse = TRUE))
 ```
 
-This overlap suggests that there isn't much of a price difference between Very Good and Premium diamonds. We could combine these two levels into a single level.
-
-```{r, cache=TRUE}
-df <-
-  df %>% 
-  mutate(
-    cut_combined = 
-      fct_collapse(cut, Very_Good_Premium = c("Very Good", "Premium"))
-  )
-
-df %>% 
-  ggplot(aes(log2_carat, log2_price, color = cut_combined)) +
-  geom_smooth(method = "loess") +
-  scale_color_discrete() +
-  guides(color = guide_legend(reverse = TRUE))
-```
+This overlap suggests that there isn't much of a price difference between Very Good and Premium diamonds. 
 
 Next, let's look at `clarity`.
 
@@ -262,7 +247,9 @@ df %>%
   guides(color = guide_legend(reverse = TRUE))
 ```
 
-`clarity` also mostly meets our criteria. The slope of the line for I1 looks a bit different than the rest. However, only `r round(100 * (df %>% filter(clarity == "I1") %>% nrow()) / nrow(df), 2)`% of diamonds are I1, so it will be okay if our linear model doesn't approximate them as well as other diamonds. 
+`clarity` also mostly meets our criteria, although two of the levels (VVS1 and VVS2) are again very close together.
+
+The slope of the line for I1 also looks a bit different than the rest. However, only `r round(100 * (df %>% filter(clarity == "I1") %>% nrow()) / nrow(df), 2)`% of diamonds are I1, so it will be okay if our linear model doesn't approximate them as well as other diamonds. 
 
 Finally, we'll look at `color`.
 
@@ -274,7 +261,7 @@ df %>%
   guides(color = guide_legend(reverse = TRUE))
 ```
   
-`color` also meets all three of our criteria pretty well. Again, some of the smooth lines (D, E, F, and G) are almost entirely on top of each other, suggesting that increasing quality above G does not influence price very much. We'll try combining D, E, F, and G into one level. 
+`color` also meets all three of our criteria pretty well. Again, some of the smooth lines (D, E, F, and G) are almost entirely on top of each other, suggesting that increasing quality above G does not influence price very much. We could try combining D, E, F, and G into one level. 
 
 ```{r, cache=TRUE}
 df <-
@@ -288,7 +275,7 @@ df %>%
   guides(color = guide_legend(reverse = TRUE))
 ```
 
-The smooth lines are now more clearly separated. Later, when we fit our models, we'll compare models that use `cut_combined` and `color_combined` to those that use `cut` and `color`. 
+The smooth lines are now more clearly separated. Later, when we fit our models, we'll compare models that combine nearby factor levels to models that use all the original values. 
 
 The separation between the smooth lines varies between `clarity`, `cut`, and `color`. The larger the separation between smooth lines, the more that variable influences `price`, so `clarity` likely influences `price` the most, followed by `color`, then `cut`. 
 
