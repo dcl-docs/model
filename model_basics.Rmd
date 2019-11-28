@@ -8,15 +8,12 @@ knitr::opts_chunk$set(echo = FALSE)
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 # Libraries
 library(tidyverse)
-
-# Parameters
-file_anscombe <- here::here("data/anscombe/anscombe_1.rds")
-file_anscombe_outlier <- here::here("data/anscombe/anscombe_1_outlier.rds")
+library(dddata)
 
 #===============================================================================
 
-df <- read_rds(file_anscombe)
-df_outlier <- read_rds(file_anscombe_outlier)
+df <- anscombe_1
+df_outlier <- anscombe_1_outlier
 
 plot_format <-
   list(
