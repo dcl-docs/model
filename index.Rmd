@@ -17,6 +17,21 @@ link-citations: true
 
 ## How to read this book {-}
 
+All datasets used in this book are contained in R packages, making it easy to follow along and replicate our examples. Many of the datasets are in our own [dddata package](https://github.com/dcl-docs/dddata). You can install dddata from GitHub with
+
+`devtools::install_github("dcl-docs/dddata")`
+
+To access the datasets, load the relevant package
+
+`library(dddata)`
+
+and then call the name of the dataset
+
+`anscombe_1`
+
+All datasets have accompanying documentation, which you can find with 
+
+`?{name of the dataset}`
 
 ## An evolving book {-}
 
