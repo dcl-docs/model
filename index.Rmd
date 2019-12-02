@@ -22,10 +22,6 @@ library(dddata)
 
 We encourage you to engage with this book by following along in RStudio, or copying our code and playing around with it your You can easily copy the code in this book by hovering over a chunk and then clicking the copy button that appears in the upper-right corner.
 
-```{r echo=FALSE}
-knitr::include_graphics("images/copy-button.png")
-```
-
 All datasets used in this book are contained in R packages, making it easy to follow along and replicate our examples. Many of the datasets are in our own [dcldata package](https://github.com/dcl-docs/dcldata). To install dcldata, copy the following code and paste it into RStudio.
 
 ```{r eval=FALSE}
