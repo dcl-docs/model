@@ -14,24 +14,51 @@ link-citations: true
 
 # Welcome {-}
 
-
 ## How to read this book {-}
 
-All datasets used in this book are contained in R packages, making it easy to follow along and replicate our examples. Many of the datasets are in our own [dddata package](https://github.com/dcl-docs/dddata). You can install dddata from GitHub with
+```{r echo=FALSE}
+library(dddata)
+```
 
-`devtools::install_github("dcl-docs/dddata")`
+We encourage you to engage with this book by following along in RStudio, or copying our code and playing around with it your You can easily copy the code in this book by hovering over a chunk and then clicking the copy button that appears in the upper-right corner.
+
+```{r echo=FALSE}
+knitr::include_graphics("images/copy-button.png")
+```
+
+All datasets used in this book are contained in R packages, making it easy to follow along and replicate our examples. Many of the datasets are in our own [dcldata package](https://github.com/dcl-docs/dcldata). To install dcldata, copy the following code and paste it into RStudio.
+
+```{r eval=FALSE}
+# You can copy this code with the copy button!
+# First install devtools if you don't already have it:
+# install.packages("devtools")
+devtools::install_github("dcl-docs/dcldata")
+```
 
 To access the datasets, load the relevant package
 
-`library(dddata)`
+```{r eval=FALSE}
+library(dcldata)
+```
 
-and then call the name of the dataset
+and then call the dataset by name.
 
-`anscombe_1`
+```{r}
+anscombe_1
+```
 
-All datasets have accompanying documentation, which you can find with 
+All datasets have accompanying documentation, which you can find with the `?` operator.
 
-`?{name of the dataset}`
+```{r eval=FALSE}
+?anscombe_1
+```
+
+You can also view the names of all datasets in a given package with the `data()` function.
+
+```{r eval=FALSE}
+data(package = "dcldata")
+```
+
 
 ## An evolving book {-}
 
