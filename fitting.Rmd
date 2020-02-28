@@ -1,5 +1,5 @@
 
-# Fit a model
+# Fitting basics
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
