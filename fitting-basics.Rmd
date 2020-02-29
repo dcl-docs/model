@@ -218,14 +218,14 @@ Now, we're ready to visualize our model. First, we'll plot our model's predictio
 ```{r eval=FALSE}
 df_predictions %>% 
   ggplot(aes(log2_carat)) +
-  geom_hex(aes(y = log2_price), alpha = 0.85) +
+  geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_line(aes(y = pred), color = "blue", size = 1) +
   scale_fill_viridis_c() 
 ```
 ```{r echo=FALSE}
 df_predictions %>% 
   ggplot(aes(log2_carat)) +
-  geom_hex(aes(y = log2_price), alpha = 0.85) +
+  geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_line(aes(y = pred), color = "blue", size = 1) +
   annotate_model(x = 0.75, y = 12.8, model = lm_fit$fit) +
   scale_fill_viridis_c() 
@@ -238,7 +238,7 @@ The model appears to approximate the data relatively well. The line travels thro
 ```{r echo=FALSE}
 df_predictions %>% 
   ggplot(aes(log2_carat)) +
-  geom_hex(aes(y = log2_price), alpha = 0.85) +
+  geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_vline(xintercept = 0, color = "white", size = 1) + 
   geom_line(aes(y = pred), color = "blue", size = 1) +
   geom_point(x = 0, y = a_0, color = "red") +
@@ -257,7 +257,7 @@ df_predictions %>%
 ```{r include=FALSE}
 df_predictions %>% 
   ggplot(aes(log2_carat)) +
-  geom_hex(aes(y = log2_price), alpha = 0.85) +
+  geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_segment(x = 0, xend = 0, y = a_0, yend = a_0 + a_1 * 1, color = "white", size = 1) +
   geom_segment(x = 0, xend = 1, y = a_0 + a_1 * 1, yend = a_0 + a_1 * 1, color = "white", size = 1) +
   geom_line(aes(y = pred), color = "blue", size = 1) +
@@ -297,7 +297,7 @@ Here's what the model looks like against the data in linear space.
 ```{r}
 df_predictions %>% 
   ggplot(aes(carat)) +
-  geom_hex(aes(y = price), alpha = 0.85) +
+  geom_hex(aes(y = price), alpha = 0.9) +
   geom_line(aes(y = 2^pred), color = "blue", size = 1) +
   scale_fill_viridis_c() 
 ```
@@ -329,6 +329,27 @@ df_predictions %>%
 df_predictions %>% 
   ggplot(aes(carat, resid)) +
   geom_hex() +
+  geom_hline(yintercept = 0, color = "white", size = 1) +
+  geom_smooth() + 
+  annotate(
+    geom = "text",
+    x = 1.6,
+    y = 1.5,
+    label = "Diamonds are more\nexpensive than predicted",
+    hjust = 0
+  ) +
+  annotate(
+    geom = "text",
+    x = 0.25,
+    y = -1.8,
+    label = "Diamonds are less expensive\nthan predicted",
+    hjust = 0
+  ) +
+  scale_fill_viridis_c()
+
+df_predictions %>% 
+  ggplot(aes(carat, resid)) +
+  geom_hex(alpha = .9) +
   geom_hline(yintercept = 0, color = "white", size = 1) +
   geom_smooth() + 
   annotate(
