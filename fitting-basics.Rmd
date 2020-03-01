@@ -321,7 +321,7 @@ We plotted `resid` against `carat` because `carat` is more easily interpretable,
 ```{r eval=FALSE}
 df_predictions %>% 
   ggplot(aes(carat, resid)) +
-  geom_hex() +
+  geom_hex(alpha = 0.9) +
   geom_hline(yintercept = 0, color = "white", size = 1) +
   geom_smooth() + 
   scale_fill_viridis_c()
@@ -366,7 +366,7 @@ The tidymodels package [yardstick](https://tidymodels.github.io/yardstick/) cont
 
 Many of the error metric functions take three arguments: `data`, `truth`, and `estimate`. You pass your data to `data`, the name of the column with the true values to `truth`, and the name of the column with the predicted values to `estimate`. We'll use the `rmse()` function to calculate RMSE.
 
-Note that modelr also contains an `rmse()` function. To make sure you’re using the right version, use `yardstick::rmse()`.
+Note that modelr also contains an `rmse()` function. To make sure you're using the right version, use `yardstick::rmse()`.
 
 ```{r}
 yardstick::rmse(
