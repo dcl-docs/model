@@ -26,10 +26,6 @@ library(tidymodels)
 
 In this chapter, we'll also use a couple of functions from a slightly older package, modelr.
 
-```{r message=FALSE, warning=FALSE}
-library(modelr)
-```
-
 Tidymodels is a vast and flexible world. Here, we've tried to focus our explanation on the most basic and widely applicable functions. You should also be aware that tidymodels is still evolving, and will probably change in the future.  
 
 ## Fit
@@ -67,8 +63,8 @@ Going forward, we'll use `df` instead of `diamonds`.
 
 In the tidymodels ecosystem, the first step in model fitting involves specifying a type of model. There are many types of models, but this book focuses on just one: linear regression. A tidymodels model specification has two features:
 
-* A model type.
-* An engine.
+* A model type
+* An engine
 
 The model type describes the general modeling approach, like linear regression, logistic regression, or decision tree. Each model type supported by tidymodels has its own function. You can see a list of all supported model types [on the parsnip website](https://tidymodels.github.io/parsnip/articles/articles/Models.html). parsnip is the tidymodels package responsible for creating models.^[The package is called "parsnip" as a play on the name of its predecessor, caret. Parsnips have no special relevance to modeling. `r emo::ji("carrot")`]
 
@@ -90,9 +86,9 @@ lm_spec <-
 
 Model-fitting in the tidymodels world requires creating many variables, and it's helpful to develop a common naming scheme. We'll give all model specification variables the suffix `_spec`.
 
-The [same parsnip page](https://tidymodels.github.io/parsnip/articles/articles/Models.html) lists all possible engines for every model type.
+The [same parsnip page](https://tidymodels.github.io/parsnip/articles/articles/Models.html) lists currently available engines by model type.
 
-Tidymodels makes it easy to change the algorithm used to fit the model. For example, we can switch to a Bayesian model by trading `"lm"` for `"stan"`.
+Tidymodels makes it easy to change the algorithm used to fit the model. For example, we can switch to use [Stan](https://mc-stan.org) for a Bayesian model by trading `"lm"` for `"stan"`.
 
 ```{r}
 stan_spec <-
@@ -200,8 +196,8 @@ There are multiple ways to add predictions and residuals to a tibble. Our recomm
 ```{r}
 df_predictions <-
   df %>% 
-  add_predictions(lm_fit$fit) %>% 
-  add_residuals(lm_fit$fit)
+  modelr::add_predictions(lm_fit$fit) %>% 
+  modelr::add_residuals(lm_fit$fit)
 
 df_predictions %>% 
   select(log2_carat, log2_price, pred, resid)
@@ -209,7 +205,7 @@ df_predictions %>%
 
 `add_predictions()` adds a `pred` column and `add_residuals()` adds `resid` column. Each value in `pred` is the predicted value of `log2_price` for the corresponding value of `log2_carat`. Each residual is equal to 
 
-`log2_carat` - `pred`
+`log2_price` - `pred`
 
 ### Visualize predictions
 
@@ -279,6 +275,10 @@ solving for `price` gives us
 
 `price = 2^`r a_0` * carat^`r a_1``
 
+or
+
+`price = `r round(2^a_0)` * carat^`r a_1``
+
 Here's how to interpret the model:
 
 ```{r include=FALSE}
@@ -286,11 +286,13 @@ model <- function(carat) {
   2^coef(lm_fit$fit)[["(Intercept)"]] * carat^coef(lm_fit$fit)[["log2_carat"]]
 }
 
-price_diff_small <- model(0.5) - model(0.4)
+price_diff_small <- model(0.6) - model(0.5)
 price_diff_large <- model(2.1) - model(2.0)
 ```
-* `2^`r a_0`` is the predicted price when `carat` is 1, so our model predicts that 1 carat diamonds are `r scales::dollar(2^a_0, accuracy = 1)`.
-* `a_1` (`r a_1`) is the exponent on `carat`. Each time `carat` increases by 1%, `price` increases by `r a_1` percent. This means that diamond price increases more steeply for larger diamonds than for smaller diamonds. Buying a 0.5 carat instead of a 0.4 carat diamond will only cost you `r scales::dollar(price_diff_small, accuracy = 1)` more, but buying a 2.1 carat instead of a 2.0 carat will cost you `r scales::dollar(price_diff_large, accuracy = 1)` more.
+
+* Our model predicts a price of `r scales::dollar(2^a_0, accuracy = 1)` for 1 carat diamonds.
+
+* The price follows a power law with an exponent of `r a_1`. Since the exponent is greater than 1, price growth is faster than linear. This means that as a the price of a diamond increases, the cost of adding an additional 0.1 carat will also increase. For example, buying a 0.6 carat instead of a 0.5 carat diamond will cost you `r scales::dollar(price_diff_small, accuracy = 1)` more, but buying a 2.1 carat instead of a 2.0 carat will cost you `r scales::dollar(price_diff_large, accuracy = 1)` more.
 
 Here's what the model looks like against the data in linear space.
 
@@ -310,7 +312,7 @@ We also want to check that our residuals don't vary with `carat`. If they do, it
 
 `df_predictions` already has our residuals in the `resid` column. We'll plot the residuals on the y-axis and `carat` on the x. Again, the formula for the residuals is
 
-`log2_carat - pred`
+`log2_price - pred`
 
 so a residual greater than one means our model under-estimated the price of the diamond, while a residual less than one means our model over-estimated the price of the diamond.
 
@@ -326,27 +328,6 @@ df_predictions %>%
 ```
 
 ```{r echo=FALSE, message=FALSE}
-df_predictions %>% 
-  ggplot(aes(carat, resid)) +
-  geom_hex() +
-  geom_hline(yintercept = 0, color = "white", size = 1) +
-  geom_smooth() + 
-  annotate(
-    geom = "text",
-    x = 1.6,
-    y = 1.5,
-    label = "Diamonds are more\nexpensive than predicted",
-    hjust = 0
-  ) +
-  annotate(
-    geom = "text",
-    x = 0.25,
-    y = -1.8,
-    label = "Diamonds are less expensive\nthan predicted",
-    hjust = 0
-  ) +
-  scale_fill_viridis_c()
-
 df_predictions %>% 
   ggplot(aes(carat, resid)) +
   geom_hex(alpha = .9) +
@@ -373,9 +354,9 @@ Because there are so many diamonds, we've used `geom_hex()` and a smooth line. I
 
 The residuals are, for the most part, centered around 0, which is a good sign for our model. If the model systematically under- or over-estimated price, we would see more residuals either above or below the 0 line.
 
-There also isn't much of a trend between `carat` and `resid`, another good sign for our model. You can see that the model tends to over-estimate the price of diamonds larger than ~1.75 carats.
+There also isn't much of a trend between `carat` and `resid`, another good sign for our model. You can see that the model tends to under-estimate the price of diamonds smaller than ~0.3 carats and over-estimate the price of diamonds larger than ~1.75 carats.
 
-The residuals vary substantially for 0.5 and 1.0 carat diamonds, which makes sense given that the prices for these diamonds vary widely.
+The residuals vary substantially for 0.5 and 1.5 carat diamonds. This may be a consequence of the spikey nature of diamond sizing (and presumably demand) that we saw in our EDA of this data.
 
 ### Error metrics
 
@@ -385,7 +366,7 @@ The tidymodels package [yardstick](https://tidymodels.github.io/yardstick/) cont
 
 Many of the error metric functions take three arguments: `data`, `truth`, and `estimate`. You pass your data to `data`, the name of the column with the true values to `truth`, and the name of the column with the predicted values to `estimate`. We'll use the `rmse()` function to calculate RMSE.
 
-Note that modelr also contains an `rmse()` function. To make sure you're using the right version, use `yardstick::rmse()`.
+Note that modelr also contains an `rmse()` function. To make sure you’re using the right version, use `yardstick::rmse()`.
 
 ```{r}
 yardstick::rmse(
@@ -424,6 +405,4 @@ lm_error <-
   df_pred %>% 
   yardstick::rmse(truth = log2_price, estimate = pred)
 ```
-
-
 
