@@ -81,7 +81,7 @@ The function `set_engine()` takes a string indicating the algorithm. We'll use `
 ```{r}
 lm_spec <-
   linear_reg() %>% 
-  set_engine("lm")
+  set_engine(engine = "lm")
 ```
 
 Model-fitting in the tidymodels world requires creating many variables, and it's helpful to develop a common naming scheme. We'll give all model specification variables the suffix `_spec`.
@@ -116,11 +116,8 @@ The `fit()` function takes a model specification, formula, and data.
 
 ```{r}
 lm_fit <- 
-  fit(
-    lm_spec,
-    log2_price ~ log2_carat,
-    data = df
-  )
+  lm_spec %>% 
+  fit(formula = log2_price ~ log2_carat, data = df)
 
 lm_fit
 ```
@@ -194,12 +191,12 @@ First, we'll need a tibble with:
 There are multiple ways to add predictions and residuals to a tibble. Our recommended approach uses `modelr::add_predictions()` and `modelr::add_residuals()`. Note that you pass each function `lm_fit$fit`, not `lm_fit`.
 
 ```{r}
-df_predictions <-
+df_lm <-
   df %>% 
   modelr::add_predictions(lm_fit$fit) %>% 
   modelr::add_residuals(lm_fit$fit)
 
-df_predictions %>% 
+df_lm %>% 
   select(log2_carat, log2_price, pred, resid)
 ```
 
@@ -212,14 +209,14 @@ df_predictions %>%
 Now, we're ready to visualize our model. First, we'll plot our model's predictions against the actual data. 
 
 ```{r eval=FALSE}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(log2_carat)) +
   geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_line(aes(y = pred), color = "blue", size = 1) +
   scale_fill_viridis_c() 
 ```
 ```{r echo=FALSE}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(log2_carat)) +
   geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_line(aes(y = pred), color = "blue", size = 1) +
@@ -232,7 +229,7 @@ The model appears to approximate the data relatively well. The line travels thro
 `a_0`, the y-intercept, represents the predicted value of `log2_price` when `log2_carat` is 0.
 
 ```{r echo=FALSE}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(log2_carat)) +
   geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_vline(xintercept = 0, color = "white", size = 1) + 
@@ -251,7 +248,7 @@ df_predictions %>%
 `a_1` is the slope the line, the amount that `log2_price` each time `log2_carat` increases by 1.
 
 ```{r include=FALSE}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(log2_carat)) +
   geom_hex(aes(y = log2_price), alpha = 0.9) +
   geom_segment(x = 0, xend = 0, y = a_0, yend = a_0 + a_1 * 1, color = "white", size = 1) +
@@ -292,12 +289,12 @@ price_diff_large <- model(2.1) - model(2.0)
 
 * Our model predicts a price of `r scales::dollar(2^a_0, accuracy = 1)` for 1 carat diamonds.
 
-* The price follows a power law with an exponent of `r a_1`. Since the exponent is greater than 1, price growth is faster than linear. This means that as a the price of a diamond increases, the cost of adding an additional 0.1 carat will also increase. For example, buying a 0.6 carat instead of a 0.5 carat diamond will cost you `r scales::dollar(price_diff_small, accuracy = 1)` more, but buying a 2.1 carat instead of a 2.0 carat will cost you `r scales::dollar(price_diff_large, accuracy = 1)` more.
+* The price follows a power law with an exponent of `r a_1`. Since the exponent is greater than 1, price growth is faster than linear. For example, buying a 0.6 carat instead of a 0.5 carat diamond will cost you `r scales::dollar(price_diff_small, accuracy = 1)` more, but buying a 2.1 carat instead of a 2.0 carat will cost you `r scales::dollar(price_diff_large, accuracy = 1)` more.
 
 Here's what the model looks like against the data in linear space.
 
 ```{r}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(carat)) +
   geom_hex(aes(y = price), alpha = 0.9) +
   geom_line(aes(y = 2^pred), color = "blue", size = 1) +
@@ -310,7 +307,7 @@ Next, we'll visualize the residuals. Ideally, all residuals will be very small. 
 
 We also want to check that our residuals don't vary with `carat`. If they do, it suggests our model fundamentally misunderstands the relationship between `price` and `carat`, or that we're missing important predictors. 
 
-`df_predictions` already has our residuals in the `resid` column. We'll plot the residuals on the y-axis and `carat` on the x. Again, the formula for the residuals is
+`df_lm` already has our residuals in the `resid` column. We'll plot the residuals on the y-axis and `carat` on the x. Again, the formula for the residuals is
 
 `log2_price - pred`
 
@@ -319,7 +316,7 @@ so a residual greater than one means our model under-estimated the price of the 
 We plotted `resid` against `carat` because `carat` is more easily interpretable, but `log2_carat` would also work.
 
 ```{r eval=FALSE}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(carat, resid)) +
   geom_hex(alpha = 0.9) +
   geom_hline(yintercept = 0, color = "white", size = 1) +
@@ -328,7 +325,7 @@ df_predictions %>%
 ```
 
 ```{r echo=FALSE, message=FALSE}
-df_predictions %>% 
+df_lm %>% 
   ggplot(aes(carat, resid)) +
   geom_hex(alpha = .9) +
   geom_hline(yintercept = 0, color = "white", size = 1) +
@@ -369,11 +366,8 @@ Many of the error metric functions take three arguments: `data`, `truth`, and `e
 Note that modelr also contains an `rmse()` function. To make sure you're using the right version, use `yardstick::rmse()`.
 
 ```{r}
-yardstick::rmse(
-  data = df_predictions,
-  truth = log2_price,
-  estimate = pred
-)
+df_lm %>% 
+  yardstick::rmse(truth = log2_price, estimate = pred)
 ```
 
 ## Code summary
@@ -384,25 +378,22 @@ For reference, we've assembled all the code in one place for you.
 # Specify model
 lm_spec <-
   linear_reg() %>% 
-  set_engine("lm")
+  set_engine(engine = "lm")
 
 # Fit model
 lm_fit <-
-  fit(
-    lm_spec,
-    log2_price ~ log2_carat,
-    data = df
-  )
+  lm_spec %>% 
+  fit(formula = log2_price ~ log2_carat, data = df)
 
 # Add predictions and residuals
-df_pred <-
+df_lm <-
   df %>% 
   modelr::add_predictions(model = lm_fit$fit) %>% 
   modelr::add_residuals(model = lm_fit$fit)
 
 # Calculate error
-lm_error <-
-  df_pred %>% 
+lm_rmse <-
+  df_lm %>% 
   yardstick::rmse(truth = log2_price, estimate = pred)
 ```
 
