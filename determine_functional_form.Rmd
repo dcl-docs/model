@@ -16,7 +16,7 @@ In Chapter 1, we mentioned three steps to building a model:
 * Choose an error metric. 
 * Use an R function to find the specific function within the chosen family that minimizes the error metric. 
 
-This chapter focuses on the first step. Using `diamonds`, we'll explore the relationship between `price` and the 4 Cs: `clarity`, `color`, and `cut`. By the end of the chapter, we'll understand which function family or families might approximate the data well. 
+This chapter focuses on the first step. Using `diamonds`, we'll explore the relationship between `price` and the 4 Cs: `carat`, `clarity`, `color`, and `cut`. By the end of the chapter, we'll understand which function family or families might approximate the data well. 
 
 ## Families of linear functions
 
@@ -142,7 +142,7 @@ You might wonder why you should bother transforming your data instead of just fi
 
 ### Visual checks
 
-`carat` is the only continuous variable in the 4 Cs, but other data sets will have multiple possible continuous predictors. Here are two features to check for when considering adding a continuous predictor to your model. 
+`carat` is the only continuous variable of the 4 Cs, but other data sets will have multiple possible continuous predictors. Here are two features to check for when considering adding a continuous predictor to your model. 
 
 First, as you've already seen, the relationship between the predictor and the response should be linear. If necessary, transform the data so that the relationship is linear. If the relationship is nonlinear and you can't find a transformation that makes it linear, don't add the predictor to your linear model. 
 
@@ -249,7 +249,7 @@ df %>%
 
 `clarity` also mostly meets our criteria, although two of the levels (VVS1 and VVS2) are again very close together.
 
-The slope of the line for I1 also looks a bit different than the rest. However, only `r round(100 * (df %>% filter(clarity == "I1") %>% nrow()) / nrow(df), 2)`% of diamonds are I1, so it will be okay if our linear model doesn't approximate them as well as other diamonds. 
+The slope of the line for I1 also looks a bit different than the rest. However, only `r round(100 * mean(df$clarity == "I1"), 2)`% of diamonds are I1, so it will be okay if our linear model doesn't approximate them as well as other diamonds. 
 
 Finally, we'll look at `color`.
 
