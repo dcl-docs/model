@@ -44,7 +44,7 @@ Unsupervised models don't have a response variable. Instead of trying to underst
 
 When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). You can use your approximation function to understand and describe your data, as well as make predictions about your response variable. 
 
-There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data and determine with _function family_ (or families) would best approximate your data. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), we'll discuss how to use EDA to choose a function family to approximate your data. 
+There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data and determine which _function family_ (or families) would best approximate your data. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/eda_to_determine_functional_form.html), we'll discuss how to use EDA to choose a function family to approximate your data. 
 
 ## Fitting a model
 
