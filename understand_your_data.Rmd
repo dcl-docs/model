@@ -28,7 +28,7 @@ As we said earlier, diamonds have a set of features called the four Cs: carat, c
 
 * `clarity` refers to how clear a diamond is. Diamonds often contain imperfections like cracks or mineral deposits. The fewer and less noticeable a diamond's imperfections, the better its clarity. `clarity` contains 8 ordered levels, from "I1" (the worst) to "IF" (the best).
 
-* `x`, `y`, `z`, `depth`, and `table` are various measures of a diamonds size, in millimeters. 
+* `x`, `y`, `z`, `depth`, and `table` are various measures of a diamond's size, in millimeters. 
 
 ### `glimpse()`
 
@@ -76,10 +76,9 @@ Now, we can visualize the distributions to investigate the suspiciously high val
 
 ```{r}
 df %>% 
-  ggplot(aes(x = factor(1), y = x)) +
+  ggplot(aes(x = x, y = factor(1))) +
   geom_boxplot() +
-  scale_x_discrete(breaks = NULL, labels = NULL, name = NULL) +
-  coord_flip()
+  scale_y_discrete(breaks = NULL, labels = NULL, name = NULL)
 ```
 
 `x` has outliers, but they aren't very extreme. A diamond with an 10mm (0.39 in) length seems plausible.
@@ -88,18 +87,16 @@ How about `y` and `z`?
 
 ```{r}
 df %>% 
-  ggplot(aes(x = factor(1), y = y)) +
+  ggplot(aes(x = y, y = factor(1))) +
   geom_boxplot() +
-  scale_x_discrete(breaks = NULL, labels = NULL, name = NULL) +
-  coord_flip()
+  scale_y_discrete(breaks = NULL, labels = NULL, name = NULL)
 ```
 
 ```{r}
 df %>% 
-  ggplot(aes(x = factor(1), y = z)) +
+  ggplot(aes(x = z, y = factor(1))) +
   geom_boxplot() +
-  scale_x_discrete(breaks = NULL, labels = NULL, name = NULL) +
-  coord_flip()
+  scale_y_discrete(breaks = NULL, labels = NULL, name = NULL)
 ```
 
 The large values of  `y` and `z` we saw in the `summary()` output are clearly extreme outliers. We'll remove these 3 diamonds. 
@@ -114,7 +111,7 @@ We also noted that `carat` and `price` both cover a large range of values. We'll
 
 ## 1D EDA
 
-Now that we've removed problematic data, we can explore each of our variables. One-dimensional or 1D EDA refers to the fact that, for now, we'll just look at each variable by itself. In the next chapter, we'll start exploring the relationships between variables. 
+Now that we've removed problematic data, we can explore each of our variables. One-dimensional exploratory data analysis or 1D EDA refers to the fact that, for now, we'll just look at each variable by itself. In the next chapter, we'll start exploring the relationships between variables. 
 
 ### Variable types
 
@@ -124,7 +121,7 @@ Continuous variables can take on an infinite number of possible values. `carat`,
 
 Discrete variables can take on only a finite number of possible values. In `diamonds`, `cut` is a discrete variable, as a diamond can be in only one of 6 different cut groups. 
 
-Characters, logicals, and factors are discrete variables. R also further divides factors in ordered and unordered factors. Recall from the `glimpse()` output that `clarity`, `color`, and `cut` all have type `<ord>`, which indicates an ordered factor. As we'll explain later, many modeling algorithms treat ordered factors differently than unordered factors or character variables.
+Characters, logicals, and factors are discrete variables. R also further divides factors into ordered and unordered factors. Recall from the `glimpse()` output that `clarity`, `color`, and `cut` all have type `<ord>`, which indicates an ordered factor. As we'll explain later, many modeling algorithms treat ordered factors differently than unordered factors or character variables.
 
 ### Continuous variables
 
