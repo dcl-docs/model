@@ -226,18 +226,21 @@ Here's the model that `stan_glm()` came up with:
 And here's the model plotted with the data:
 
 ```{r}
-new_data <- tibble(x_1 = seq(0, 20, length.out = 201))
+predictive_intervals <- function(.data, fit, probs = c(0.5, 0.9)) {
+  .data %>%
+    mutate(.pred = predict(fit, newdata = .)) %>%
+    bind_cols(
+      map_dfc(
+        probs, 
+        ~ predictive_interval(fit, prob = ., newdata = .data) %>%
+          as_tibble()
+      )
+    )
+}
 
 v <- 
-  new_data %>% 
-  mutate(.pred = predict(fit_stan, newdata = new_data)) %>% 
-  bind_cols(
-    map_dfc(
-      c(0.5, 0.9), 
-      ~ predictive_interval(fit_stan, prob = ., newdata = new_data) %>%
-        as_tibble()
-    )
-  )
+  tibble(x_1 = seq(0, 20, length.out = 201)) %>% 
+  predictive_intervals(fit = fit_stan)
 
 ggplot(mapping = aes(x_1)) +
   geom_ribbon(aes(ymin = `5%`, ymax = `95%`), data = v, alpha = 0.25) +
