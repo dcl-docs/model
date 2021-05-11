@@ -64,14 +64,17 @@ Recall that we said the first step to fitting a model is to determine which func
 To visualize this, here's a plot of many different lines, each of which has a different combination of `a_0` and `a_1`.
 
 ```{r}
-tribble(
+v <- 
+  tribble(
     ~a_1, ~a_0, 
-    1,    3,   
-    5,    -50,  
-    -.1,  15,  
-    -.7,  12,  
-    0.1,  4,    
-  ) %>% 
+     1.0,    3,   
+     5.0,  -50,  
+    -0.1,   15,  
+    -0.7,   12,  
+     0.1,    4  
+  )
+
+v %>% 
   ggplot(aes(x_1, y)) + 
   geom_abline(aes(slope = a_1, intercept = a_0)) +
   plot_format
@@ -208,24 +211,26 @@ Again, `a_0` is the intercept, so we know that our model predicts that `y` will 
 
 Instead of providing just the parameters for a function from a function family, Bayesian modeling provides probability distributions for the parameters. This enables you to understand the uncertainties in the model and its predictions. Bayesian modeling also allows you to incorporate additional prior information into the modeling process.
 
-The function `rstanarm::stan_glm()` fits generalized linear models using Bayesian modeling. It needs two arguments: a function family and your data. In later chapters, you'll learn how use `stan_glm()`. For now, we'll just show you the results for our example data.
+The function `stan_glm()` in the rstanarm package fits generalized linear models using Bayesian modeling. It needs two arguments: a function family and your data. In later chapters, you'll learn how use `stan_glm()`. For now, we'll just show you the results for our example data.
 
 ```{r}
 set.seed(726)
 
-fit_stan <- stan_glm(y ~ x_1, data = df, refresh = 0)
+fit_stan_glm <- stan_glm(y ~ x_1, data = df, refresh = 0)
 
-a_0_stan <- coef(fit_stan)[["(Intercept)"]]
-a_1_stan <- coef(fit_stan)[["x_1"]]
+a_0_stan_glm <- coef(fit_stan_glm)[["(Intercept)"]]
+a_1_stan_glm <- coef(fit_stan_glm)[["x_1"]]
 ```
 
 Here's the model that `stan_glm()` came up with:
 
-    y = `r format(a_0_stan, digits = 1, nsmall = 1)` + `r format(a_1_stan, digits = 1, nsmall = 1)` * x_1
+    y = `r format(a_0_stan_glm, digits = 1, nsmall = 1)` + `r format(a_1_stan_glm, digits = 1, nsmall = 1)` * x_1
     
 And here's the model plotted with the data:
 
 ```{r}
+set.seed(354)
+
 predictive_intervals <- function(.data, fit, probs = c(0.5, 0.9)) {
   .data %>%
     mutate(.pred = predict(fit, newdata = .)) %>%
@@ -240,7 +245,7 @@ predictive_intervals <- function(.data, fit, probs = c(0.5, 0.9)) {
 
 v <- 
   tibble(x_1 = seq(0, 20, length.out = 201)) %>% 
-  predictive_intervals(fit = fit_stan)
+  predictive_intervals(fit = fit_stan_glm)
 
 ggplot(mapping = aes(x_1)) +
   geom_ribbon(aes(ymin = `5%`, ymax = `95%`), data = v, alpha = 0.25) +
@@ -249,9 +254,9 @@ ggplot(mapping = aes(x_1)) +
   annotate(
     geom = "segment",
     x = 0,
-    y = a_0_stan,
+    y = a_0_stan_glm,
     xend = 20,
-    yend = a_0_stan + 20 * a_1_stan,
+    yend = a_0_stan_glm + 20 * a_1_stan_glm,
     color = "blue"
   ) +
   annotate(
@@ -260,8 +265,8 @@ ggplot(mapping = aes(x_1)) +
     y = 7,
     label = 
       str_glue(
-        "a_0 = {format(a_0_stan, digits = 1, nsmall = 1)}\n",
-        "a_1 = {format(a_1_stan, digits = 1, nsmall = 1)}"
+        "a_0 = {format(a_0_stan_glm, digits = 1, nsmall = 1)}\n",
+        "a_1 = {format(a_1_stan_glm, digits = 1, nsmall = 1)}"
       ),
     hjust = 0
   ) +
