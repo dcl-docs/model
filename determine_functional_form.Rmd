@@ -58,13 +58,12 @@ df <-
   mutate(color = fct_rev(color))
 ```
 
-Now, we can visualize the relationship between `carat` and `price` and look for a linear relationship. `geom_hex()` is a good choice, since plotting each diamond in a scatterplot would result in overplotting. 
+Now, we can visualize the relationship between `carat` and `price` and look for a linear relationship.
 
 ```{r}
 df %>% 
   ggplot(aes(carat, price)) +
-  geom_hex() +
-  scale_fill_viridis_c()
+  geom_point(alpha = 0.01)
 ```
 
 The larger diamonds cover a wide range of prices, so we'll add a smooth line to show the central tendency. 
@@ -72,9 +71,8 @@ The larger diamonds cover a wide range of prices, so we'll add a smooth line to 
 ```{r, message=FALSE, cache=TRUE}
 df %>% 
   ggplot(aes(carat, price)) +
-  geom_hex() +
-  geom_smooth() +
-  scale_fill_viridis_c()
+  geom_point(alpha = 0.01) +
+  geom_smooth()
 ```
 
 Notice how `price`, especially for the larger diamonds, varies substantially among diamonds of the same size. This variation suggests that `carat` is not the only variable that influences `price`. From the smooth line, we can also see that the relationship between `carat` and `price` is positive, but not linear. Luckily, we can still use a linear model by first transforming the data. We'll talk more about transformations in the next section. 
@@ -98,11 +96,10 @@ Phenomena that follow power laws are common. You can determine if your data appr
 ```{r, message=FALSE, cache=TRUE}
 df %>% 
   ggplot(aes(carat, price)) +
-  geom_hex() +
+  geom_point(alpha = 0.01) +
   geom_smooth() +
   scale_x_log10() +
-  scale_y_log10() +
-  scale_fill_viridis_c()
+  scale_y_log10()
 ```
 
 The smooth line is now linear, suggesting that the functional form `log(price) = a_0 + a_1 * log(carat)` will approximate the relationship between `price` and `carat` well. 
