@@ -55,7 +55,7 @@ df %>%
 
 Recall that we said the first step to fitting a model is to determine which function family best approximates your data. In modeling, some of the most common and useful function families are linear. There are an infinite number of linear function families and, later, we'll talk about how to decide exactly which family to use. For now, we'll introduce the family of linear functions of a single variable. Functions in this family take the following form:
 
-    y = a_0 + a_1 * x_1
+`y = a_0 + a_1 * x_1` .
 
 `x_1` is your input variable, the variable that you supply to the function in hopes of approximating some other variable. In our traffic example, `x_1` is the time of day.
 
@@ -179,7 +179,7 @@ a_1_lm <- coef(fit_lm)[["x_1"]]
 
 Here's the model that `lm()` came up with:
 
-    y = `r format(a_0_lm, digits = 1, nsmall = 1)` + `r format(a_1_lm, digits = 1, nsmall = 1)` * x_1
+`y = `r format(a_0_lm, digits = 1, nsmall = 1)` + `r format(a_1_lm, digits = 1, nsmall = 1)` * x_1` .
 
 And here's the model plotted with the data:
 
@@ -224,7 +224,7 @@ a_1_stan_glm <- coef(fit_stan_glm)[["x_1"]]
 
 Here's the model that `stan_glm()` came up with:
 
-    y = `r format(a_0_stan_glm, digits = 1, nsmall = 1)` + `r format(a_1_stan_glm, digits = 1, nsmall = 1)` * x_1
+`y = `r format(a_0_stan_glm, digits = 1, nsmall = 1)` + `r format(a_1_stan_glm, digits = 1, nsmall = 1)` * x_1` .
     
 And here's the model plotted with the data:
 

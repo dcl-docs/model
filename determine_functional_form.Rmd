@@ -24,11 +24,11 @@ where `y` is the response, `x_1` is a continuous variable, and `a_0` and `a_1` a
 
 This function family is specified with the formula
 
-`y ~ x_1`
+`y ~ x_1` .
 
 You place the name of the response variable to the left of the `~` and the predictor variable(s) to the right of the `~`. The general form for the formula of a linear function of n variables is
 
-`y ~ x_1 + x_2 + ... + x_n`
+`y ~ x_1 + x_2 + ... + x_n` .
 
 Formulas are their own class of R object, and you specify them unquoted. 
 
@@ -106,7 +106,7 @@ The smooth line is now linear, suggesting that the functional form `log(price) =
 
 To specify this function family in a formula, we can apply the `log()` transformations in the formula:
 
-`log(price) ~ log(carat)`
+`log(price) ~ log(carat)` .
 
 Log-log transformations are common, but you can apply any transformation (to your response, predictor, or both) that makes your data linear.
 
