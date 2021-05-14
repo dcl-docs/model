@@ -7,6 +7,7 @@ rmd_files: [
   "understand_your_data.Rmd",
   "determine_functional_form.Rmd",
   "fitting_basics.Rmd",
+  "model_evaluation.Rmd",
   "references.Rmd"
 ]
 
