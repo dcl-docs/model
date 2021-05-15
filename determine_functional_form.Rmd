@@ -10,7 +10,7 @@ nocite: |
 library(tidyverse)
 ```
 
-In [Chapter 1](https://dcl-model.stanford.edu/model_basics.html) we mentioned that a first step to building a model is to explore your data and choose an appropriate function family. This chapter focuses on this step. Using `diamonds`, we'll explore the relationship between `price` and the 4 Cs: `carat`, `clarity`, `color`, and `cut`. By the end of the chapter, we'll understand which function family or families might approximate this data well. 
+In [Chapter 1](https://dcl-model.stanford.edu/model_basics.html) we mentioned that a first step to building a model is to explore your data and choose an appropriate function family. This chapter focuses on this step. Using `diamonds`, we'll explore the relationship between `price` and the four Cs: `carat`, `clarity`, `color`, and `cut`. By the end of the chapter, we'll understand which function family or families might approximate this data well. 
 
 ## Formulas
 
@@ -114,7 +114,7 @@ You might wonder why you should bother transforming your data instead of just fi
 
 ### Visual checks
 
-`carat` is the only continuous variable of the 4 Cs, but other data sets will have multiple possible continuous predictors. Here are two features to check for when considering adding a continuous predictor to your model. 
+`carat` is the only continuous variable of the four Cs, but other data sets will have multiple possible continuous predictors. Here are two features to check for when considering adding a continuous predictor to your model. 
 
 First, as you've already seen, the relationship between the predictor and the response should be linear. If necessary, transform the data so that the relationship is linear. If the relationship is nonlinear and you can't find a transformation that makes it linear, don't add the predictor to your linear model. 
 
@@ -134,7 +134,7 @@ tibble(
 
 The smooth line is horizontal, which tells you that `y` does not change with `x`. 
 
-The `diamonds` data is relatively simple, and we've made it even simpler by restricting attention to the 4 Cs. When you have more variables, you'll need to conduct more preprocessing and pay more attention to which variables to include and which to exclude. If you'd like to learn more, Max Kuhn and Kjell Johnson's [Feature Engineering and Selection](https://bookdown.org/max/FES/intro-intro.html) is a good resource, particularly the [Preprocessing](https://bookdown.org/max/FES/stroke-preprocessing.html) section.
+The `diamonds` data is relatively simple, and we've made it even simpler by restricting attention to the four Cs. When you have more variables, you'll need to conduct more preprocessing and pay more attention to which variables to include and which to exclude. If you'd like to learn more, Max Kuhn and Kjell Johnson's [Feature Engineering and Selection](https://bookdown.org/max/FES/intro-intro.html) is a good resource, particularly the [Preprocessing](https://bookdown.org/max/FES/stroke-preprocessing.html) section.
 
 ## Discrete predictors
 
