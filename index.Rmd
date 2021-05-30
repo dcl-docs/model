@@ -18,7 +18,7 @@ link-citations: true
 
 You can easily copy the code in this book by hovering over a chunk and then clicking the copy button that appears in the upper-right corner.
 
-Every dataset we use is contained in an R package, making it easy to follow along and replicate our examples. Many of the datasets are in our own [dcldata package](https://github.com/dcl-docs/dcldata). To install dcldata, copy the following code and paste it into RStudio.
+Every dataset we use is contained in an R package, making it easy to follow along and replicate our examples. Many of the datasets are in our own [dcldata](https://github.com/dcl-docs/dcldata) package. To install dcldata, copy the following code and paste it into RStudio.
 
 ```{r eval=FALSE}
 # You can copy this code with the copy button!

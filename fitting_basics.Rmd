@@ -1,8 +1,10 @@
 
 # Fitting basics
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
+library(rstanarm)
+library(tidymodels)
 ```
 
 In Chapters 2 and 3, we used EDA to understand the `diamonds` dataset and to identify function families with which to model the relationship of `price` to the four Cs, `carat`, `clarity`, `color`, and `cut`. We're now ready to fit models. To start, we'll use the simplest function family we identified, the power law relationships for `price` vs. `carat`, which are expressed by the formula
@@ -54,10 +56,6 @@ coef(fit_lm)
 ### Fitting a Bayesian model
 
 [Stan](https://mc-stan.org/) is a platform for statistical modeling, including Bayesian modeling. [rstanarm](https://mc-stan.org/rstanarm/) is an "R package that emulates other R model-fitting functions but uses Stan ... for the back-end estimation".
-
-```{r, message=FALSE}
-library(rstanarm)
-```
 
 `stan_glm()` is an rstanarm function that emulates the R function `glm()` to fit generalized linear models. Here's how to use it to fit a model with our function family and data.
 
@@ -113,10 +111,6 @@ coef(fit_lm) - coef(fit_stan_glm)
 ### Tidymodels
 
 [Tidymodels](https://www.tidymodels.org/) is an ecosystem of R packages for modeling. It provides a common interface to a growing number of [model types and engines](https://www.tidymodels.org/find/parsnip/). And it supports a range of other modeling tasks, such as data preprocessing, resampling, and parameter tuning. You can learn more at [Tidy Modeling with R](https://www.tmwr.org/).
-
-```{r, message=FALSE}
-library(tidymodels)
-```
 
 Linear regression, the type of model we'll be using here, is just one of several model types supported by tidymodels. Each type of model supported by tidymodels may have multiple computational engines. Here are the engines currently available for linear regression.
 
@@ -203,7 +197,7 @@ This function predicts that a one-carat diamond would have a price of about `r r
 
 ```{r}
 df %>% 
-  filter(near(carat, 1.0)) %>% 
+  filter(near(carat, 1)) %>% 
   pull(price) %>% 
   summary()
 ```
@@ -247,14 +241,14 @@ class(fit_stan_glm)
 
 When `predict()` encounters a model of this class, it calls `predict.stanreg()` from the rstanarm package.
 
-`fit_tm_lm` and `fit_tm_stan` have class model_fit
+The tidymodels models `fit_tm_lm` and `fit_tm_stan` have class model_fit
 
 ```{r}
 class(fit_tm_lm)
 class(fit_tm_stan)
 ```
 
-When `predict()` encounters a model of this class, it calls `predict.model_fit()` from the tidymodels parsnip package. We need to use slightly different arguments to make predictions with this function.
+When `predict()` encounters a model of this class, it calls `predict.model_fit()` from the tidymodels [parsnip](https://parsnip.tidymodels.org/) package. We need to use slightly different arguments to make predictions with this function.
 
 ```{r}
 preds <- 
@@ -269,7 +263,7 @@ preds <-
 preds
 ```
 
-The predictions by the models created by tidymodels are exactly the same as those created directly with `lm()` and `stan_glm()`.
+The predictions by the models created with tidymodels are exactly the same as those created directly with `lm()` and `stan_glm()`.
 
 ```{r}
 preds %>% 
@@ -366,14 +360,14 @@ or equivalently
 
 `log(price / predicted price)` .
 
-Applying `exp()` to this residual turns an additive error into a multiplicative error. This is the natural way to study error for a power law, where the range of the response variable can vary greatly. For example, in our dataset `price` ranges from `r min(df$price)` to `r max(df$price)`. We will therefore examine the ratio
+Applying `exp()` to this residual turns an additive error into a multiplicative error. This is the natural way to study error for a power law, where the range of the response variable can vary greatly. For example, in our dataset `price` ranges from \$`r min(df$price)` to \$`r format(max(df$price), big.mark = ",")`. We will therefore examine the ratio
 
 `price / predicted price` .
 
 If we call the `predict()` function without specifying new data, it will return the predictions for the dataset used to fit the model.
 
 ```{r}
-error <- 
+v <- 
   df %>% 
   select(price, carat) %>% 
   mutate(
@@ -381,19 +375,20 @@ error <-
     error_ratio = price / pred
   )
 
-error
+v
 ```
 
 Let's look at a plot of the error ratios.
 
 ```{r, message=FALSE, cache=TRUE}
-error %>% 
+v %>% 
   ggplot(aes(carat, error_ratio)) +
   geom_point(alpha = 0.01) +
   geom_hline(yintercept = 1, size = 1, color = "white") + 
   geom_smooth() +
   coord_cartesian(ylim = c(0, NA)) +
-  scale_x_log10()
+  scale_x_log10() + 
+  labs(y = "Error ratio")
 ```
 
 As we saw above, the actual prices of the diamonds were more expensive than the model's predictions for those with size less that 0.3 carat. In addition, we can now see that diamonds around 1.0 and 1.5 carats were also more expensive than predicted. Nevertheless, the smooth line for `error_ratio` is remains fairly close to 1 for diamonds of size 0.3 carat and greater. A systematic divergence from this line would indicate a problem with the fit.
@@ -401,12 +396,14 @@ As we saw above, the actual prices of the diamonds were more expensive than the 
 Let's look at the distribution of `error_ratio`.
 
 ```{r}
-quantile(error$error_ratio, probs = c(0.025, 0.05, 0.5, 0.95, 0.975))
+quantile(v$error_ratio, probs = c(0.025, 0.05, 0.5, 0.95, 0.975))
 ```
 
-The median `error_ratio` is very close to 1. Approximately 95% of the diamonds are within the range of `r round(100 * (1 - quantile(error$error_ratio, probs = 0.025)))`% less and `r round(100 * (quantile(error$error_ratio, probs = 0.975) - 1))`% more than the predictions.
+The median `error_ratio` is very close to 1. Approximately 95% of the diamonds are within the range of `r round(100 * (1 - quantile(v$error_ratio, probs = 0.025)))`% less and `r round(100 * (quantile(v$error_ratio, probs = 0.975) - 1))`% more than the predictions.
 
 ## Summary
+
+The process of fitting classical and Bayesian models is similar. Bayesian models have the advantage of enabling additional inferences about the model, such as uncertainties in the parameters or the model's predictions. Tidymodels provides a common interface to a wide range of model types and engines, as well as other tools for the modeling process.
 
 Once we have fit a model, we can check the fit by:
 

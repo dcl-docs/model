@@ -42,7 +42,7 @@ Unsupervised models don't have a response variable. Instead of trying to underst
 
 When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). You can use your approximation function to understand and describe your data, as well as make predictions about your response variable. 
 
-There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data and determine which _function family_ (or families) would best approximate your data. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in [Chapter 3](https://dcl-model.stanford.edu/determine_functional_form.html), we'll discuss how to use exploratory data analysis to choose a function family to approximate your data. 
+There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data and determine which _function family_ (or families) would best approximate your data. Function families are sets of functions with the same functional form. In the next section, we'll talk more about the linear function family. Then, in Chapter 3, we'll discuss how to use exploratory data analysis to choose a function family to approximate your data. 
 
 ## Choosing a function family
 
@@ -80,7 +80,7 @@ v %>%
   plot_format
 ```
 
-`a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` increases for every one unit increase in `x_1`. These two parameters define a linear function, and so to fit a linear model, you just have to determine which `a_0` and `a_1` best approximates your data.
+`a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` changes for every one unit increase in `x_1`. These two parameters define a linear function, and so to fit a linear model, you just have to determine which `a_0` and `a_1` best approximates your data.
 
 As you'll learn in [Chapter 3](https://dcl-model.stanford.edu/determine_functional_form.html), visualization is crucial to determining functional form. Let's visualize the relationship between `x_1` (the predictor) and `y` (the response).
 
@@ -160,7 +160,7 @@ df %>%
   labs(title = "Residuals")
 ```
 
-Each residual represents the difference between the `y` value that the model predicts for a given `x_1` and the actual `y` associated with that `x_1`. The larger a residual, the worse your model approximates `y` at that value of `x_1`.
+Each residual represents the actual value of `y` associated for a given `x_1` and the `y` value that the model predicts for that `x_1`. The larger a residual, the worse your model approximates `y` at that value of `x_1`.
 
 We now turn to two methods for modeling your data, once you've chosen a function family with which to model.
 
@@ -209,9 +209,9 @@ Again, `a_0` is the intercept, so we know that our model predicts that `y` will 
 
 ## Bayesian modeling
 
-Instead of providing just the parameters for a function from a function family, Bayesian modeling provides probability distributions for the parameters. This enables you to understand the uncertainties in the model and its predictions. Bayesian modeling also allows you to incorporate additional prior information into the modeling process.
+In addition to providing the parameters for a function from a function family, the Bayesian formulation provides an estimate of the parameters' probability distribution. This enables you to understand the uncertainties in the model and its predictions. Bayesian modeling also allows you to incorporate additional prior information into the modeling process.
 
-The function `stan_glm()` in the rstanarm package fits generalized linear models using Bayesian modeling. It needs two arguments: a function family and your data. In later chapters, you'll learn how use `stan_glm()`. For now, we'll just show you the results for our example data.
+The `stan_glm()` function in the [rstanarm](https://mc-stan.org/rstanarm/) package fits generalized linear models using Bayesian modeling. It needs two arguments: a function family and your data. In later chapters, you'll learn how use `stan_glm()`. For now, we'll just show you the results for our example data.
 
 ```{r}
 set.seed(726)
@@ -280,5 +280,5 @@ ggplot(mapping = aes(x_1)) +
 
 ## Summary
 
-In this chapter, we went over the basics of a supervised model. Before you can fit a model, however, you first have to understand your data and check for any problems. The simple data used in this chapter doesn't measure anything real, but you'll typically be fitting models to complex, messy data sets. In the next chapter, we'll discuss how to use exploratory data analysis to understand and prepare your data before starting the modeling process.
+In this chapter, we went over the basics of a supervised model. Before you can fit a model, however, you first have to understand your data and check for any problems. The simple data used in this chapter doesn't measure anything real, but you'll typically be fitting models to complex, messy datasets. In the next chapter, we'll discuss how to use exploratory data analysis to understand and prepare your data before starting the modeling process.
 
