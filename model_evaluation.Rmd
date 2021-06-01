@@ -1,6 +1,5 @@
 ---
-nocite: |
-  @gelman-2021, @kuhn-2019, @kuhn-tmr
+nocite: "@*"
 ---
 
 # Model evaluation
@@ -152,7 +151,7 @@ plot_poly <- function(degree) {
           bpxosy ~ poly(ridageyr, degree = degree),
           data = bp_model
         ) %>%
-        predict(., newdata = tibble(ridageyr))
+        predict(newdata = tibble(ridageyr))
     )
   
   bp_model %>% 
@@ -217,7 +216,7 @@ bp_errors %>%
   )
 ```
 
-The simplest model, the linear model, had the best performance on new data, and the performance of the models worsened with increasing model complexity. Why did the more complex functions have worse performance? Consider the relationship of our sample data to new data. For each participant age, we can imagine that the blood pressure measurements in our random sample are a random sample of blood pressures from the population for those of that age. We saw that our data had considerable noise, so the random sample may not be representative of the mean or median value of the population blood pressures for a given age. The more complexity a function family has, the greater its ability to fit the noise. Using a function family with too much complexity that results in fitting the noise is called _overfitting_. A model that is overfit will not generalize and work well on new data.
+The simplest model, the linear model, had the best performance on new data, and the performance of the models worsened with increasing model complexity. Why did the more complex functions have worse performance? Consider the relationship of our sample data to new data. For each participant age, we can imagine that the blood pressure measurements in our random sample are a random sample of blood pressures from the population for those of that age. We saw that our data had considerable noise, so the random sample may not have been representative of the mean or median value of the population blood pressures for a given age. The more complexity a function family has, the greater its ability to fit the noise. Using a function family with too much complexity that results in fitting the noise is called _overfitting_. A model that is overfit will not generalize and work well on new data.
 
 Model simplicity is a virtue. If the estimated predictive performance of two models is comparable, the simpler of the two is typically preferred, since it is more likely to generalize and work well on new data.
 
@@ -262,12 +261,12 @@ Putting this all together, we can get an estimate for how a model would perform 
 model_metric <- function(formula, engine = "lm", metric = rmse) {
   workflow() %>% 
     add_model(linear_reg() %>% set_engine(engine)) %>% 
-    add_formula(formula) %>% 
+    add_formula(as.formula(formula)) %>% 
     fit_resamples(resamples = resamples, metrics = metric_set(metric)) %>% 
     collect_metrics()
 }
 
-v <- model_metric(formula = log(price) ~ log(carat))
+v <- model_metric(log(price) ~ log(carat))
 
 v
 ```
@@ -279,7 +278,7 @@ This cross-validation estimate of how a model will perform on new data allows us
 ```{r}
 rmse_lm <- 
   formulas %>% 
-  mutate(metric = map(formula, ~ model_metric(formula = as.formula(.)))) %>% 
+  mutate(metric = map(formula, model_metric)) %>% 
   unnest(cols = metric) %>% 
   select(formula, n_coefs, rmse = mean, rmse_se = std_err)
 
@@ -598,9 +597,9 @@ In model selection:
 
 Data modeling is a very large subject, and we've only provided a brief overview of the process and some useful tools and packages. Here are ways to learn more.
 
-As we've seen, in supervised learning were the goal is to make accurate predictions, it is important to understand your data, properly prepare your data, and then explore possible function families with which to model it. A good resource to learn more about this process is [Feature Engineering and Selection](https://bookdown.org/max/FES/).
+As we've seen, in supervised learning were the goal is to make accurate predictions, it is important to understand your data, properly prepare your data, and then explore possible function families with which to model it. A good resource to learn more about this process is Kuhn and Johnson, [Feature Engineering and Selection](https://bookdown.org/max/FES/).
 
-We used some functions from the [tidymodels](https://www.tidymodels.org/) ecosystem of R packages for modeling. A good source to go deeper is [Tidy Modeling with R](https://www.tmwr.org/).
+We used some functions from the [tidymodels](https://www.tidymodels.org/) ecosystem of R packages for modeling. A good source to go deeper is Kuhn and Silge, [Tidy Modeling with R](https://www.tmwr.org/).
 
-A good introduction to Bayesian modeling and data analysis is [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/index.html). Two of the authors are active in the Stan project, and the book uses `stan_glm()` for both linear and other general linear models. Tidyverse implementations of examples from the book are available [here](https://github.com/behrman/ros#readme).
+A good introduction to Bayesian modeling is Gelman, Hill, and Vehtari, [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/index.html). Gelman and Vehtari are active in the Stan project, and the book uses `stan_glm()` for both linear and other general linear models. Tidyverse implementations of examples from the book are available [here](https://github.com/behrman/ros#readme). To go deeper into the workflow of Bayesian data analysis and modeling see Gelman, et al., [Bayesian workflow](http://www.stat.columbia.edu/~gelman/research/unpublished/Bayesian_Workflow_article.pdf).
 

@@ -82,7 +82,7 @@ v %>%
 
 `a_0` defines the y-intercept, the y-value your function will produce when `x_1` is 0. `a_1` is the slope, which tells you how much `y` changes for every one unit increase in `x_1`. These two parameters define a linear function, and so to fit a linear model, you just have to determine which `a_0` and `a_1` best approximates your data.
 
-As you'll learn in [Chapter 3](https://dcl-model.stanford.edu/determine_functional_form.html), visualization is crucial to determining functional form. Let's visualize the relationship between `x_1` (the predictor) and `y` (the response).
+As you'll learn in Chapter 3, visualization is crucial to determining functional form. Let's visualize the relationship between `x_1` (the predictor) and `y` (the response).
 
 ```{r}
 df %>% 
@@ -276,7 +276,7 @@ ggplot(mapping = aes(x_1)) +
   )
 ```
 
-`stan_glm()` provides distributions for the parameters `a_0` and `a_1`. The values above are the medians of these distributions. These values are very close to those returned by `lm()`. The distributions for the parameters and for the standard deviation of the residuals allow us to express the uncertainties in the model and its predictions. Predictive uncertainties are shown in the grey ribbons in the plot.
+`stan_glm()` provides distributions for the parameters `a_0` and `a_1`. The values above are the medians of these distributions. These values are very close to those returned by `lm()`. The joint distribution of the parameters and the standard deviation of the residuals allows us to express the uncertainties in the model and its predictions. Predictive uncertainties are shown in the grey ribbons in the plot.
 
 ## Summary
 

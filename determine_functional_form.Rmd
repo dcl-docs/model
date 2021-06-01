@@ -131,7 +131,7 @@ tibble(
 
 The smooth line is horizontal, which tells you that `y` does not change with `x`. 
 
-The `diamonds` data is relatively simple, and we've made it even simpler by restricting attention to the four Cs. When you have more variables, you'll need to conduct more preprocessing and pay more attention to which variables to include and which to exclude. If you'd like to learn more, the book [Feature Engineering and Selection](https://bookdown.org/max/FES/) is a good resource, particularly the [Preprocessing](https://bookdown.org/max/FES/stroke-preprocessing.html) section.
+The `diamonds` data is relatively simple, and we've made it even simpler by restricting attention to the four Cs. When you have more variables, you'll need to conduct more preprocessing and pay more attention to which variables to include and which to exclude. If you'd like to learn more, a good resource is Kuhn and Johnson, [Feature Engineering and Selection](https://bookdown.org/max/FES/), particularly the [Preprocessing](https://bookdown.org/max/FES/stroke-preprocessing.html) section.
 
 ## Discrete predictors
 
