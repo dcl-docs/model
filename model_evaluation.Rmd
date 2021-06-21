@@ -43,13 +43,12 @@ formulas <-
     "log(price) ~ log(carat) + clarity + color",
     "log(price) ~ log(carat) + clarity + color + cut"
   ) %>% 
+  rowwise() %>% 
   mutate(
     n_coefs = 
-      map_int(
-        formula,
-        ~ model.matrix(as.formula(.), data = df %>% slice(1)) %>% ncol()
-      )
-  )
+      model.matrix(as.formula(formula), data = df %>% slice(1)) %>% ncol()
+  ) %>% 
+  ungroup()
 
 knitr::kable(formulas)
 ```
@@ -188,17 +187,15 @@ Here's the calculation of the MAE for the predictions of the six models above on
 
 ```{r}
 bp_errors <- 
-  tibble(
-    formula = str_glue("bpxosy ~ poly(ridageyr, degree = {1:6})"),
-    n_coefs = 
-      map_int(
-        formula,
-        ~ model.matrix(as.formula(.), data = bp_model) %>% ncol()
-      ),
-    mae =
-      map(formula, ~ lmrob(as.formula(.), data = bp_model)) %>% 
-      map_dbl(~ mean(abs(bp_new$bpxosy - predict(., newdata = bp_new))))
-  )
+  tibble(formula = str_glue("bpxosy ~ poly(ridageyr, degree = {1:6})")) %>% 
+  rowwise() %>% 
+  mutate(
+    n_coefs = model.matrix(as.formula(formula), data = bp_model) %>% ncol(),
+    model = list(lmrob(as.formula(formula), data = bp_model)),
+    mae = mean(abs(bp_new$bpxosy - predict(model, newdata = bp_new)))
+  ) %>% 
+  ungroup() %>% 
+  select(!model)
 ```
 
 And here's a plot of the MAE against the number of model coefficients, a measure of model complexity.
@@ -278,8 +275,9 @@ This cross-validation estimate of how a model will perform on new data allows us
 ```{r}
 rmse_lm <- 
   formulas %>% 
-  mutate(metric = map(formula, model_metric)) %>% 
-  unnest(cols = metric) %>% 
+  rowwise() %>% 
+  mutate(model_metric(formula)) %>% 
+  ungroup() %>% 
   select(formula, n_coefs, rmse = mean, rmse_se = std_err)
 
 knitr::kable(rmse_lm)
@@ -402,8 +400,8 @@ loos <- list(loo_1, loo_2, loo_3, loo_4, loo_5)
 elpd_stan_glm <- 
   formulas %>% 
   mutate(
-    elpd = map_dbl(loos, ~ .$estimates["elpd_loo", "Estimate"]),
-    elpd_se = map_dbl(loos, ~ .$estimates["elpd_loo", "SE"])
+    elpd = map_dbl(loos, ~ pluck(., "estimates")["elpd_loo", "Estimate"]),
+    elpd_se = map_dbl(loos, ~ pluck(., "estimates")["elpd_loo", "SE"])
   )
 
 knitr::kable(elpd_stan_glm)
