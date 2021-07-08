@@ -5,6 +5,7 @@
 library(tidyverse)
 library(rstanarm)
 library(tidymodels)
+tidymodels_prefer()
 ```
 
 In Chapters 2 and 3, we used EDA to understand the `diamonds` dataset and to identify function families with which to model the relationship of `price` to the four Cs, `carat`, `clarity`, `color`, and `cut`. We're now ready to fit models. To start, we'll use the simplest function family we identified, the power law relationships for `price` vs. `carat`, which are expressed by the formula
