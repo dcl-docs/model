@@ -10,6 +10,7 @@ library(dcldata)
 library(robustbase)
 library(rstanarm)
 library(tidymodels)
+tidymodels_prefer()
 ```
 
 After you've used EDA to understand your data and identify potential function families with which to model, you can fit models for each of these function families. In this chapter, we'll show you how to compare and evaluate the resulting models.
@@ -115,7 +116,6 @@ is_empty(intersect(bp_model$seqn, bp_new$seqn))
 
 setequal(bp_all$seqn, union(bp_model$seqn, bp_new$seqn))
 ```
-
 
 Our first step is to use EDA to understand the data and potential function families with which to model it.
 
@@ -227,11 +227,11 @@ In classical modeling, estimates of the predictive performance of a model are ty
 
 * __Monte Carlo__: The training set is a random sample _without_ replacement of the original data, and the test set is the remaining data. The modeler specifies the proportion of original data to use in the training set, typically between 75 - 80%.
 * __Bootstrap__: The training set is a random sample _with_ replacement of the original data for a resulting set the same size as the original data. The test set is the remaining data. In bootstrap, the proportion of original data used in the training set is approximately 63.2%.
-* __k-Fold__: In this method, the original data is randomly partitioned into k disjoint sets of roughly equal size, called folds. The modeling is then done k times with each fold serving as test set and the remaining k - 1 folds serving as the training set. Typical values for k are 5 or 10, corresponding to 80% or 90% of the original data being used for the training set.
+* __V-Fold__: In this method, the original data is randomly partitioned into v disjoint sets of roughly equal size, called folds. The modeling is then done v times with each fold serving as test set and the remaining v - 1 folds serving as the training set. Typical values for v are 5 or 10, corresponding to 80% or 90% of the original data being used for the training set.
 
-With Monte Carlo and bootstrap cross-validation, the train and test process is repeated multiple times with different random partitions. With k-fold cross-validation, the whole process of k repetitions can itself be repeated. In each of the three methods, the results of the repetitions are combined into an average estimate of predictive performance and a standard error.
+With Monte Carlo and bootstrap cross-validation, the train and test process is repeated multiple times with different random partitions. With v-fold cross-validation, the whole process of v repetitions can itself be repeated. In each of the three methods, the results of the repetitions are combined into an average estimate of predictive performance and a standard error.
 
-For our diamonds data, we'll use k-fold cross-validation with k = 10 folds and just one repeat. The `vfold_cv()` function in the tidymodels [rsample](https://rsample.tidymodels.org/) package will do this for us (it uses "v" instead of "k").
+For our diamonds data, we'll use v-fold cross-validation with v = 10 folds and just one repeat. The `vfold_cv()` function in the tidymodels [rsample](https://rsample.tidymodels.org/) package will do this for us.
 
 ```{r}
 set.seed(616)
@@ -599,5 +599,5 @@ As we've seen, in supervised learning were the goal is to make accurate predicti
 
 We used some functions from the [tidymodels](https://www.tidymodels.org/) ecosystem of R packages for modeling. A good source to go deeper is Kuhn and Silge, [Tidy Modeling with R](https://www.tmwr.org/).
 
-A good introduction to Bayesian modeling is Gelman, Hill, and Vehtari, [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/index.html). Gelman and Vehtari are active in the Stan project, and the book uses `stan_glm()` for both linear and other general linear models. Tidyverse implementations of examples from the book are available [here](https://github.com/behrman/ros#readme). To go deeper into the workflow of Bayesian data analysis and modeling see Gelman, et al., [Bayesian workflow](http://www.stat.columbia.edu/~gelman/research/unpublished/Bayesian_Workflow_article.pdf).
+A good introduction to Bayesian modeling is Gelman, Hill, and Vehtari, [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/index.html). Gelman and Vehtari are active in the Stan project, and the book uses `stan_glm()` for both linear and other general linear models. Tidyverse implementations of examples from the book are available [here](https://github.com/behrman/ros#readme). To go deeper into the workflow of Bayesian data analysis and modeling see Gelman, et al., [Bayesian Workflow](http://www.stat.columbia.edu/~gelman/research/unpublished/Bayesian_Workflow_article.pdf).
 
