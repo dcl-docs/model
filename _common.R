@@ -7,7 +7,7 @@ options(
 )
 
 knitr::opts_chunk$set(
-  # collapse = TRUE,
+  collapse = TRUE,
   comment = "#>",
   fig.align = 'center',
   fig.asp = 0.618,  # 1 / phi
