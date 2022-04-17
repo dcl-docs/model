@@ -188,7 +188,7 @@ Now, we can turn to the discrete Cs: `clarity`, `color`, and `cut`. For discrete
 ```{r}
 plot_bar <- function(var, data = df) {
   data %>%
-    ggplot(aes({{var}})) +
+    ggplot(aes({{ var }})) +
     geom_bar() 
 }
 

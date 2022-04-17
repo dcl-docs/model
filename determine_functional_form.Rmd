@@ -146,7 +146,7 @@ We'll visualize the effect of `cut` by adding a smooth line for each value to ou
 ```{r, cache=TRUE}
 plot_smooth <- function(var, data = df) {
   data %>% 
-    ggplot(aes(carat, price, color = {{var}})) +
+    ggplot(aes(carat, price, color = {{ var }})) +
     geom_smooth(method = "loess", formula = y ~ x) +
     scale_x_log10() +
     scale_y_log10() +
