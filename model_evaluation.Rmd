@@ -595,9 +595,9 @@ In model selection:
 
 Data modeling is a very large subject, and we've only provided a brief overview of the process and some useful tools and packages. Here are ways to learn more.
 
-As we've seen, in supervised learning were the goal is to make accurate predictions, it is important to understand your data, properly prepare your data, and then explore possible function families with which to model it. A good resource to learn more about this process is Kuhn and Johnson, [Feature Engineering and Selection](https://bookdown.org/max/FES/).
+As we've seen, in supervised learning where the goal is to make accurate predictions, it is important to understand your data, properly prepare your data, and then explore possible function families with which to model it. A good resource to learn more about this process is Kuhn and Johnson, [Feature Engineering and Selection](https://bookdown.org/max/FES/).
 
 We used some functions from the [tidymodels](https://www.tidymodels.org/) ecosystem of R packages for modeling. A good source to go deeper is Kuhn and Silge, [Tidy Modeling with R](https://www.tmwr.org/).
 
-A good introduction to Bayesian modeling is Gelman, Hill, and Vehtari, [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/index.html). Gelman and Vehtari are active in the Stan project, and the book uses `stan_glm()` for both linear and other general linear models. Tidyverse implementations of examples from the book are available [here](https://github.com/behrman/ros#readme). To go deeper into the workflow of Bayesian data analysis and modeling see Gelman, et al., [Bayesian Workflow](http://www.stat.columbia.edu/~gelman/research/unpublished/Bayesian_Workflow_article.pdf).
+A good introduction to Bayesian modeling is Gelman, Hill, and Vehtari, [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/). Gelman and Vehtari are active in the Stan project, and the book uses `stan_glm()` for both linear and other general linear models. Tidyverse implementations of examples from the book are available [here](https://github.com/behrman/ros#readme). To go deeper into the workflow of Bayesian data analysis and modeling see Gelman, et al., [Bayesian Workflow](http://www.stat.columbia.edu/~gelman/research/unpublished/Bayesian_Workflow_article.pdf).
 
