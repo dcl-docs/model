@@ -2,7 +2,6 @@
 knitr: bookdown::render_book
 title: "Data Modeling"
 author: "Sara Altman, Bill Behrman"
-date: "`r Sys.Date()`"
 description: "This book is a practical introduction to modeling using the tidyverse."
 url: 'https\://dcl-model.stanford.edu'
 github-repo: dcl-docs/model
@@ -51,6 +50,28 @@ You can also view the names of all datasets in a given package with the `data()`
 data(package = "dcldata")
 ```
 
+In the following, we used these packages:
+
+```{r echo=FALSE}
+sessioninfo::package_info(
+  pkgs = 
+    c(
+      "dcldata",
+      "ggrepel",
+      "knitr",
+      "robustbase",
+      "rstanarm",
+      "scales",
+      "tidymodels",
+      "tidyverse"
+    ),
+  dependencies = FALSE
+) |> 
+  tibble::as_tibble() |> 
+  dplyr::mutate(Source = stringr::str_remove(source, "@\\w*")) |> 
+  dplyr::select(Package = package, Version = ondiskversion, Source) |> 
+  knitr::kable()
+```
 
 ## An evolving book {-}
 
