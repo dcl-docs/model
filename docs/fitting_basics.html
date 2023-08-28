@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 Fitting basics | Data Modeling</title>
+  <meta name="description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 Fitting basics | Data Modeling" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="github-repo" content="dcl-docs/model" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 Fitting basics | Data Modeling" />
+  
+  <meta name="twitter:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  
+
+<meta name="author" content="Sara Altman, Bill Behrman" />
+
+
+<meta name="date" content="2022-04-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="determine_functional_form.html"/>
+<link rel="next" href="model_evaluation.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Modeling</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-read-this-book"><i class="fa fa-check"></i>How to read this book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#an-evolving-book"><i class="fa fa-check"></i>An evolving book</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="model_basics.html"><a href="model_basics.html"><i class="fa fa-check"></i><b>1</b> Model basics</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="model_basics.html"><a href="model_basics.html#what-is-a-model"><i class="fa fa-check"></i><b>1.1</b> What is a model?</a></li>
+<li class="chapter" data-level="1.2" data-path="model_basics.html"><a href="model_basics.html#supervised-learning"><i class="fa fa-check"></i><b>1.2</b> Supervised learning</a></li>
+<li class="chapter" data-level="1.3" data-path="model_basics.html"><a href="model_basics.html#choosing-a-function-family"><i class="fa fa-check"></i><b>1.3</b> Choosing a function family</a></li>
+<li class="chapter" data-level="1.4" data-path="model_basics.html"><a href="model_basics.html#classical-modeling"><i class="fa fa-check"></i><b>1.4</b> Classical modeling</a></li>
+<li class="chapter" data-level="1.5" data-path="model_basics.html"><a href="model_basics.html#bayesian-modeling"><i class="fa fa-check"></i><b>1.5</b> Bayesian modeling</a></li>
+<li class="chapter" data-level="1.6" data-path="model_basics.html"><a href="model_basics.html#summary"><i class="fa fa-check"></i><b>1.6</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="understand_your_data.html"><a href="understand_your_data.html"><i class="fa fa-check"></i><b>2</b> Understand your data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="understand_your_data.html"><a href="understand_your_data.html#understand-your-variables"><i class="fa fa-check"></i><b>2.1</b> Understand your variables</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="understand_your_data.html"><a href="understand_your_data.html#read-the-documentation"><i class="fa fa-check"></i><b>2.1.1</b> Read the documentation</a></li>
+<li class="chapter" data-level="2.1.2" data-path="understand_your_data.html"><a href="understand_your_data.html#glimpse"><i class="fa fa-check"></i><b>2.1.2</b> <code>glimpse()</code></a></li>
+<li class="chapter" data-level="2.1.3" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-1"><i class="fa fa-check"></i><b>2.1.3</b> <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="understand_your_data.html"><a href="understand_your_data.html#check-for-problems"><i class="fa fa-check"></i><b>2.2</b> Check for problems</a></li>
+<li class="chapter" data-level="2.3" data-path="understand_your_data.html"><a href="understand_your_data.html#d-eda"><i class="fa fa-check"></i><b>2.3</b> 1D EDA</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="understand_your_data.html"><a href="understand_your_data.html#variable-types"><i class="fa fa-check"></i><b>2.3.1</b> Variable types</a></li>
+<li class="chapter" data-level="2.3.2" data-path="understand_your_data.html"><a href="understand_your_data.html#continuous-variables"><i class="fa fa-check"></i><b>2.3.2</b> Continuous variables</a></li>
+<li class="chapter" data-level="2.3.3" data-path="understand_your_data.html"><a href="understand_your_data.html#discrete-variables"><i class="fa fa-check"></i><b>2.3.3</b> Discrete variables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-2"><i class="fa fa-check"></i><b>2.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="determine_functional_form.html"><a href="determine_functional_form.html"><i class="fa fa-check"></i><b>3</b> Determine functional form</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#formulas"><i class="fa fa-check"></i><b>3.1</b> Formulas</a></li>
+<li class="chapter" data-level="3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#continuous-predictors"><i class="fa fa-check"></i><b>3.2</b> Continuous predictors</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#transformations"><i class="fa fa-check"></i><b>3.2.1</b> Transformations</a></li>
+<li class="chapter" data-level="3.2.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks"><i class="fa fa-check"></i><b>3.2.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="determine_functional_form.html"><a href="determine_functional_form.html#discrete-predictors"><i class="fa fa-check"></i><b>3.3</b> Discrete predictors</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#functional-form"><i class="fa fa-check"></i><b>3.3.1</b> Functional form</a></li>
+<li class="chapter" data-level="3.3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks-1"><i class="fa fa-check"></i><b>3.3.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="determine_functional_form.html"><a href="determine_functional_form.html#summary-3"><i class="fa fa-check"></i><b>3.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="fitting_basics.html"><a href="fitting_basics.html"><i class="fa fa-check"></i><b>4</b> Fitting basics</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-model"><i class="fa fa-check"></i><b>4.1</b> Fitting a model</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-classical-model"><i class="fa fa-check"></i><b>4.1.1</b> Fitting a classical model</a></li>
+<li class="chapter" data-level="4.1.2" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-bayesian-model"><i class="fa fa-check"></i><b>4.1.2</b> Fitting a Bayesian model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="fitting_basics.html"><a href="fitting_basics.html#tidymodels"><i class="fa fa-check"></i><b>4.1.3</b> Tidymodels</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-a-model"><i class="fa fa-check"></i><b>4.2</b> Checking a model</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="fitting_basics.html"><a href="fitting_basics.html#making-predictions"><i class="fa fa-check"></i><b>4.2.1</b> Making predictions</a></li>
+<li class="chapter" data-level="4.2.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-predictions"><i class="fa fa-check"></i><b>4.2.2</b> Checking predictions</a></li>
+<li class="chapter" data-level="4.2.3" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-residuals"><i class="fa fa-check"></i><b>4.2.3</b> Checking residuals</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="fitting_basics.html"><a href="fitting_basics.html#summary-4"><i class="fa fa-check"></i><b>4.3</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="model_evaluation.html"><a href="model_evaluation.html"><i class="fa fa-check"></i><b>5</b> Model evaluation</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="model_evaluation.html"><a href="model_evaluation.html#model-overfitting"><i class="fa fa-check"></i><b>5.1</b> Model overfitting</a></li>
+<li class="chapter" data-level="5.2" data-path="model_evaluation.html"><a href="model_evaluation.html#model-selection"><i class="fa fa-check"></i><b>5.2</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="model_evaluation.html"><a href="model_evaluation.html#classical-modeling-1"><i class="fa fa-check"></i><b>5.2.1</b> Classical modeling</a></li>
+<li class="chapter" data-level="5.2.2" data-path="model_evaluation.html"><a href="model_evaluation.html#bayesian-modeling-1"><i class="fa fa-check"></i><b>5.2.2</b> Bayesian modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="model_evaluation.html"><a href="model_evaluation.html#final-model"><i class="fa fa-check"></i><b>5.3</b> Final model</a></li>
+<li class="chapter" data-level="5.4" data-path="model_evaluation.html"><a href="model_evaluation.html#summary-5"><i class="fa fa-check"></i><b>5.4</b> Summary</a></li>
+<li class="chapter" data-level="5.5" data-path="model_evaluation.html"><a href="model_evaluation.html#to-learn-more"><i class="fa fa-check"></i><b>5.5</b> To learn more</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Modeling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="fitting-basics" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Fitting basics<a href="fitting_basics.html#fitting-basics" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="fitting_basics.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb38-2"><a href="fitting_basics.html#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span>
+<span id="cb38-3"><a href="fitting_basics.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb38-4"><a href="fitting_basics.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span></code></pre></div>
+<p>In Chapters 2 and 3, we used EDA to understand the <code>diamonds</code> dataset and to identify function families with which to model the relationship of <code>price</code> to the four Cs, <code>carat</code>, <code>clarity</code>, <code>color</code>, and <code>cut</code>. We’re now ready to fit models. To start, we’ll use the simplest function family we identified, the power law relationships for <code>price</code> vs. <code>carat</code>, which are expressed by the formula</p>
+<p><code>log(price) ~ log(carat)</code> .</p>
+<p>In the next chapter, we’ll model this data with other function families and show you how to compare and evaluate different models.</p>
+<p>We’ve made several modifications to the <code>diamonds</code> dataset over the past two chapters, including removing diamonds with impossible dimensions and filtering out very large diamonds. The following code repeats these manipulations and stores the result in a new tibble, <code>df</code>.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="fitting_basics.html#cb39-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> </span>
+<span id="cb39-2"><a href="fitting_basics.html#cb39-2" aria-hidden="true" tabindex="-1"></a>  diamonds <span class="sc">%&gt;%</span> </span>
+<span id="cb39-3"><a href="fitting_basics.html#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>, y <span class="sc">&gt;</span> <span class="dv">0</span>, z <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-4"><a href="fitting_basics.html#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(y <span class="sc">&lt;</span> <span class="dv">20</span>, z <span class="sc">&lt;</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-5"><a href="fitting_basics.html#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(carat <span class="sc">&lt;=</span> <span class="fu">quantile</span>(.<span class="sc">$</span>carat, <span class="at">probs =</span> <span class="fl">0.99</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-6"><a href="fitting_basics.html#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-7"><a href="fitting_basics.html#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="fu">fct_rev</span>(color),</span>
+<span id="cb39-8"><a href="fitting_basics.html#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color_combined =</span> <span class="fu">fct_collapse</span>(color, <span class="st">&quot;DEFG&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;G&quot;</span>))</span>
+<span id="cb39-9"><a href="fitting_basics.html#cb39-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Going forward, we’ll use <code>df</code> instead of <code>diamonds</code>.</p>
+<div id="fitting-a-model" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Fitting a model<a href="fitting_basics.html#fitting-a-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In Chapter 1, we discussed classical and Bayesian modeling. We’ll now show you how to actually fit classical and Bayesian models, both directly and with the tidymodels modeling framework.</p>
+<div id="fitting-a-classical-model" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Fitting a classical model<a href="fitting_basics.html#fitting-a-classical-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The R function <code>lm()</code> fits linear models using classical least squares. Here’s how to use it to fit a model with our function family and data.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="fitting_basics.html#cb40-1" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat), <span class="at">data =</span> df)</span></code></pre></div>
+<p>You can learn about the fit by simply printing it.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="fitting_basics.html#cb41-1" aria-hidden="true" tabindex="-1"></a>fit_lm</span>
+<span id="cb41-2"><a href="fitting_basics.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb41-3"><a href="fitting_basics.html#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb41-4"><a href="fitting_basics.html#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lm(formula = log(price) ~ log(carat), data = df)</span></span>
+<span id="cb41-5"><a href="fitting_basics.html#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb41-6"><a href="fitting_basics.html#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb41-7"><a href="fitting_basics.html#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)   log(carat)  </span></span>
+<span id="cb41-8"><a href="fitting_basics.html#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        8.46         1.69</span></span></code></pre></div>
+<p>You can extract the coefficients for the model with <code>coef()</code>.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="fitting_basics.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_lm)</span>
+<span id="cb42-2"><a href="fitting_basics.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)  log(carat) </span></span>
+<span id="cb42-3"><a href="fitting_basics.html#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        8.46        1.69</span></span></code></pre></div>
+</div>
+<div id="fitting-a-bayesian-model" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> Fitting a Bayesian model<a href="fitting_basics.html#fitting-a-bayesian-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><a href="https://mc-stan.org/">Stan</a> is a platform for statistical modeling, including Bayesian modeling. <a href="https://mc-stan.org/rstanarm/">rstanarm</a> is an “R package that emulates other R model-fitting functions but uses Stan … for the back-end estimation.”</p>
+<p><code>stan_glm()</code> is an rstanarm function that emulates the R function <code>glm()</code> to fit generalized linear models. Here’s how to use it to fit a model with our function family and data.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="fitting_basics.html#cb43-1" aria-hidden="true" tabindex="-1"></a>fit_stan_glm <span class="ot">&lt;-</span> </span>
+<span id="cb43-2"><a href="fitting_basics.html#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat), <span class="at">data =</span> df, <span class="at">refresh =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">505</span>)</span></code></pre></div>
+<p><code>stan_glm()</code> uses a probabilistic algorithm. If you wish, you can use the <code>seed</code> argument to set the starting point of the random number generator used by the algorithm so that it will return the same results every time it is called. The <code>refresh = 0</code> argument suppresses information that the algorithm would otherwise print while it is running.</p>
+<p>You can learn about the fit by simply printing it.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="fitting_basics.html#cb44-1" aria-hidden="true" tabindex="-1"></a>fit_stan_glm</span>
+<span id="cb44-2"><a href="fitting_basics.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stan_glm</span></span>
+<span id="cb44-3"><a href="fitting_basics.html#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  family:       gaussian [identity]</span></span>
+<span id="cb44-4"><a href="fitting_basics.html#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  formula:      log(price) ~ log(carat)</span></span>
+<span id="cb44-5"><a href="fitting_basics.html#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  observations: 53405</span></span>
+<span id="cb44-6"><a href="fitting_basics.html#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  predictors:   2</span></span>
+<span id="cb44-7"><a href="fitting_basics.html#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb44-8"><a href="fitting_basics.html#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Median MAD_SD</span></span>
+<span id="cb44-9"><a href="fitting_basics.html#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept) 8.5    0.0   </span></span>
+<span id="cb44-10"><a href="fitting_basics.html#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(carat)  1.7    0.0   </span></span>
+<span id="cb44-11"><a href="fitting_basics.html#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb44-12"><a href="fitting_basics.html#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Auxiliary parameter(s):</span></span>
+<span id="cb44-13"><a href="fitting_basics.html#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Median MAD_SD</span></span>
+<span id="cb44-14"><a href="fitting_basics.html#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma 0.3    0.0   </span></span>
+<span id="cb44-15"><a href="fitting_basics.html#cb44-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb44-16"><a href="fitting_basics.html#cb44-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb44-17"><a href="fitting_basics.html#cb44-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For help interpreting the printed output see ?print.stanreg</span></span>
+<span id="cb44-18"><a href="fitting_basics.html#cb44-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For info on the priors used see ?prior_summary.stanreg</span></span></code></pre></div>
+<p>By default, this only prints one digit of precision. Here’s how you can print more.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="fitting_basics.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_stan_glm, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb45-2"><a href="fitting_basics.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stan_glm</span></span>
+<span id="cb45-3"><a href="fitting_basics.html#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  family:       gaussian [identity]</span></span>
+<span id="cb45-4"><a href="fitting_basics.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  formula:      log(price) ~ log(carat)</span></span>
+<span id="cb45-5"><a href="fitting_basics.html#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  observations: 53405</span></span>
+<span id="cb45-6"><a href="fitting_basics.html#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  predictors:   2</span></span>
+<span id="cb45-7"><a href="fitting_basics.html#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb45-8"><a href="fitting_basics.html#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Median MAD_SD</span></span>
+<span id="cb45-9"><a href="fitting_basics.html#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept) 8.457  0.001 </span></span>
+<span id="cb45-10"><a href="fitting_basics.html#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(carat)  1.688  0.002 </span></span>
+<span id="cb45-11"><a href="fitting_basics.html#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb45-12"><a href="fitting_basics.html#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Auxiliary parameter(s):</span></span>
+<span id="cb45-13"><a href="fitting_basics.html#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Median MAD_SD</span></span>
+<span id="cb45-14"><a href="fitting_basics.html#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma 0.260  0.001 </span></span>
+<span id="cb45-15"><a href="fitting_basics.html#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb45-16"><a href="fitting_basics.html#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb45-17"><a href="fitting_basics.html#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For help interpreting the printed output see ?print.stanreg</span></span>
+<span id="cb45-18"><a href="fitting_basics.html#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For info on the priors used see ?prior_summary.stanreg</span></span></code></pre></div>
+<p>The parameter <code>sigma</code> is an estimate of the standard deviation of the residual distribution, which is assumed to be normal with mean 0. The <code>MAD_SD</code> column is the scaled median absolute deviation, which provides a robust measure of variation of the parameter distributions.</p>
+<p>An advantage of Bayesian modeling is that it provides estimates not just of the values of the parameters, but also an estimate of their joint distribution through simulations. Here’s how you can access these simulations.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="fitting_basics.html#cb46-1" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span>  </span>
+<span id="cb46-2"><a href="fitting_basics.html#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(fit_stan_glm) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-3"><a href="fitting_basics.html#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span></code></pre></div>
+<p>By default, <code>stan_glm()</code> performs 4000 simulations from the joint distribution of parameters.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="fitting_basics.html#cb47-1" aria-hidden="true" tabindex="-1"></a>sims</span>
+<span id="cb47-2"><a href="fitting_basics.html#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4,000 × 3</span></span>
+<span id="cb47-3"><a href="fitting_basics.html#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   `(Intercept)` `log(carat)` sigma</span></span>
+<span id="cb47-4"><a href="fitting_basics.html#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           &lt;dbl&gt;        &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb47-5"><a href="fitting_basics.html#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1          8.46         1.68 0.260</span></span>
+<span id="cb47-6"><a href="fitting_basics.html#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2          8.46         1.69 0.262</span></span>
+<span id="cb47-7"><a href="fitting_basics.html#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3          8.46         1.69 0.262</span></span>
+<span id="cb47-8"><a href="fitting_basics.html#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          8.46         1.69 0.261</span></span>
+<span id="cb47-9"><a href="fitting_basics.html#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          8.46         1.69 0.261</span></span>
+<span id="cb47-10"><a href="fitting_basics.html#cb47-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6          8.46         1.69 0.261</span></span>
+<span id="cb47-11"><a href="fitting_basics.html#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 3,994 more rows</span></span></code></pre></div>
+<p>These simulations can be used to make inferences about the model, such as uncertainties in the parameters or in the model’s predictions.</p>
+<p>You can extract the coefficients for the model with <code>coef()</code>.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="fitting_basics.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_stan_glm)</span>
+<span id="cb48-2"><a href="fitting_basics.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)  log(carat) </span></span>
+<span id="cb48-3"><a href="fitting_basics.html#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        8.46        1.69</span></span></code></pre></div>
+<p>The coefficients produced by <code>lm()</code> and <code>stan_glm()</code> are very close.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="fitting_basics.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_lm) <span class="sc">-</span> <span class="fu">coef</span>(fit_stan_glm)</span>
+<span id="cb49-2"><a href="fitting_basics.html#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)  log(carat) </span></span>
+<span id="cb49-3"><a href="fitting_basics.html#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   -4.91e-05   -5.11e-05</span></span></code></pre></div>
+</div>
+<div id="tidymodels" class="section level3 hasAnchor" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span> Tidymodels<a href="fitting_basics.html#tidymodels" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><a href="https://www.tidymodels.org/">Tidymodels</a> is an ecosystem of R packages for modeling. It provides a common interface to a growing number of <a href="https://www.tidymodels.org/find/parsnip/">model types and engines</a>. And it supports a range of other modeling tasks, such as data preprocessing, resampling, and parameter tuning. You can learn more at <a href="https://www.tmwr.org/">Tidy Modeling with R</a>.</p>
+<p>Linear regression, the type of model we’ll be using here, is just one of several model types supported by tidymodels. Each type of model supported by tidymodels may have multiple computational engines. Here are the engines currently available for linear regression.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="fitting_basics.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_engines</span>(<span class="st">&quot;linear_reg&quot;</span>)</span>
+<span id="cb50-2"><a href="fitting_basics.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 2</span></span>
+<span id="cb50-3"><a href="fitting_basics.html#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   engine mode      </span></span>
+<span id="cb50-4"><a href="fitting_basics.html#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt;     </span></span>
+<span id="cb50-5"><a href="fitting_basics.html#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 lm     regression</span></span>
+<span id="cb50-6"><a href="fitting_basics.html#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 glm    regression</span></span>
+<span id="cb50-7"><a href="fitting_basics.html#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 glmnet regression</span></span>
+<span id="cb50-8"><a href="fitting_basics.html#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 stan   regression</span></span>
+<span id="cb50-9"><a href="fitting_basics.html#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 spark  regression</span></span>
+<span id="cb50-10"><a href="fitting_basics.html#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 keras  regression</span></span>
+<span id="cb50-11"><a href="fitting_basics.html#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 1 more row</span></span></code></pre></div>
+<p>Tidymodels provides a common interface for each type of model, so you don’t need to know the details and arguments for each computational engine. This makes it easier to model a dataset using different types of model, and using different computational engines for the same type of model.</p>
+<p>Here’s how to fit our function family and data with tidymodels using <code>lm()</code>.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="fitting_basics.html#cb51-1" aria-hidden="true" tabindex="-1"></a>fit_tm_lm <span class="ot">&lt;-</span> </span>
+<span id="cb51-2"><a href="fitting_basics.html#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb51-3"><a href="fitting_basics.html#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;lm&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb51-4"><a href="fitting_basics.html#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat), <span class="at">data =</span> df)</span>
+<span id="cb51-5"><a href="fitting_basics.html#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="fitting_basics.html#cb51-6" aria-hidden="true" tabindex="-1"></a>fit_tm_lm</span>
+<span id="cb51-7"><a href="fitting_basics.html#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; parsnip model object</span></span>
+<span id="cb51-8"><a href="fitting_basics.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb51-9"><a href="fitting_basics.html#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb51-10"><a href="fitting_basics.html#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb51-11"><a href="fitting_basics.html#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stats::lm(formula = log(price) ~ log(carat), data = data)</span></span>
+<span id="cb51-12"><a href="fitting_basics.html#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb51-13"><a href="fitting_basics.html#cb51-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb51-14"><a href="fitting_basics.html#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)   log(carat)  </span></span>
+<span id="cb51-15"><a href="fitting_basics.html#cb51-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        8.46         1.69</span></span></code></pre></div>
+<p>The tidymodels fit contains the <code>lm()</code> fit.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="fitting_basics.html#cb52-1" aria-hidden="true" tabindex="-1"></a>fit_tm_lm<span class="sc">$</span>fit</span>
+<span id="cb52-2"><a href="fitting_basics.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb52-3"><a href="fitting_basics.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb52-4"><a href="fitting_basics.html#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stats::lm(formula = log(price) ~ log(carat), data = data)</span></span>
+<span id="cb52-5"><a href="fitting_basics.html#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb52-6"><a href="fitting_basics.html#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb52-7"><a href="fitting_basics.html#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)   log(carat)  </span></span>
+<span id="cb52-8"><a href="fitting_basics.html#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        8.46         1.69</span></span></code></pre></div>
+<p>Tidymodels uses <code>stan_glm()</code> to fit linear regressions with the stan engine. Here’s how to fit our function family and data with tidymodels using <code>stan_glm()</code>.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="fitting_basics.html#cb53-1" aria-hidden="true" tabindex="-1"></a>fit_tm_stan <span class="ot">&lt;-</span> </span>
+<span id="cb53-2"><a href="fitting_basics.html#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb53-3"><a href="fitting_basics.html#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;stan&quot;</span>, <span class="at">seed =</span> <span class="dv">505</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb53-4"><a href="fitting_basics.html#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat), <span class="at">data =</span> df)</span></code></pre></div>
+<p>The <code>seed</code> argument isn’t required. We used it so the results would match the direct call of <code>stan_glm()</code> above. With tidymodels, <code>refresh = 0</code> is the default.</p>
+<p>Here’s information about the fit.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="fitting_basics.html#cb54-1" aria-hidden="true" tabindex="-1"></a>fit_tm_stan</span>
+<span id="cb54-2"><a href="fitting_basics.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; parsnip model object</span></span>
+<span id="cb54-3"><a href="fitting_basics.html#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb54-4"><a href="fitting_basics.html#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stan_glm</span></span>
+<span id="cb54-5"><a href="fitting_basics.html#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  family:       gaussian [identity]</span></span>
+<span id="cb54-6"><a href="fitting_basics.html#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  formula:      log(price) ~ log(carat)</span></span>
+<span id="cb54-7"><a href="fitting_basics.html#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  observations: 53405</span></span>
+<span id="cb54-8"><a href="fitting_basics.html#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  predictors:   2</span></span>
+<span id="cb54-9"><a href="fitting_basics.html#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb54-10"><a href="fitting_basics.html#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Median MAD_SD</span></span>
+<span id="cb54-11"><a href="fitting_basics.html#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept) 8.5    0.0   </span></span>
+<span id="cb54-12"><a href="fitting_basics.html#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(carat)  1.7    0.0   </span></span>
+<span id="cb54-13"><a href="fitting_basics.html#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb54-14"><a href="fitting_basics.html#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Auxiliary parameter(s):</span></span>
+<span id="cb54-15"><a href="fitting_basics.html#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Median MAD_SD</span></span>
+<span id="cb54-16"><a href="fitting_basics.html#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma 0.3    0.0   </span></span>
+<span id="cb54-17"><a href="fitting_basics.html#cb54-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb54-18"><a href="fitting_basics.html#cb54-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb54-19"><a href="fitting_basics.html#cb54-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For help interpreting the printed output see ?print.stanreg</span></span>
+<span id="cb54-20"><a href="fitting_basics.html#cb54-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For info on the priors used see ?prior_summary.stanreg</span></span></code></pre></div>
+<p>The tidymodels fit contains the <code>stan_glm()</code> fit.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="fitting_basics.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_tm_stan<span class="sc">$</span>fit, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb55-2"><a href="fitting_basics.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stan_glm</span></span>
+<span id="cb55-3"><a href="fitting_basics.html#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  family:       gaussian [identity]</span></span>
+<span id="cb55-4"><a href="fitting_basics.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  formula:      log(price) ~ log(carat)</span></span>
+<span id="cb55-5"><a href="fitting_basics.html#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  observations: 53405</span></span>
+<span id="cb55-6"><a href="fitting_basics.html#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  predictors:   2</span></span>
+<span id="cb55-7"><a href="fitting_basics.html#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb55-8"><a href="fitting_basics.html#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Median MAD_SD</span></span>
+<span id="cb55-9"><a href="fitting_basics.html#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept) 8.457  0.001 </span></span>
+<span id="cb55-10"><a href="fitting_basics.html#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(carat)  1.688  0.002 </span></span>
+<span id="cb55-11"><a href="fitting_basics.html#cb55-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb55-12"><a href="fitting_basics.html#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Auxiliary parameter(s):</span></span>
+<span id="cb55-13"><a href="fitting_basics.html#cb55-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Median MAD_SD</span></span>
+<span id="cb55-14"><a href="fitting_basics.html#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma 0.260  0.001 </span></span>
+<span id="cb55-15"><a href="fitting_basics.html#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb55-16"><a href="fitting_basics.html#cb55-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb55-17"><a href="fitting_basics.html#cb55-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For help interpreting the printed output see ?print.stanreg</span></span>
+<span id="cb55-18"><a href="fitting_basics.html#cb55-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For info on the priors used see ?prior_summary.stanreg</span></span></code></pre></div>
+</div>
+</div>
+<div id="checking-a-model" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Checking a model<a href="fitting_basics.html#checking-a-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the last chapter, we used EDA to find promising function families with which to model the <code>diamonds</code> dataset. We can now use EDA to check to see how well a model fits the data.</p>
+<p>Here’s a plot of the data we’re modeling and a smooth line.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="fitting_basics.html#cb56-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-2"><a href="fitting_basics.html#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat, price)) <span class="sc">+</span></span>
+<span id="cb56-3"><a href="fitting_basics.html#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.01</span>) <span class="sc">+</span> </span>
+<span id="cb56-4"><a href="fitting_basics.html#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span></code></pre></div>
+<p><img src="fitting_basics_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Recall that the formula for our function family</p>
+<p><code>log(price) ~ log(carat)</code></p>
+<p>represents functions of the form</p>
+<p><code>log(price) = a_0 + a_1 * log(carat)</code></p>
+<p>for parameters <code>a_0</code> and <code>a_1</code>.</p>
+<p>From the coefficients we saw above, the algorithms chose the function</p>
+<p><code>log(price) = 8.46 + 1.69 * log(carat)</code></p>
+<p>or, after we apply <code>exp()</code> to both sides,</p>
+<p><code>price = 4707 * carat^1.69</code> .</p>
+<p>The smooth line above curves upward, indicating a growth in <code>price</code> that is greater than linear. The model exponent is 1.69. Since this is larger than 1, it likewise represents a growth greater than linear.</p>
+<p>This function predicts that a one-carat diamond would have a price of about 4707. Here’s the distribution of actual prices of one-carat diamonds.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="fitting_basics.html#cb57-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb57-2"><a href="fitting_basics.html#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">near</span>(carat, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-3"><a href="fitting_basics.html#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(price) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-4"><a href="fitting_basics.html#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb57-5"><a href="fitting_basics.html#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span id="cb57-6"><a href="fitting_basics.html#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    1681    4155    4864    5243    6079   16469</span></span></code></pre></div>
+<p>As you can see from the plot and the summary, there is a wide variation in prices for one-carat diamonds, but the prediction is roughly comparable with the median and mean prices.</p>
+<p>With no glaring problems with the parameters, we’ll next look at predictions across the full range of <code>carat</code>.</p>
+<div id="making-predictions" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Making predictions<a href="fitting_basics.html#making-predictions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Once you’ve fit a model, you can use the fit to make predictions. Here’s how to use the <code>predict()</code> function to make predictions for the <code>lm()</code> and <code>stan_glm()</code> models.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="fitting_basics.html#cb58-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> </span>
+<span id="cb58-2"><a href="fitting_basics.html#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb58-3"><a href="fitting_basics.html#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">carat =</span> <span class="fu">seq</span>(<span class="fu">min</span>(df<span class="sc">$</span>carat), <span class="fu">max</span>(df<span class="sc">$</span>carat), <span class="at">length.out =</span> <span class="dv">801</span>),</span>
+<span id="cb58-4"><a href="fitting_basics.html#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pred_lm =</span> <span class="fu">predict</span>(fit_lm, <span class="at">newdata =</span> <span class="fu">tibble</span>(carat)) <span class="sc">%&gt;%</span> <span class="fu">exp</span>(),</span>
+<span id="cb58-5"><a href="fitting_basics.html#cb58-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pred_stan_glm =</span> <span class="fu">predict</span>(fit_stan_glm, <span class="at">newdata =</span> <span class="fu">tibble</span>(carat)) <span class="sc">%&gt;%</span> <span class="fu">exp</span>()</span>
+<span id="cb58-6"><a href="fitting_basics.html#cb58-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb58-7"><a href="fitting_basics.html#cb58-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-8"><a href="fitting_basics.html#cb58-8" aria-hidden="true" tabindex="-1"></a>preds</span>
+<span id="cb58-9"><a href="fitting_basics.html#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 801 × 3</span></span>
+<span id="cb58-10"><a href="fitting_basics.html#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   carat pred_lm pred_stan_glm</span></span>
+<span id="cb58-11"><a href="fitting_basics.html#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb58-12"><a href="fitting_basics.html#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 0.2      311.          311.</span></span>
+<span id="cb58-13"><a href="fitting_basics.html#cb58-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 0.202    317.          317.</span></span>
+<span id="cb58-14"><a href="fitting_basics.html#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 0.205    324.          324.</span></span>
+<span id="cb58-15"><a href="fitting_basics.html#cb58-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 0.207    331.          331.</span></span>
+<span id="cb58-16"><a href="fitting_basics.html#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 0.210    337.          337.</span></span>
+<span id="cb58-17"><a href="fitting_basics.html#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 0.212    344.          344.</span></span>
+<span id="cb58-18"><a href="fitting_basics.html#cb58-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 795 more rows</span></span></code></pre></div>
+<p>In the tibble above, <code>carat</code> contains equally spaced values. We then use the <code>newdata</code> argument of <code>predict()</code> to make predictions at these values using the models. <code>predict()</code> makes predictions of <code>log(price)</code>, since this was the response in the formula defining the model function family. We therefore use <code>exp()</code> to get predictions for <code>price</code>.</p>
+<p><code>lm()</code> is from the stats package, and <code>stan_glm()</code> is from the rstanarm package. These packages were written and are maintained by different people. You might wonder how the function <code>predict()</code> could make predictions for such very different models from these two different packages. It does this by taking advantage for R’s object-oriented functionality.</p>
+<p><code>fit_lm</code> is has class lm.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="fitting_basics.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fit_lm)</span>
+<span id="cb59-2"><a href="fitting_basics.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;lm&quot;</span></span></code></pre></div>
+<p>When <code>predict()</code> encounters a model of this class, it calls <code>predict.lm()</code> from the stats package.</p>
+<p><code>fit_stan_glm</code> has class stanreg.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="fitting_basics.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fit_stan_glm)</span>
+<span id="cb60-2"><a href="fitting_basics.html#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;stanreg&quot; &quot;glm&quot;     &quot;lm&quot;</span></span></code></pre></div>
+<p>When <code>predict()</code> encounters a model of this class, it calls <code>predict.stanreg()</code> from the rstanarm package.</p>
+<p>The tidymodels models <code>fit_tm_lm</code> and <code>fit_tm_stan</code> have class model_fit</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="fitting_basics.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fit_tm_lm)</span>
+<span id="cb61-2"><a href="fitting_basics.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_lm&quot;       &quot;model_fit&quot;</span></span>
+<span id="cb61-3"><a href="fitting_basics.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fit_tm_stan)</span>
+<span id="cb61-4"><a href="fitting_basics.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_stanreg&quot;  &quot;model_fit&quot;</span></span></code></pre></div>
+<p>When <code>predict()</code> encounters a model of this class, it calls <code>predict.model_fit()</code> from the tidymodels <a href="https://parsnip.tidymodels.org/">parsnip</a> package. We need to use slightly different arguments to make predictions with this function.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="fitting_basics.html#cb62-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> </span>
+<span id="cb62-2"><a href="fitting_basics.html#cb62-2" aria-hidden="true" tabindex="-1"></a>  preds <span class="sc">%&gt;%</span> </span>
+<span id="cb62-3"><a href="fitting_basics.html#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb62-4"><a href="fitting_basics.html#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pred_tm_lm =</span> </span>
+<span id="cb62-5"><a href="fitting_basics.html#cb62-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(fit_tm_lm, <span class="at">new_data =</span> <span class="fu">tibble</span>(carat), <span class="at">type =</span> <span class="st">&quot;raw&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">exp</span>(),</span>
+<span id="cb62-6"><a href="fitting_basics.html#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">pred_tm_stan =</span> </span>
+<span id="cb62-7"><a href="fitting_basics.html#cb62-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(fit_tm_stan, <span class="at">new_data =</span> <span class="fu">tibble</span>(carat), <span class="at">type =</span> <span class="st">&quot;raw&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">exp</span>()</span>
+<span id="cb62-8"><a href="fitting_basics.html#cb62-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb62-9"><a href="fitting_basics.html#cb62-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-10"><a href="fitting_basics.html#cb62-10" aria-hidden="true" tabindex="-1"></a>preds</span>
+<span id="cb62-11"><a href="fitting_basics.html#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 801 × 5</span></span>
+<span id="cb62-12"><a href="fitting_basics.html#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   carat pred_lm pred_stan_glm pred_tm_lm pred_tm_stan</span></span>
+<span id="cb62-13"><a href="fitting_basics.html#cb62-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb62-14"><a href="fitting_basics.html#cb62-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 0.2      311.          311.       311.         311.</span></span>
+<span id="cb62-15"><a href="fitting_basics.html#cb62-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 0.202    317.          317.       317.         317.</span></span>
+<span id="cb62-16"><a href="fitting_basics.html#cb62-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 0.205    324.          324.       324.         324.</span></span>
+<span id="cb62-17"><a href="fitting_basics.html#cb62-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 0.207    331.          331.       331.         331.</span></span>
+<span id="cb62-18"><a href="fitting_basics.html#cb62-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 0.210    337.          337.       337.         337.</span></span>
+<span id="cb62-19"><a href="fitting_basics.html#cb62-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 0.212    344.          344.       344.         344.</span></span>
+<span id="cb62-20"><a href="fitting_basics.html#cb62-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 795 more rows</span></span></code></pre></div>
+<p>The predictions by the models created with tidymodels are exactly the same as those created directly with <code>lm()</code> and <code>stan_glm()</code>.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="fitting_basics.html#cb63-1" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">%&gt;%</span> </span>
+<span id="cb63-2"><a href="fitting_basics.html#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb63-3"><a href="fitting_basics.html#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_lm =</span> <span class="fu">max</span>(<span class="fu">abs</span>(pred_tm_lm <span class="sc">-</span> pred_lm)),</span>
+<span id="cb63-4"><a href="fitting_basics.html#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_stan_glm =</span> <span class="fu">max</span>(<span class="fu">abs</span>(pred_tm_stan <span class="sc">-</span> pred_stan_glm))</span>
+<span id="cb63-5"><a href="fitting_basics.html#cb63-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb63-6"><a href="fitting_basics.html#cb63-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
+<span id="cb63-7"><a href="fitting_basics.html#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   diff_lm diff_stan_glm</span></span>
+<span id="cb63-8"><a href="fitting_basics.html#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb63-9"><a href="fitting_basics.html#cb63-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       0             0</span></span></code></pre></div>
+<p>And the predictions by the models created by directly <code>lm()</code> and <code>stan_glm()</code> are very close.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="fitting_basics.html#cb64-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> </span>
+<span id="cb64-2"><a href="fitting_basics.html#cb64-2" aria-hidden="true" tabindex="-1"></a>  preds <span class="sc">%&gt;%</span> </span>
+<span id="cb64-3"><a href="fitting_basics.html#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb64-4"><a href="fitting_basics.html#cb64-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rel_max =</span> <span class="fu">max</span>(<span class="fu">abs</span>(pred_stan_glm <span class="sc">-</span> pred_lm) <span class="sc">/</span> <span class="fu">pmin</span>(pred_stan_glm, pred_lm))</span>
+<span id="cb64-5"><a href="fitting_basics.html#cb64-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb64-6"><a href="fitting_basics.html#cb64-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="fitting_basics.html#cb64-7" aria-hidden="true" tabindex="-1"></a>v</span>
+<span id="cb64-8"><a href="fitting_basics.html#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 1</span></span>
+<span id="cb64-9"><a href="fitting_basics.html#cb64-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     rel_max</span></span>
+<span id="cb64-10"><a href="fitting_basics.html#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       &lt;dbl&gt;</span></span>
+<span id="cb64-11"><a href="fitting_basics.html#cb64-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 0.0000659</span></span></code></pre></div>
+<p>The predictions are always within 0.0066% of each other.</p>
+<p>Since the predictions of the different models are all very close, in the following we will only check the fit of <code>stan_glm()</code>.</p>
+</div>
+<div id="checking-predictions" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Checking predictions<a href="fitting_basics.html#checking-predictions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Recall from Chapter 3 that log-log plots are an effective way to plot data from a power law. On a log-log plot, a power law function is linear.</p>
+<p>Here’s our data on a log-log plot with a smooth line and our model’s predictions.</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="fitting_basics.html#cb65-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb65-2"><a href="fitting_basics.html#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat, price)) <span class="sc">+</span></span>
+<span id="cb65-3"><a href="fitting_basics.html#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.01</span>) <span class="sc">+</span> </span>
+<span id="cb65-4"><a href="fitting_basics.html#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">&quot;Data&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb65-5"><a href="fitting_basics.html#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred_stan_glm, <span class="at">color =</span> <span class="st">&quot;Model&quot;</span>), <span class="at">data =</span> preds, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb65-6"><a href="fitting_basics.html#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb65-7"><a href="fitting_basics.html#cb65-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb65-8"><a href="fitting_basics.html#cb65-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb65-9"><a href="fitting_basics.html#cb65-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">+</span></span>
+<span id="cb65-10"><a href="fitting_basics.html#cb65-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p><img src="fitting_basics_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>For diamonds greater than or equal to 0.3 carat in size, the model predictions are very close to the smooth line. For diamonds smaller than 0.3 carat, the actual prices of diamonds are greater than the prices predicted by the model. However, there are relatively few diamonds of this size.</p>
+<p>Since <code>stan_glm()</code> is a Bayesian model, we can plot estimates of the uncertainty in its predictions.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="fitting_basics.html#cb66-1" aria-hidden="true" tabindex="-1"></a>predictive_intervals <span class="ot">&lt;-</span> <span class="cf">function</span>(.data, fit, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.9</span>)) {</span>
+<span id="cb66-2"><a href="fitting_basics.html#cb66-2" aria-hidden="true" tabindex="-1"></a>  .data <span class="sc">%&gt;%</span></span>
+<span id="cb66-3"><a href="fitting_basics.html#cb66-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">.pred =</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> .)) <span class="sc">%&gt;%</span></span>
+<span id="cb66-4"><a href="fitting_basics.html#cb66-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(</span>
+<span id="cb66-5"><a href="fitting_basics.html#cb66-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">map_dfc</span>(</span>
+<span id="cb66-6"><a href="fitting_basics.html#cb66-6" aria-hidden="true" tabindex="-1"></a>        probs, </span>
+<span id="cb66-7"><a href="fitting_basics.html#cb66-7" aria-hidden="true" tabindex="-1"></a>        <span class="sc">~</span> <span class="fu">predictive_interval</span>(fit, <span class="at">prob =</span> ., <span class="at">newdata =</span> .data) <span class="sc">%&gt;%</span></span>
+<span id="cb66-8"><a href="fitting_basics.html#cb66-8" aria-hidden="true" tabindex="-1"></a>          <span class="fu">as_tibble</span>()</span>
+<span id="cb66-9"><a href="fitting_basics.html#cb66-9" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb66-10"><a href="fitting_basics.html#cb66-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb66-11"><a href="fitting_basics.html#cb66-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb66-12"><a href="fitting_basics.html#cb66-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-13"><a href="fitting_basics.html#cb66-13" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> </span>
+<span id="cb66-14"><a href="fitting_basics.html#cb66-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">carat =</span> <span class="fu">seq</span>(<span class="fu">min</span>(df<span class="sc">$</span>carat), <span class="fu">max</span>(df<span class="sc">$</span>carat), <span class="at">length.out =</span> <span class="dv">801</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb66-15"><a href="fitting_basics.html#cb66-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predictive_intervals</span>(<span class="at">fit =</span> fit_stan_glm) <span class="sc">%&gt;%</span> </span>
+<span id="cb66-16"><a href="fitting_basics.html#cb66-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="sc">!</span>carat, exp))</span>
+<span id="cb66-17"><a href="fitting_basics.html#cb66-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-18"><a href="fitting_basics.html#cb66-18" aria-hidden="true" tabindex="-1"></a>v <span class="sc">%&gt;%</span> </span>
+<span id="cb66-19"><a href="fitting_basics.html#cb66-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat)) <span class="sc">+</span></span>
+<span id="cb66-20"><a href="fitting_basics.html#cb66-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">5%</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">95%</span><span class="st">`</span>), <span class="at">alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb66-21"><a href="fitting_basics.html#cb66-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">25%</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">75%</span><span class="st">`</span>), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb66-22"><a href="fitting_basics.html#cb66-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> price), <span class="at">data =</span> df, <span class="at">alpha =</span> <span class="fl">0.01</span>) <span class="sc">+</span></span>
+<span id="cb66-23"><a href="fitting_basics.html#cb66-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .pred), <span class="at">color =</span> <span class="st">&quot;#f8766d&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb66-24"><a href="fitting_basics.html#cb66-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(df<span class="sc">$</span>price), <span class="fu">max</span>(df<span class="sc">$</span>price))) <span class="sc">+</span></span>
+<span id="cb66-25"><a href="fitting_basics.html#cb66-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb66-26"><a href="fitting_basics.html#cb66-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb66-27"><a href="fitting_basics.html#cb66-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb66-28"><a href="fitting_basics.html#cb66-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Bayesian linear regression with 50% and 90% predictive intervals&quot;</span></span>
+<span id="cb66-29"><a href="fitting_basics.html#cb66-29" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="fitting_basics_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The 90% predictive interval contains the bulk of the data.</p>
+<p>With no major discrepancies between the model’s predictions and the data, we’ll now turn to a more sophisticated technique from EDA – checking the model’s residuals.</p>
+</div>
+<div id="checking-residuals" class="section level3 hasAnchor" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> Checking residuals<a href="fitting_basics.html#checking-residuals" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We encountered residuals in Chapter 1. For a point in a dataset, the residual at that point is the true value of the response variable minus the value predicted using the corresponding predictor variable(s).</p>
+<p>Our formula uses logs, so the residual for a logged response is</p>
+<p><code>log(price) - log(predicted price)</code></p>
+<p>or equivalently</p>
+<p><code>log(price / predicted price)</code> .</p>
+<p>Applying <code>exp()</code> to this residual turns an additive error into a multiplicative error. This is the natural way to study error for a power law, where the range of the response variable can vary greatly. For example, in our dataset <code>price</code> ranges from $326 to $18,818. We will therefore examine the ratio</p>
+<p><code>price / predicted price</code> .</p>
+<p>If we call the <code>predict()</code> function without specifying new data, it will return the predictions for the dataset used to fit the model.</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="fitting_basics.html#cb67-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> </span>
+<span id="cb67-2"><a href="fitting_basics.html#cb67-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb67-3"><a href="fitting_basics.html#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(price, carat) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-4"><a href="fitting_basics.html#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb67-5"><a href="fitting_basics.html#cb67-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pred =</span> <span class="fu">predict</span>(fit_stan_glm) <span class="sc">%&gt;%</span> <span class="fu">exp</span>(),</span>
+<span id="cb67-6"><a href="fitting_basics.html#cb67-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_ratio =</span> price <span class="sc">/</span> pred</span>
+<span id="cb67-7"><a href="fitting_basics.html#cb67-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-8"><a href="fitting_basics.html#cb67-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-9"><a href="fitting_basics.html#cb67-9" aria-hidden="true" tabindex="-1"></a>v</span>
+<span id="cb67-10"><a href="fitting_basics.html#cb67-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 53,405 × 4</span></span>
+<span id="cb67-11"><a href="fitting_basics.html#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   price carat  pred error_ratio</span></span>
+<span id="cb67-12"><a href="fitting_basics.html#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb67-13"><a href="fitting_basics.html#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   326  0.23  394.       0.828</span></span>
+<span id="cb67-14"><a href="fitting_basics.html#cb67-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   326  0.21  338.       0.965</span></span>
+<span id="cb67-15"><a href="fitting_basics.html#cb67-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   327  0.23  394.       0.831</span></span>
+<span id="cb67-16"><a href="fitting_basics.html#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4   334  0.29  582.       0.574</span></span>
+<span id="cb67-17"><a href="fitting_basics.html#cb67-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5   335  0.31  652.       0.514</span></span>
+<span id="cb67-18"><a href="fitting_basics.html#cb67-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6   336  0.24  423.       0.794</span></span>
+<span id="cb67-19"><a href="fitting_basics.html#cb67-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 53,399 more rows</span></span></code></pre></div>
+<p>Let’s look at a plot of the error ratios.</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="fitting_basics.html#cb68-1" aria-hidden="true" tabindex="-1"></a>v <span class="sc">%&gt;%</span> </span>
+<span id="cb68-2"><a href="fitting_basics.html#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat, error_ratio)) <span class="sc">+</span></span>
+<span id="cb68-3"><a href="fitting_basics.html#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.01</span>) <span class="sc">+</span></span>
+<span id="cb68-4"><a href="fitting_basics.html#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb68-5"><a href="fitting_basics.html#cb68-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb68-6"><a href="fitting_basics.html#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>)) <span class="sc">+</span></span>
+<span id="cb68-7"><a href="fitting_basics.html#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span> </span>
+<span id="cb68-8"><a href="fitting_basics.html#cb68-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Error ratio&quot;</span>)</span></code></pre></div>
+<p><img src="fitting_basics_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>As we saw above, the actual prices of the diamonds were more expensive than the model’s predictions for those with size less that 0.3 carat. In addition, we can now see that diamonds around 1.0 and 1.5 carats were also more expensive than predicted. Nevertheless, the smooth line for <code>error_ratio</code> is remains fairly close to 1 for diamonds of size 0.3 carat and greater. A systematic divergence from this line would indicate a problem with the fit.</p>
+<p>Let’s look at the distribution of <code>error_ratio</code>.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="fitting_basics.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(v<span class="sc">$</span>error_ratio, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>, <span class="fl">0.975</span>))</span>
+<span id="cb69-2"><a href="fitting_basics.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2.5%    5%   50%   95% 97.5% </span></span>
+<span id="cb69-3"><a href="fitting_basics.html#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.614 0.662 0.994 1.538 1.681</span></span></code></pre></div>
+<p>The median <code>error_ratio</code> is very close to 1. Approximately 95% of the diamonds are within the range of 39% less and 68% more than the predictions.</p>
+</div>
+</div>
+<div id="summary-4" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Summary<a href="fitting_basics.html#summary-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The process of fitting classical and Bayesian models is similar. Bayesian models have the advantage of enabling additional inferences about the model, such as uncertainties in the parameters or the model’s predictions. Tidymodels provides a common interface to a wide range of model types and engines, as well as other tools for the modeling process.</p>
+<p>Once we have fit a model, we can check the fit by:</p>
+<ul>
+<li>Checking the model parameters against known features of the data.</li>
+<li>Checking the predictions of the model against the actual values of the response variable in the data.</li>
+<li>Checking the residuals to see if their smooth line is largely horizontal.</li>
+</ul>
+<p>These checks only indicate how well the model fits the data. They are not an indication of how well the model would make predictions with new data. We will turn to that question in the next chapter, as well as the issue of how to evaluate and compare models from different function families.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="determine_functional_form.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="model_evaluation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/dcl-docs/model/edit/master/fitting_basics.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

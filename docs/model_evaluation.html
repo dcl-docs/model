@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Model evaluation | Data Modeling</title>
+  <meta name="description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Model evaluation | Data Modeling" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="github-repo" content="dcl-docs/model" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Model evaluation | Data Modeling" />
+  
+  <meta name="twitter:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  
+
+<meta name="author" content="Sara Altman, Bill Behrman" />
+
+
+<meta name="date" content="2022-04-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="fitting_basics.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Modeling</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-read-this-book"><i class="fa fa-check"></i>How to read this book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#an-evolving-book"><i class="fa fa-check"></i>An evolving book</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="model_basics.html"><a href="model_basics.html"><i class="fa fa-check"></i><b>1</b> Model basics</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="model_basics.html"><a href="model_basics.html#what-is-a-model"><i class="fa fa-check"></i><b>1.1</b> What is a model?</a></li>
+<li class="chapter" data-level="1.2" data-path="model_basics.html"><a href="model_basics.html#supervised-learning"><i class="fa fa-check"></i><b>1.2</b> Supervised learning</a></li>
+<li class="chapter" data-level="1.3" data-path="model_basics.html"><a href="model_basics.html#choosing-a-function-family"><i class="fa fa-check"></i><b>1.3</b> Choosing a function family</a></li>
+<li class="chapter" data-level="1.4" data-path="model_basics.html"><a href="model_basics.html#classical-modeling"><i class="fa fa-check"></i><b>1.4</b> Classical modeling</a></li>
+<li class="chapter" data-level="1.5" data-path="model_basics.html"><a href="model_basics.html#bayesian-modeling"><i class="fa fa-check"></i><b>1.5</b> Bayesian modeling</a></li>
+<li class="chapter" data-level="1.6" data-path="model_basics.html"><a href="model_basics.html#summary"><i class="fa fa-check"></i><b>1.6</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="understand_your_data.html"><a href="understand_your_data.html"><i class="fa fa-check"></i><b>2</b> Understand your data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="understand_your_data.html"><a href="understand_your_data.html#understand-your-variables"><i class="fa fa-check"></i><b>2.1</b> Understand your variables</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="understand_your_data.html"><a href="understand_your_data.html#read-the-documentation"><i class="fa fa-check"></i><b>2.1.1</b> Read the documentation</a></li>
+<li class="chapter" data-level="2.1.2" data-path="understand_your_data.html"><a href="understand_your_data.html#glimpse"><i class="fa fa-check"></i><b>2.1.2</b> <code>glimpse()</code></a></li>
+<li class="chapter" data-level="2.1.3" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-1"><i class="fa fa-check"></i><b>2.1.3</b> <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="understand_your_data.html"><a href="understand_your_data.html#check-for-problems"><i class="fa fa-check"></i><b>2.2</b> Check for problems</a></li>
+<li class="chapter" data-level="2.3" data-path="understand_your_data.html"><a href="understand_your_data.html#d-eda"><i class="fa fa-check"></i><b>2.3</b> 1D EDA</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="understand_your_data.html"><a href="understand_your_data.html#variable-types"><i class="fa fa-check"></i><b>2.3.1</b> Variable types</a></li>
+<li class="chapter" data-level="2.3.2" data-path="understand_your_data.html"><a href="understand_your_data.html#continuous-variables"><i class="fa fa-check"></i><b>2.3.2</b> Continuous variables</a></li>
+<li class="chapter" data-level="2.3.3" data-path="understand_your_data.html"><a href="understand_your_data.html#discrete-variables"><i class="fa fa-check"></i><b>2.3.3</b> Discrete variables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-2"><i class="fa fa-check"></i><b>2.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="determine_functional_form.html"><a href="determine_functional_form.html"><i class="fa fa-check"></i><b>3</b> Determine functional form</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#formulas"><i class="fa fa-check"></i><b>3.1</b> Formulas</a></li>
+<li class="chapter" data-level="3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#continuous-predictors"><i class="fa fa-check"></i><b>3.2</b> Continuous predictors</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#transformations"><i class="fa fa-check"></i><b>3.2.1</b> Transformations</a></li>
+<li class="chapter" data-level="3.2.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks"><i class="fa fa-check"></i><b>3.2.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="determine_functional_form.html"><a href="determine_functional_form.html#discrete-predictors"><i class="fa fa-check"></i><b>3.3</b> Discrete predictors</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#functional-form"><i class="fa fa-check"></i><b>3.3.1</b> Functional form</a></li>
+<li class="chapter" data-level="3.3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks-1"><i class="fa fa-check"></i><b>3.3.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="determine_functional_form.html"><a href="determine_functional_form.html#summary-3"><i class="fa fa-check"></i><b>3.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="fitting_basics.html"><a href="fitting_basics.html"><i class="fa fa-check"></i><b>4</b> Fitting basics</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-model"><i class="fa fa-check"></i><b>4.1</b> Fitting a model</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-classical-model"><i class="fa fa-check"></i><b>4.1.1</b> Fitting a classical model</a></li>
+<li class="chapter" data-level="4.1.2" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-bayesian-model"><i class="fa fa-check"></i><b>4.1.2</b> Fitting a Bayesian model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="fitting_basics.html"><a href="fitting_basics.html#tidymodels"><i class="fa fa-check"></i><b>4.1.3</b> Tidymodels</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-a-model"><i class="fa fa-check"></i><b>4.2</b> Checking a model</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="fitting_basics.html"><a href="fitting_basics.html#making-predictions"><i class="fa fa-check"></i><b>4.2.1</b> Making predictions</a></li>
+<li class="chapter" data-level="4.2.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-predictions"><i class="fa fa-check"></i><b>4.2.2</b> Checking predictions</a></li>
+<li class="chapter" data-level="4.2.3" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-residuals"><i class="fa fa-check"></i><b>4.2.3</b> Checking residuals</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="fitting_basics.html"><a href="fitting_basics.html#summary-4"><i class="fa fa-check"></i><b>4.3</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="model_evaluation.html"><a href="model_evaluation.html"><i class="fa fa-check"></i><b>5</b> Model evaluation</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="model_evaluation.html"><a href="model_evaluation.html#model-overfitting"><i class="fa fa-check"></i><b>5.1</b> Model overfitting</a></li>
+<li class="chapter" data-level="5.2" data-path="model_evaluation.html"><a href="model_evaluation.html#model-selection"><i class="fa fa-check"></i><b>5.2</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="model_evaluation.html"><a href="model_evaluation.html#classical-modeling-1"><i class="fa fa-check"></i><b>5.2.1</b> Classical modeling</a></li>
+<li class="chapter" data-level="5.2.2" data-path="model_evaluation.html"><a href="model_evaluation.html#bayesian-modeling-1"><i class="fa fa-check"></i><b>5.2.2</b> Bayesian modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="model_evaluation.html"><a href="model_evaluation.html#final-model"><i class="fa fa-check"></i><b>5.3</b> Final model</a></li>
+<li class="chapter" data-level="5.4" data-path="model_evaluation.html"><a href="model_evaluation.html#summary-5"><i class="fa fa-check"></i><b>5.4</b> Summary</a></li>
+<li class="chapter" data-level="5.5" data-path="model_evaluation.html"><a href="model_evaluation.html#to-learn-more"><i class="fa fa-check"></i><b>5.5</b> To learn more</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Modeling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="model-evaluation" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Model evaluation<a href="model_evaluation.html#model-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="model_evaluation.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb70-2"><a href="model_evaluation.html#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dcldata)</span>
+<span id="cb70-3"><a href="model_evaluation.html#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(robustbase)</span>
+<span id="cb70-4"><a href="model_evaluation.html#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span>
+<span id="cb70-5"><a href="model_evaluation.html#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb70-6"><a href="model_evaluation.html#cb70-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span></code></pre></div>
+<p>After you’ve used EDA to understand your data and identify potential function families with which to model, you can fit models for each of these function families. In this chapter, we’ll show you how to compare and evaluate the resulting models.</p>
+<p>Our exploration in Chapter 2 led us to focus on the following subset of the <code>diamonds</code> dataset, which we will use below. In addition, we will convert the ordered factors into unordered factors so that their model coefficients will be interpretable.</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="model_evaluation.html#cb71-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> </span>
+<span id="cb71-2"><a href="model_evaluation.html#cb71-2" aria-hidden="true" tabindex="-1"></a>  diamonds <span class="sc">%&gt;%</span> </span>
+<span id="cb71-3"><a href="model_evaluation.html#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>, y <span class="sc">&gt;</span> <span class="dv">0</span>, z <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-4"><a href="model_evaluation.html#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(y <span class="sc">&lt;</span> <span class="dv">20</span>, z <span class="sc">&lt;</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-5"><a href="model_evaluation.html#cb71-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(carat <span class="sc">&lt;=</span> <span class="fu">quantile</span>(.<span class="sc">$</span>carat, <span class="at">probs =</span> <span class="fl">0.99</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-6"><a href="model_evaluation.html#cb71-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb71-7"><a href="model_evaluation.html#cb71-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="fu">fct_rev</span>(color),</span>
+<span id="cb71-8"><a href="model_evaluation.html#cb71-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color_combined =</span> <span class="fu">fct_collapse</span>(color, <span class="st">&quot;DEFG&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;G&quot;</span>)),</span>
+<span id="cb71-9"><a href="model_evaluation.html#cb71-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.ordered), <span class="sc">~</span> <span class="fu">factor</span>(., <span class="at">ordered =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb71-10"><a href="model_evaluation.html#cb71-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p>In Chapter 3, we explored the relationship of <code>price</code> to the four Cs: <code>carat</code>, <code>clarity</code>, <code>color</code>, and <code>cut</code>. We saw that the relationship of <code>price</code> to the continuous variable <code>carat</code> could be approximated with a power law. We saw that the other three the discrete variables were suitable for inclusion into a linear model, with <code>clarity</code> being the most important, followed by <code>color</code>, and then <code>cut</code>. Finally, we saw that the colors with quality greater than G didn’t influence price much, which led to the <code>color_combined</code> variable where we collapsed the colors D, E, F, and G into one value.</p>
+<p>We can therefore consider the following function families with which to model.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="model_evaluation.html#cb72-1" aria-hidden="true" tabindex="-1"></a>formulas <span class="ot">&lt;-</span> </span>
+<span id="cb72-2"><a href="model_evaluation.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tribble</span>(</span>
+<span id="cb72-3"><a href="model_evaluation.html#cb72-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span>formula,</span>
+<span id="cb72-4"><a href="model_evaluation.html#cb72-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;log(price) ~ log(carat)&quot;</span>,</span>
+<span id="cb72-5"><a href="model_evaluation.html#cb72-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;log(price) ~ log(carat) + clarity&quot;</span>,</span>
+<span id="cb72-6"><a href="model_evaluation.html#cb72-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;log(price) ~ log(carat) + clarity + color_combined&quot;</span>,</span>
+<span id="cb72-7"><a href="model_evaluation.html#cb72-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;log(price) ~ log(carat) + clarity + color&quot;</span>,</span>
+<span id="cb72-8"><a href="model_evaluation.html#cb72-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;log(price) ~ log(carat) + clarity + color + cut&quot;</span></span>
+<span id="cb72-9"><a href="model_evaluation.html#cb72-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb72-10"><a href="model_evaluation.html#cb72-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb72-11"><a href="model_evaluation.html#cb72-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb72-12"><a href="model_evaluation.html#cb72-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_coefs =</span> </span>
+<span id="cb72-13"><a href="model_evaluation.html#cb72-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">model.matrix</span>(<span class="fu">as.formula</span>(formula), <span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">ncol</span>()</span>
+<span id="cb72-14"><a href="model_evaluation.html#cb72-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb72-15"><a href="model_evaluation.html#cb72-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb72-16"><a href="model_evaluation.html#cb72-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-17"><a href="model_evaluation.html#cb72-17" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(formulas)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">formula</th>
+<th align="right">n_coefs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat)</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">log(price) ~ log(carat) + clarity</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat) + clarity + color_combined</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">log(price) ~ log(carat) + clarity + color</td>
+<td align="right">15</td>
+</tr>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat) + clarity + color + cut</td>
+<td align="right">19</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>n_coefs</code> column contains the number of coefficients or parameters for the function family and ranges from two, for the simplest family we used in last chapter, to 19 for the most complex function family. Each function family in the list includes all of the functions in the function families above it. You might ask, why not just use the most complex function family, since it contains all the functions of the simpler families? We’ll explain why in the next section.</p>
+<p>But before we can discuss model evaluation, we need to specify the purpose for our modeling. We will assume that our goal is to create a model using the data we have to make accurate predictions on new data.</p>
+<div id="model-overfitting" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Model overfitting<a href="model_evaluation.html#model-overfitting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For this section, we will seek to model blood pressure as a function of age. The data we’ll use are from the <a href="https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2017">National Health and Nutrition Examination Survey (NHANES) 2017-2018</a> and are in the <a href="https://github.com/dcl-docs/dcldata">dcldata</a> package.</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="model_evaluation.html#cb73-1" aria-hidden="true" tabindex="-1"></a>blood_pressure</span>
+<span id="cb73-2"><a href="model_evaluation.html#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6,144 × 5</span></span>
+<span id="cb73-3"><a href="model_evaluation.html#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    seqn ridageyr bpxosy1 bpxosy2 bpxosy3</span></span>
+<span id="cb73-4"><a href="model_evaluation.html#cb73-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb73-5"><a href="model_evaluation.html#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 93705       66     164     165     172</span></span>
+<span id="cb73-6"><a href="model_evaluation.html#cb73-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 93706       18     126     128     133</span></span>
+<span id="cb73-7"><a href="model_evaluation.html#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 93707       13     136     133     139</span></span>
+<span id="cb73-8"><a href="model_evaluation.html#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 93708       66     146     142     151</span></span>
+<span id="cb73-9"><a href="model_evaluation.html#cb73-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 93709       75     120     124     113</span></span>
+<span id="cb73-10"><a href="model_evaluation.html#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 93711       56     112     112     109</span></span>
+<span id="cb73-11"><a href="model_evaluation.html#cb73-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 6,138 more rows</span></span></code></pre></div>
+<p>Here are the variables:</p>
+<ul>
+<li><code>seqn</code>: Respondent sequence number</li>
+<li><code>ridageyr</code>: Age in years at screening. All participants aged 80 years and older are coded as 80.</li>
+<li><code>bpxosy1</code>: Systolic blood pressure - 1st oscillometric reading</li>
+<li><code>bpxosy2</code>: Systolic blood pressure - 2nd oscillometric reading</li>
+<li><code>bpxosy3</code>: Systolic blood pressure - 3rd oscillometric reading</li>
+</ul>
+<p>Since we don’t know the actual age for participants with <code>rigageyr</code> variable equal to 80, we will only consider those age 79 and younger. The blood pressure variable we’ll model will be a new variable <code>bpxosy</code> that is the mean of the three systolic blood pressure measurements.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="model_evaluation.html#cb74-1" aria-hidden="true" tabindex="-1"></a>bp_all <span class="ot">&lt;-</span> </span>
+<span id="cb74-2"><a href="model_evaluation.html#cb74-2" aria-hidden="true" tabindex="-1"></a>  blood_pressure <span class="sc">%&gt;%</span> </span>
+<span id="cb74-3"><a href="model_evaluation.html#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ridageyr <span class="sc">&lt;=</span> <span class="dv">79</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-4"><a href="model_evaluation.html#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb74-5"><a href="model_evaluation.html#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bpxosy =</span> <span class="fu">mean</span>(<span class="fu">c</span>(bpxosy1, bpxosy2, bpxosy3), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-6"><a href="model_evaluation.html#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb74-7"><a href="model_evaluation.html#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">matches</span>(<span class="st">&quot;bpxosy</span><span class="sc">\\</span><span class="st">d&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-8"><a href="model_evaluation.html#cb74-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(seqn)</span>
+<span id="cb74-9"><a href="model_evaluation.html#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-10"><a href="model_evaluation.html#cb74-10" aria-hidden="true" tabindex="-1"></a>bp_all</span>
+<span id="cb74-11"><a href="model_evaluation.html#cb74-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5,851 × 3</span></span>
+<span id="cb74-12"><a href="model_evaluation.html#cb74-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    seqn ridageyr bpxosy</span></span>
+<span id="cb74-13"><a href="model_evaluation.html#cb74-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb74-14"><a href="model_evaluation.html#cb74-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 93705       66   167 </span></span>
+<span id="cb74-15"><a href="model_evaluation.html#cb74-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 93706       18   129 </span></span>
+<span id="cb74-16"><a href="model_evaluation.html#cb74-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 93707       13   136 </span></span>
+<span id="cb74-17"><a href="model_evaluation.html#cb74-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 93708       66   146.</span></span>
+<span id="cb74-18"><a href="model_evaluation.html#cb74-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 93709       75   119 </span></span>
+<span id="cb74-19"><a href="model_evaluation.html#cb74-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 93711       56   111 </span></span>
+<span id="cb74-20"><a href="model_evaluation.html#cb74-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 5,845 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="model_evaluation.html#cb75-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span></code></pre></div>
+<p>We’ll now create a random sample of 200 participants, <code>bp_model</code>, and we’ll assume that this sample is all the data we have to work with to create our model. We’ll use the remaining data, <code>bp_new</code>, to judge how well the model would predict on new data.</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="model_evaluation.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">950</span>)</span>
+<span id="cb76-2"><a href="model_evaluation.html#cb76-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="model_evaluation.html#cb76-3" aria-hidden="true" tabindex="-1"></a>bp_model <span class="ot">&lt;-</span> </span>
+<span id="cb76-4"><a href="model_evaluation.html#cb76-4" aria-hidden="true" tabindex="-1"></a>  bp_all <span class="sc">%&gt;%</span> </span>
+<span id="cb76-5"><a href="model_evaluation.html#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="at">size =</span> n) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-6"><a href="model_evaluation.html#cb76-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(seqn)</span>
+<span id="cb76-7"><a href="model_evaluation.html#cb76-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-8"><a href="model_evaluation.html#cb76-8" aria-hidden="true" tabindex="-1"></a>bp_new <span class="ot">&lt;-</span> </span>
+<span id="cb76-9"><a href="model_evaluation.html#cb76-9" aria-hidden="true" tabindex="-1"></a>  bp_all <span class="sc">%&gt;%</span> </span>
+<span id="cb76-10"><a href="model_evaluation.html#cb76-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(bp_model, <span class="at">by =</span> <span class="st">&quot;seqn&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-11"><a href="model_evaluation.html#cb76-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(seqn)</span></code></pre></div>
+<p><code>bp_model</code> and <code>bp_new</code> partition <code>bp_all</code> into two disjoint datasets.</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="model_evaluation.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_empty</span>(<span class="fu">intersect</span>(bp_model<span class="sc">$</span>seqn, bp_new<span class="sc">$</span>seqn))</span>
+<span id="cb77-2"><a href="model_evaluation.html#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb77-3"><a href="model_evaluation.html#cb77-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-4"><a href="model_evaluation.html#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="fu">setequal</span>(bp_all<span class="sc">$</span>seqn, <span class="fu">union</span>(bp_model<span class="sc">$</span>seqn, bp_new<span class="sc">$</span>seqn))</span>
+<span id="cb77-5"><a href="model_evaluation.html#cb77-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>Our first step is to use EDA to understand the data and potential function families with which to model it.</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="model_evaluation.html#cb78-1" aria-hidden="true" tabindex="-1"></a>bp_model <span class="sc">%&gt;%</span> </span>
+<span id="cb78-2"><a href="model_evaluation.html#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(ridageyr, bpxosy)) <span class="sc">+</span></span>
+<span id="cb78-3"><a href="model_evaluation.html#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb78-4"><a href="model_evaluation.html#cb78-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb78-5"><a href="model_evaluation.html#cb78-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb78-6"><a href="model_evaluation.html#cb78-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Smooth line&quot;</span>,</span>
+<span id="cb78-7"><a href="model_evaluation.html#cb78-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>,</span>
+<span id="cb78-8"><a href="model_evaluation.html#cb78-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Systolic blood pressure (mm Hg)&quot;</span></span>
+<span id="cb78-9"><a href="model_evaluation.html#cb78-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We can see that the smooth line of the data is quite linear, indicating that linear functions could be a promising function family with which to model the data.</p>
+<p>We can also see from the data that we should definitely <em>not</em> use <code>lm()</code> or any other method that uses the least squares algorithm. The least squares algorithm assumes that the errors or residuals are normally distributed with a constant standard deviation. The data has a wide dispersion and outliers that are not consistent with a normal distribution, and the variation in the data appears to increase with increasing age. For these reasons, we will model this data with the function <code>lmrob()</code> from the <a href="https://cran.r-project.org/web/packages/robustbase/index.html">robustbase</a> package. This function is designed to work with data where the least squares assumptions do not hold.</p>
+<p>Though the function family of linear functions seems promising for this data, we’d like to explore the use of more complex functions. For this purpose, we will use higher degree polynomials. Unless your understanding of the data calls for a polynomial, these are rarely a good choice for modeling function families, especially higher degree polynomials, but we are choosing them to illustrate a point.</p>
+<p>Let’s first use EDA to see the models from the function families of polynomials up to degree six.</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="model_evaluation.html#cb79-1" aria-hidden="true" tabindex="-1"></a>plot_poly <span class="ot">&lt;-</span> <span class="cf">function</span>(degree) {</span>
+<span id="cb79-2"><a href="model_evaluation.html#cb79-2" aria-hidden="true" tabindex="-1"></a>  predictions <span class="ot">&lt;-</span> </span>
+<span id="cb79-3"><a href="model_evaluation.html#cb79-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tibble</span>(</span>
+<span id="cb79-4"><a href="model_evaluation.html#cb79-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">ridageyr =</span> </span>
+<span id="cb79-5"><a href="model_evaluation.html#cb79-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">seq</span>(<span class="fu">min</span>(bp_model<span class="sc">$</span>ridageyr), <span class="fu">max</span>(bp_model<span class="sc">$</span>ridageyr), <span class="at">length.out =</span> <span class="dv">201</span>),</span>
+<span id="cb79-6"><a href="model_evaluation.html#cb79-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">bpxosy =</span></span>
+<span id="cb79-7"><a href="model_evaluation.html#cb79-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">lmrob</span>(</span>
+<span id="cb79-8"><a href="model_evaluation.html#cb79-8" aria-hidden="true" tabindex="-1"></a>          bpxosy <span class="sc">~</span> <span class="fu">poly</span>(ridageyr, <span class="at">degree =</span> degree),</span>
+<span id="cb79-9"><a href="model_evaluation.html#cb79-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> bp_model</span>
+<span id="cb79-10"><a href="model_evaluation.html#cb79-10" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">%&gt;%</span></span>
+<span id="cb79-11"><a href="model_evaluation.html#cb79-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">predict</span>(<span class="at">newdata =</span> <span class="fu">tibble</span>(ridageyr))</span>
+<span id="cb79-12"><a href="model_evaluation.html#cb79-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb79-13"><a href="model_evaluation.html#cb79-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb79-14"><a href="model_evaluation.html#cb79-14" aria-hidden="true" tabindex="-1"></a>  bp_model <span class="sc">%&gt;%</span> </span>
+<span id="cb79-15"><a href="model_evaluation.html#cb79-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(ridageyr, bpxosy)) <span class="sc">+</span></span>
+<span id="cb79-16"><a href="model_evaluation.html#cb79-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb79-17"><a href="model_evaluation.html#cb79-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> predictions, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb79-18"><a href="model_evaluation.html#cb79-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb79-19"><a href="model_evaluation.html#cb79-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">str_glue</span>(<span class="st">&quot;Polynomial model of degree {degree}&quot;</span>),</span>
+<span id="cb79-20"><a href="model_evaluation.html#cb79-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>,</span>
+<span id="cb79-21"><a href="model_evaluation.html#cb79-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">&quot;Systolic blood pressure (mm Hg)&quot;</span></span>
+<span id="cb79-22"><a href="model_evaluation.html#cb79-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb79-23"><a href="model_evaluation.html#cb79-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb79-24"><a href="model_evaluation.html#cb79-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-25"><a href="model_evaluation.html#cb79-25" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">6</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb79-26"><a href="model_evaluation.html#cb79-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(plot_poly) <span class="sc">%&gt;%</span> </span>
+<span id="cb79-27"><a href="model_evaluation.html#cb79-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">walk</span>(print)</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /><img src="model_evaluation_files/figure-html/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /><img src="model_evaluation_files/figure-html/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /><img src="model_evaluation_files/figure-html/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /><img src="model_evaluation_files/figure-html/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /><img src="model_evaluation_files/figure-html/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The linear and quadratic models are very similar. As the degree of the polynomials increases, the fits seem increasingly implausible.</p>
+<p>Recall that our goal is to create a model that will make accurate predictions on new data. We have new data in <code>bp_new</code>, which <code>lmrob()</code> did not see when creating the models. So we can make predictions on this new data and compare the predictions to the actual measured blood pressures.</p>
+<p>Recall from Chapter 1 that the differences between the predictions and the actual response are called residuals. There are different metrics for measuring the residuals, including the <em>root mean squared error</em> (RMSE)</p>
+<p><code>sqrt(mean(residuals^2))</code></p>
+<p>and the <em>mean absolute error</em> (MAE)</p>
+<p><code>mean(abs(residuals))</code> .</p>
+<p>Since our data has outliers, we will use the more robust mean absolute error.</p>
+<p>Here’s the calculation of the MAE for the predictions of the six models above on the new data in <code>bp_new</code>.</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="model_evaluation.html#cb80-1" aria-hidden="true" tabindex="-1"></a>bp_errors <span class="ot">&lt;-</span> </span>
+<span id="cb80-2"><a href="model_evaluation.html#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">formula =</span> <span class="fu">str_glue</span>(<span class="st">&quot;bpxosy ~ poly(ridageyr, degree = {1:6})&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb80-3"><a href="model_evaluation.html#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb80-4"><a href="model_evaluation.html#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb80-5"><a href="model_evaluation.html#cb80-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_coefs =</span> <span class="fu">model.matrix</span>(<span class="fu">as.formula</span>(formula), <span class="at">data =</span> bp_model) <span class="sc">%&gt;%</span> <span class="fu">ncol</span>(),</span>
+<span id="cb80-6"><a href="model_evaluation.html#cb80-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">list</span>(<span class="fu">lmrob</span>(<span class="fu">as.formula</span>(formula), <span class="at">data =</span> bp_model)),</span>
+<span id="cb80-7"><a href="model_evaluation.html#cb80-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mae =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(bp_new<span class="sc">$</span>bpxosy <span class="sc">-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> bp_new)))</span>
+<span id="cb80-8"><a href="model_evaluation.html#cb80-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb80-9"><a href="model_evaluation.html#cb80-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb80-10"><a href="model_evaluation.html#cb80-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>model)</span></code></pre></div>
+<p>And here’s a plot of the MAE against the number of model coefficients, a measure of model complexity.</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="model_evaluation.html#cb81-1" aria-hidden="true" tabindex="-1"></a>bp_errors <span class="sc">%&gt;%</span> </span>
+<span id="cb81-2"><a href="model_evaluation.html#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(n_coefs, mae)) <span class="sc">+</span></span>
+<span id="cb81-3"><a href="model_evaluation.html#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb81-4"><a href="model_evaluation.html#cb81-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb81-5"><a href="model_evaluation.html#cb81-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_number</span>(<span class="at">accuracy =</span> <span class="fl">0.01</span>)) <span class="sc">+</span></span>
+<span id="cb81-6"><a href="model_evaluation.html#cb81-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb81-7"><a href="model_evaluation.html#cb81-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Mean absolute error of model predictions on new data&quot;</span>,</span>
+<span id="cb81-8"><a href="model_evaluation.html#cb81-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Number of model coefficients&quot;</span>,</span>
+<span id="cb81-9"><a href="model_evaluation.html#cb81-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Mean absolute error&quot;</span></span>
+<span id="cb81-10"><a href="model_evaluation.html#cb81-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The simplest model, the linear model, had the best performance on new data, and the performance of the models worsened with increasing model complexity. Why did the more complex functions have worse performance? Consider the relationship of our sample data to new data. For each participant age, we can imagine that the blood pressure measurements in our random sample are a random sample of blood pressures from the population for those of that age. We saw that our data had considerable noise, so the random sample may not have been representative of the mean or median value of the population blood pressures for a given age. The more complexity a function family has, the greater its ability to fit the noise. Using a function family with too much complexity that results in fitting the noise is called <em>overfitting</em>. A model that is overfit will not generalize and work well on new data.</p>
+<p>Model simplicity is a virtue. If the estimated predictive performance of two models is comparable, the simpler of the two is typically preferred, since it is more likely to generalize and work well on new data.</p>
+</div>
+<div id="model-selection" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Model selection<a href="model_evaluation.html#model-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We’ve chosen five function families with which to model the diamonds data. To select between the five resulting models, we will now estimate their predictive performance on new data. Classical modeling and Bayesian modeling take different approaches to this estimation.</p>
+<div id="classical-modeling-1" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Classical modeling<a href="model_evaluation.html#classical-modeling-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In classical modeling, estimates of the predictive performance of a model are typically made using <em>cross-validation</em>. The fundamental idea of cross-validation is to train your model using a portion of your original data, and to then measure the model’s predictions on the remaining data. The partitioning of the data into two disjoint sets can be done in different ways, common methods include:</p>
+<ul>
+<li><strong>Monte Carlo</strong>: The training set is a random sample <em>without</em> replacement of the original data, and the test set is the remaining data. The modeler specifies the proportion of original data to use in the training set, typically between 75 - 80%.</li>
+<li><strong>Bootstrap</strong>: The training set is a random sample <em>with</em> replacement of the original data for a resulting set the same size as the original data. The test set is the remaining data. In bootstrap, the proportion of original data used in the training set is approximately 63.2%.</li>
+<li><strong>V-Fold</strong>: In this method, the original data is randomly partitioned into v disjoint sets of roughly equal size, called folds. The modeling is then done v times with each fold serving as test set and the remaining v - 1 folds serving as the training set. Typical values for v are 5 or 10, corresponding to 80% or 90% of the original data being used for the training set.</li>
+</ul>
+<p>With Monte Carlo and bootstrap cross-validation, the train and test process is repeated multiple times with different random partitions. With v-fold cross-validation, the whole process of v repetitions can itself be repeated. In each of the three methods, the results of the repetitions are combined into an average estimate of predictive performance and a standard error.</p>
+<p>For our diamonds data, we’ll use v-fold cross-validation with v = 10 folds and just one repeat. The <code>vfold_cv()</code> function in the tidymodels <a href="https://rsample.tidymodels.org/">rsample</a> package will do this for us.</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="model_evaluation.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">616</span>)</span>
+<span id="cb82-2"><a href="model_evaluation.html#cb82-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-3"><a href="model_evaluation.html#cb82-3" aria-hidden="true" tabindex="-1"></a>resamples <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(<span class="at">data =</span> df, <span class="at">v =</span> <span class="dv">10</span>)</span>
+<span id="cb82-4"><a href="model_evaluation.html#cb82-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-5"><a href="model_evaluation.html#cb82-5" aria-hidden="true" tabindex="-1"></a>resamples</span>
+<span id="cb82-6"><a href="model_evaluation.html#cb82-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #  10-fold cross-validation </span></span>
+<span id="cb82-7"><a href="model_evaluation.html#cb82-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 2</span></span>
+<span id="cb82-8"><a href="model_evaluation.html#cb82-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   splits               id    </span></span>
+<span id="cb82-9"><a href="model_evaluation.html#cb82-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;list&gt;               &lt;chr&gt; </span></span>
+<span id="cb82-10"><a href="model_evaluation.html#cb82-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 &lt;split [48064/5341]&gt; Fold01</span></span>
+<span id="cb82-11"><a href="model_evaluation.html#cb82-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 &lt;split [48064/5341]&gt; Fold02</span></span>
+<span id="cb82-12"><a href="model_evaluation.html#cb82-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 &lt;split [48064/5341]&gt; Fold03</span></span>
+<span id="cb82-13"><a href="model_evaluation.html#cb82-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 &lt;split [48064/5341]&gt; Fold04</span></span>
+<span id="cb82-14"><a href="model_evaluation.html#cb82-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 &lt;split [48064/5341]&gt; Fold05</span></span>
+<span id="cb82-15"><a href="model_evaluation.html#cb82-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 &lt;split [48065/5340]&gt; Fold06</span></span>
+<span id="cb82-16"><a href="model_evaluation.html#cb82-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 4 more rows</span></span></code></pre></div>
+<p>Each row of this tibble contains a partition or split of the data into two disjoint sets, one to train a model and the other to test the resulting model. For example, the first row contains a split of the 53,405 rows of <code>df</code> into 48,064 rows to fit or train a model, and the remaining 5,341 rows to test the resulting model.</p>
+<p>The <code>fit_resamples()</code> function in the tidymodels <a href="https://tune.tidymodels.org/">tune</a> package streamlines the process of fitting and testing a model for all rows in a set of resamples. Given a model specification and a set of resamples, this function will, for each row:</p>
+<ul>
+<li>Fit a model using the split training set.</li>
+<li>Make predictions using the split test set.</li>
+<li>Calculate the residuals of the predictions.</li>
+<li>Calculate a metric of the residuals; for example, the RMSE or MAE.</li>
+</ul>
+<p>Of course, what we’re really interested in is not the individual metric for each resample model but rather a mean value of the metric for all the resample models and a standard error. This can be accomplished with the <code>collect_metrics()</code> function in the tidymodels tune package.</p>
+<p>Putting this all together, we can get an estimate for how a model would perform on new data. For example, here’s an estimate of how the model produced by <code>lm()</code> for our simplest function family would perform on new data using the RMSE metric.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="model_evaluation.html#cb83-1" aria-hidden="true" tabindex="-1"></a>model_metric <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, <span class="at">engine =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">metric =</span> rmse) {</span>
+<span id="cb83-2"><a href="model_evaluation.html#cb83-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb83-3"><a href="model_evaluation.html#cb83-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_model</span>(<span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> <span class="fu">set_engine</span>(engine)) <span class="sc">%&gt;%</span> </span>
+<span id="cb83-4"><a href="model_evaluation.html#cb83-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_formula</span>(<span class="fu">as.formula</span>(formula)) <span class="sc">%&gt;%</span> </span>
+<span id="cb83-5"><a href="model_evaluation.html#cb83-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> resamples, <span class="at">metrics =</span> <span class="fu">metric_set</span>(metric)) <span class="sc">%&gt;%</span> </span>
+<span id="cb83-6"><a href="model_evaluation.html#cb83-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect_metrics</span>()</span>
+<span id="cb83-7"><a href="model_evaluation.html#cb83-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb83-8"><a href="model_evaluation.html#cb83-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-9"><a href="model_evaluation.html#cb83-9" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">model_metric</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat))</span>
+<span id="cb83-10"><a href="model_evaluation.html#cb83-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-11"><a href="model_evaluation.html#cb83-11" aria-hidden="true" tabindex="-1"></a>v</span>
+<span id="cb83-12"><a href="model_evaluation.html#cb83-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 6</span></span>
+<span id="cb83-13"><a href="model_evaluation.html#cb83-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   .metric .estimator  mean     n std_err .config             </span></span>
+<span id="cb83-14"><a href="model_evaluation.html#cb83-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               </span></span>
+<span id="cb83-15"><a href="model_evaluation.html#cb83-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 rmse    standard   0.260    10 0.00130 Preprocessor1_Model1</span></span></code></pre></div>
+<p>After fitting and testing resample models for each of the 10 rows of <code>resamples</code> and collecting the results, our RSME estimate for predictive performance is about 0.260 with a standard error of 0.00130.</p>
+<p>This cross-validation estimate of how a model will perform on new data allows us to compare models from different function families. Let’s first calculate the estimates for all five of the function families we’re considering.</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="model_evaluation.html#cb84-1" aria-hidden="true" tabindex="-1"></a>rmse_lm <span class="ot">&lt;-</span> </span>
+<span id="cb84-2"><a href="model_evaluation.html#cb84-2" aria-hidden="true" tabindex="-1"></a>  formulas <span class="sc">%&gt;%</span> </span>
+<span id="cb84-3"><a href="model_evaluation.html#cb84-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb84-4"><a href="model_evaluation.html#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">model_metric</span>(formula)) <span class="sc">%&gt;%</span> </span>
+<span id="cb84-5"><a href="model_evaluation.html#cb84-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb84-6"><a href="model_evaluation.html#cb84-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(formula, n_coefs, <span class="at">rmse =</span> mean, <span class="at">rmse_se =</span> std_err)</span>
+<span id="cb84-7"><a href="model_evaluation.html#cb84-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-8"><a href="model_evaluation.html#cb84-8" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(rmse_lm)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">formula</th>
+<th align="right">n_coefs</th>
+<th align="right">rmse</th>
+<th align="right">rmse_se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat)</td>
+<td align="right">2</td>
+<td align="right">0.260</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">log(price) ~ log(carat) + clarity</td>
+<td align="right">9</td>
+<td align="right">0.187</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat) + clarity + color_combined</td>
+<td align="right">12</td>
+<td align="right">0.144</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">log(price) ~ log(carat) + clarity + color</td>
+<td align="right">15</td>
+<td align="right">0.136</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat) + clarity + color + cut</td>
+<td align="right">19</td>
+<td align="right">0.132</td>
+<td align="right">0.001</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s visualize the results.</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="model_evaluation.html#cb85-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> </span>
+<span id="cb85-2"><a href="model_evaluation.html#cb85-2" aria-hidden="true" tabindex="-1"></a>  rmse_lm <span class="sc">%&gt;%</span> </span>
+<span id="cb85-3"><a href="model_evaluation.html#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(n_coefs, rmse)) <span class="sc">+</span></span>
+<span id="cb85-4"><a href="model_evaluation.html#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb85-5"><a href="model_evaluation.html#cb85-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> rmse <span class="sc">-</span> rmse_se, <span class="at">ymax =</span> rmse <span class="sc">+</span> rmse_se)) <span class="sc">+</span></span>
+<span id="cb85-6"><a href="model_evaluation.html#cb85-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb85-7"><a href="model_evaluation.html#cb85-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb85-8"><a href="model_evaluation.html#cb85-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> formula),</span>
+<span id="cb85-9"><a href="model_evaluation.html#cb85-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb85-10"><a href="model_evaluation.html#cb85-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_x =</span> <span class="fl">0.2</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb85-11"><a href="model_evaluation.html#cb85-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb85-12"><a href="model_evaluation.html#cb85-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb85-13"><a href="model_evaluation.html#cb85-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fu">min</span>(rmse_lm<span class="sc">$</span>n_coefs), <span class="fu">max</span>(rmse_lm<span class="sc">$</span>n_coefs)),</span>
+<span id="cb85-14"><a href="model_evaluation.html#cb85-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">minor_breaks =</span> <span class="cn">NULL</span></span>
+<span id="cb85-15"><a href="model_evaluation.html#cb85-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb85-16"><a href="model_evaluation.html#cb85-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb85-17"><a href="model_evaluation.html#cb85-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Cross-validation estimate of predictive performance&quot;</span>,</span>
+<span id="cb85-18"><a href="model_evaluation.html#cb85-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Number of model coefficients&quot;</span>,</span>
+<span id="cb85-19"><a href="model_evaluation.html#cb85-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Root mean squared error&quot;</span></span>
+<span id="cb85-20"><a href="model_evaluation.html#cb85-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb85-21"><a href="model_evaluation.html#cb85-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-22"><a href="model_evaluation.html#cb85-22" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>With the blood pressure models, the predictive performance worsened with increasing model complexity. In contrast, with the diamonds models, the estimated predictive performance improves with increasing model complexity. An explanation for this is the difference in the amount of data in the two datasets. The blood pressure data has 200 rows, whereas the diamonds data has 53,405 rows. The more data you have to work with, the greater the complexity of the models that you can typically use before the predictive performance degrades due to overfitting.</p>
+<p>Let’s zoom in on the three models with the best predictive performance.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="model_evaluation.html#cb86-1" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> </span>
+<span id="cb86-2"><a href="model_evaluation.html#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fl">0.15</span>))</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>At this scale, we can see the error bars for one standard error on either side of the estimate. A rule of thumb for selecting a model when using cross-validation is to choose the model with the lowest complexity whose estimated predictive performance is within one standard error of the best predictive performance. In this case, no simpler model has a performance within one standard error of the model with the best performance, so we would choose the most complex model</p>
+<p><code>log(price) ~ log(carat) + clarity + color + cut</code> .</p>
+</div>
+<div id="bayesian-modeling-1" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Bayesian modeling<a href="model_evaluation.html#bayesian-modeling-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Instead of using cross-validation, Bayesian modeling takes a different approach. When Stan fits a Bayesian model, the fitting process itself generates information that can be used to estimate the model’s predictive performance without having to refit the model multiple times on resampled data. The <code>loo()</code> function in the <a href="https://mc-stan.org/users/interfaces/loo">loo</a> package provides an approximation to leave-one-out (LOO) cross-validation using just the information from a Stan model fit. LOO cross-validation is the special case of k-fold cross-validation when k = n, the number of rows in the data. In other words, LOO cross-validation would require fitting n models, each on all data except for a single point, and then testing each resulting model on the omitted point. <code>loo()</code> can estimate LOO cross-validation without having to fit any additional models.</p>
+<p>Here’s the estimate using <code>loo()</code> of how the model produced by <code>stan_glm()</code> for our simplest function family would perform on new data.</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="model_evaluation.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">983</span>)</span>
+<span id="cb87-2"><a href="model_evaluation.html#cb87-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-3"><a href="model_evaluation.html#cb87-3" aria-hidden="true" tabindex="-1"></a>model_loo <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, ...) {</span>
+<span id="cb87-4"><a href="model_evaluation.html#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(<span class="fu">as.formula</span>(formula), <span class="at">data =</span> df, <span class="at">refresh =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb87-5"><a href="model_evaluation.html#cb87-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">loo</span>(...)</span>
+<span id="cb87-6"><a href="model_evaluation.html#cb87-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb87-7"><a href="model_evaluation.html#cb87-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-8"><a href="model_evaluation.html#cb87-8" aria-hidden="true" tabindex="-1"></a>loo_1 <span class="ot">&lt;-</span> <span class="fu">model_loo</span>(formulas<span class="sc">$</span>formula[<span class="dv">1</span>])</span>
+<span id="cb87-9"><a href="model_evaluation.html#cb87-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-10"><a href="model_evaluation.html#cb87-10" aria-hidden="true" tabindex="-1"></a>loo_1</span>
+<span id="cb87-11"><a href="model_evaluation.html#cb87-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb87-12"><a href="model_evaluation.html#cb87-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Computed from 4000 by 53405 log-likelihood matrix</span></span>
+<span id="cb87-13"><a href="model_evaluation.html#cb87-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb87-14"><a href="model_evaluation.html#cb87-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Estimate    SE</span></span>
+<span id="cb87-15"><a href="model_evaluation.html#cb87-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; elpd_loo  -3931.4 190.0</span></span>
+<span id="cb87-16"><a href="model_evaluation.html#cb87-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p_loo         3.4   0.0</span></span>
+<span id="cb87-17"><a href="model_evaluation.html#cb87-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; looic      7862.7 380.0</span></span>
+<span id="cb87-18"><a href="model_evaluation.html#cb87-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb87-19"><a href="model_evaluation.html#cb87-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.0.</span></span>
+<span id="cb87-20"><a href="model_evaluation.html#cb87-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb87-21"><a href="model_evaluation.html#cb87-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
+<span id="cb87-22"><a href="model_evaluation.html#cb87-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; See help(&#39;pareto-k-diagnostic&#39;) for details.</span></span></code></pre></div>
+<p><code>elpd_loo</code> is an estimate of the <em>expected log predictive density</em> (ELPD) – this is an estimate of the predictive performance of the model on new data, and we can use it to compare models from different function families. With ELPD, larger values indicate better estimated predictive performance.</p>
+<p>The line</p>
+<p><code>All Pareto k estimates are good (k &lt; 0.5).</code></p>
+<p>is a diagnostic for the estimation process. In this case, everything worked fine. If this were not the case, the message would recommend corrective action, such as calling <code>loo()</code> again with arguments other than the defaults.</p>
+<p>With ELPD as our measure of estimated predictive performance, we’ll now calculate it for the remaining four function families we’re considering.</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="model_evaluation.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">983</span>)</span>
+<span id="cb88-2"><a href="model_evaluation.html#cb88-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-3"><a href="model_evaluation.html#cb88-3" aria-hidden="true" tabindex="-1"></a>loo_2 <span class="ot">&lt;-</span> <span class="fu">model_loo</span>(formulas<span class="sc">$</span>formula[<span class="dv">2</span>])</span>
+<span id="cb88-4"><a href="model_evaluation.html#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-5"><a href="model_evaluation.html#cb88-5" aria-hidden="true" tabindex="-1"></a>loo_2</span>
+<span id="cb88-6"><a href="model_evaluation.html#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb88-7"><a href="model_evaluation.html#cb88-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Computed from 4000 by 53405 log-likelihood matrix</span></span>
+<span id="cb88-8"><a href="model_evaluation.html#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb88-9"><a href="model_evaluation.html#cb88-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Estimate    SE</span></span>
+<span id="cb88-10"><a href="model_evaluation.html#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; elpd_loo  13713.2 187.7</span></span>
+<span id="cb88-11"><a href="model_evaluation.html#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p_loo        11.6   0.3</span></span>
+<span id="cb88-12"><a href="model_evaluation.html#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; looic    -27426.3 375.3</span></span>
+<span id="cb88-13"><a href="model_evaluation.html#cb88-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb88-14"><a href="model_evaluation.html#cb88-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
+<span id="cb88-15"><a href="model_evaluation.html#cb88-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb88-16"><a href="model_evaluation.html#cb88-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
+<span id="cb88-17"><a href="model_evaluation.html#cb88-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; See help(&#39;pareto-k-diagnostic&#39;) for details.</span></span></code></pre></div>
+<p>The ELPD for model 2 is substantially better than that for model 1, so it would be the better choice.</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="model_evaluation.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">983</span>)</span>
+<span id="cb89-2"><a href="model_evaluation.html#cb89-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-3"><a href="model_evaluation.html#cb89-3" aria-hidden="true" tabindex="-1"></a>loo_3 <span class="ot">&lt;-</span> <span class="fu">model_loo</span>(formulas<span class="sc">$</span>formula[<span class="dv">3</span>])</span>
+<span id="cb89-4"><a href="model_evaluation.html#cb89-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-5"><a href="model_evaluation.html#cb89-5" aria-hidden="true" tabindex="-1"></a>loo_3</span>
+<span id="cb89-6"><a href="model_evaluation.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb89-7"><a href="model_evaluation.html#cb89-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Computed from 4000 by 53405 log-likelihood matrix</span></span>
+<span id="cb89-8"><a href="model_evaluation.html#cb89-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb89-9"><a href="model_evaluation.html#cb89-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Estimate    SE</span></span>
+<span id="cb89-10"><a href="model_evaluation.html#cb89-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; elpd_loo  27673.3 218.6</span></span>
+<span id="cb89-11"><a href="model_evaluation.html#cb89-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p_loo        15.6   0.5</span></span>
+<span id="cb89-12"><a href="model_evaluation.html#cb89-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; looic    -55346.7 437.2</span></span>
+<span id="cb89-13"><a href="model_evaluation.html#cb89-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb89-14"><a href="model_evaluation.html#cb89-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
+<span id="cb89-15"><a href="model_evaluation.html#cb89-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb89-16"><a href="model_evaluation.html#cb89-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
+<span id="cb89-17"><a href="model_evaluation.html#cb89-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; See help(&#39;pareto-k-diagnostic&#39;) for details.</span></span></code></pre></div>
+<p>The ELPD for the model 3 is substantially better than that for model 2.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="model_evaluation.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">983</span>)</span>
+<span id="cb90-2"><a href="model_evaluation.html#cb90-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-3"><a href="model_evaluation.html#cb90-3" aria-hidden="true" tabindex="-1"></a>loo_4 <span class="ot">&lt;-</span> <span class="fu">model_loo</span>(formulas<span class="sc">$</span>formula[<span class="dv">4</span>])</span>
+<span id="cb90-4"><a href="model_evaluation.html#cb90-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-5"><a href="model_evaluation.html#cb90-5" aria-hidden="true" tabindex="-1"></a>loo_4</span>
+<span id="cb90-6"><a href="model_evaluation.html#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb90-7"><a href="model_evaluation.html#cb90-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Computed from 4000 by 53405 log-likelihood matrix</span></span>
+<span id="cb90-8"><a href="model_evaluation.html#cb90-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb90-9"><a href="model_evaluation.html#cb90-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Estimate    SE</span></span>
+<span id="cb90-10"><a href="model_evaluation.html#cb90-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; elpd_loo  30636.0 226.5</span></span>
+<span id="cb90-11"><a href="model_evaluation.html#cb90-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p_loo        19.0   0.7</span></span>
+<span id="cb90-12"><a href="model_evaluation.html#cb90-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; looic    -61272.0 453.1</span></span>
+<span id="cb90-13"><a href="model_evaluation.html#cb90-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb90-14"><a href="model_evaluation.html#cb90-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
+<span id="cb90-15"><a href="model_evaluation.html#cb90-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb90-16"><a href="model_evaluation.html#cb90-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
+<span id="cb90-17"><a href="model_evaluation.html#cb90-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; See help(&#39;pareto-k-diagnostic&#39;) for details.</span></span></code></pre></div>
+<p>The ELPD for the model 4 is an improvement over that for model 3, but not as much of an improvement as with the earlier models.</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="model_evaluation.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">983</span>)</span>
+<span id="cb91-2"><a href="model_evaluation.html#cb91-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-3"><a href="model_evaluation.html#cb91-3" aria-hidden="true" tabindex="-1"></a>loo_5 <span class="ot">&lt;-</span> <span class="fu">model_loo</span>(formulas<span class="sc">$</span>formula[<span class="dv">5</span>])</span>
+<span id="cb91-4"><a href="model_evaluation.html#cb91-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-5"><a href="model_evaluation.html#cb91-5" aria-hidden="true" tabindex="-1"></a>loo_5</span>
+<span id="cb91-6"><a href="model_evaluation.html#cb91-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb91-7"><a href="model_evaluation.html#cb91-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Computed from 4000 by 53405 log-likelihood matrix</span></span>
+<span id="cb91-8"><a href="model_evaluation.html#cb91-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb91-9"><a href="model_evaluation.html#cb91-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Estimate    SE</span></span>
+<span id="cb91-10"><a href="model_evaluation.html#cb91-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; elpd_loo  32266.8 245.7</span></span>
+<span id="cb91-11"><a href="model_evaluation.html#cb91-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p_loo        24.0   1.0</span></span>
+<span id="cb91-12"><a href="model_evaluation.html#cb91-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; looic    -64533.6 491.4</span></span>
+<span id="cb91-13"><a href="model_evaluation.html#cb91-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb91-14"><a href="model_evaluation.html#cb91-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
+<span id="cb91-15"><a href="model_evaluation.html#cb91-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb91-16"><a href="model_evaluation.html#cb91-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
+<span id="cb91-17"><a href="model_evaluation.html#cb91-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; See help(&#39;pareto-k-diagnostic&#39;) for details.</span></span></code></pre></div>
+<p>The ELPD for model 5 is again a modest improvement over that for model 4.</p>
+<p>We’ll gather the results into a tibble.</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="model_evaluation.html#cb92-1" aria-hidden="true" tabindex="-1"></a>loos <span class="ot">&lt;-</span> <span class="fu">list</span>(loo_1, loo_2, loo_3, loo_4, loo_5)</span>
+<span id="cb92-2"><a href="model_evaluation.html#cb92-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-3"><a href="model_evaluation.html#cb92-3" aria-hidden="true" tabindex="-1"></a>elpd_stan_glm <span class="ot">&lt;-</span> </span>
+<span id="cb92-4"><a href="model_evaluation.html#cb92-4" aria-hidden="true" tabindex="-1"></a>  formulas <span class="sc">%&gt;%</span> </span>
+<span id="cb92-5"><a href="model_evaluation.html#cb92-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb92-6"><a href="model_evaluation.html#cb92-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">elpd =</span> <span class="fu">map_dbl</span>(loos, <span class="sc">~</span> <span class="fu">pluck</span>(., <span class="st">&quot;estimates&quot;</span>)[<span class="st">&quot;elpd_loo&quot;</span>, <span class="st">&quot;Estimate&quot;</span>]),</span>
+<span id="cb92-7"><a href="model_evaluation.html#cb92-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">elpd_se =</span> <span class="fu">map_dbl</span>(loos, <span class="sc">~</span> <span class="fu">pluck</span>(., <span class="st">&quot;estimates&quot;</span>)[<span class="st">&quot;elpd_loo&quot;</span>, <span class="st">&quot;SE&quot;</span>])</span>
+<span id="cb92-8"><a href="model_evaluation.html#cb92-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb92-9"><a href="model_evaluation.html#cb92-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-10"><a href="model_evaluation.html#cb92-10" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(elpd_stan_glm)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">formula</th>
+<th align="right">n_coefs</th>
+<th align="right">elpd</th>
+<th align="right">elpd_se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat)</td>
+<td align="right">2</td>
+<td align="right">-3931</td>
+<td align="right">190</td>
+</tr>
+<tr class="even">
+<td align="left">log(price) ~ log(carat) + clarity</td>
+<td align="right">9</td>
+<td align="right">13713</td>
+<td align="right">188</td>
+</tr>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat) + clarity + color_combined</td>
+<td align="right">12</td>
+<td align="right">27673</td>
+<td align="right">219</td>
+</tr>
+<tr class="even">
+<td align="left">log(price) ~ log(carat) + clarity + color</td>
+<td align="right">15</td>
+<td align="right">30636</td>
+<td align="right">227</td>
+</tr>
+<tr class="odd">
+<td align="left">log(price) ~ log(carat) + clarity + color + cut</td>
+<td align="right">19</td>
+<td align="right">32267</td>
+<td align="right">246</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s again visualize the results.</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="model_evaluation.html#cb93-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> </span>
+<span id="cb93-2"><a href="model_evaluation.html#cb93-2" aria-hidden="true" tabindex="-1"></a>  elpd_stan_glm <span class="sc">%&gt;%</span> </span>
+<span id="cb93-3"><a href="model_evaluation.html#cb93-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(n_coefs, elpd)) <span class="sc">+</span></span>
+<span id="cb93-4"><a href="model_evaluation.html#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb93-5"><a href="model_evaluation.html#cb93-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> elpd <span class="sc">-</span> elpd_se, <span class="at">ymax =</span> elpd <span class="sc">+</span> elpd_se)) <span class="sc">+</span></span>
+<span id="cb93-6"><a href="model_evaluation.html#cb93-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb93-7"><a href="model_evaluation.html#cb93-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb93-8"><a href="model_evaluation.html#cb93-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> formula),</span>
+<span id="cb93-9"><a href="model_evaluation.html#cb93-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb93-10"><a href="model_evaluation.html#cb93-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_x =</span> <span class="fl">0.2</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb93-11"><a href="model_evaluation.html#cb93-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb93-12"><a href="model_evaluation.html#cb93-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb93-13"><a href="model_evaluation.html#cb93-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fu">min</span>(elpd_stan_glm<span class="sc">$</span>n_coefs), <span class="fu">max</span>(elpd_stan_glm<span class="sc">$</span>n_coefs)),</span>
+<span id="cb93-14"><a href="model_evaluation.html#cb93-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">minor_breaks =</span> <span class="cn">NULL</span></span>
+<span id="cb93-15"><a href="model_evaluation.html#cb93-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb93-16"><a href="model_evaluation.html#cb93-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb93-17"><a href="model_evaluation.html#cb93-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Bayesian LOO estimate of predictive performance&quot;</span>,</span>
+<span id="cb93-18"><a href="model_evaluation.html#cb93-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Number of model coefficients&quot;</span>,</span>
+<span id="cb93-19"><a href="model_evaluation.html#cb93-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Expected log predictive density&quot;</span></span>
+<span id="cb93-20"><a href="model_evaluation.html#cb93-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb93-21"><a href="model_evaluation.html#cb93-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-22"><a href="model_evaluation.html#cb93-22" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This plot looks very much like the cross-validation plot, though flipped vertically, since larger ELPD is better while smaller RSME is better.</p>
+<p>Let’s again zoom in on the three models with the best predictive performance.</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="model_evaluation.html#cb94-1" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> </span>
+<span id="cb94-2"><a href="model_evaluation.html#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">25000</span>, <span class="cn">NA</span>))</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>At this scale, we can again see the error bars for one standard error on either side of the estimate. Using our rule of thumb of choosing the model with the lowest complexity whose estimated predictive performance is within one standard error of the best performance, we again choose the most complex model</p>
+<p><code>log(price) ~ log(carat) + clarity + color + cut</code> .</p>
+</div>
+</div>
+<div id="final-model" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Final model<a href="model_evaluation.html#final-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The classical and Bayesian approaches both led us to select the same function family. Here are the resulting models.</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="model_evaluation.html#cb95-1" aria-hidden="true" tabindex="-1"></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat) <span class="sc">+</span> clarity <span class="sc">+</span> color <span class="sc">+</span> cut, <span class="at">data =</span> df)</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="model_evaluation.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">983</span>)</span>
+<span id="cb96-2"><a href="model_evaluation.html#cb96-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-3"><a href="model_evaluation.html#cb96-3" aria-hidden="true" tabindex="-1"></a>fit_stan_glm <span class="ot">&lt;-</span> </span>
+<span id="cb96-4"><a href="model_evaluation.html#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(</span>
+<span id="cb96-5"><a href="model_evaluation.html#cb96-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">log</span>(carat) <span class="sc">+</span> clarity <span class="sc">+</span> color <span class="sc">+</span> cut,</span>
+<span id="cb96-6"><a href="model_evaluation.html#cb96-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df,</span>
+<span id="cb96-7"><a href="model_evaluation.html#cb96-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb96-8"><a href="model_evaluation.html#cb96-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p>We can compare the coefficients in the two models.</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="model_evaluation.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_lm) <span class="sc">-</span> <span class="fu">coef</span>(fit_stan_glm)</span>
+<span id="cb97-2"><a href="model_evaluation.html#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  (Intercept)   log(carat)   claritySI2   claritySI1   clarityVS2   clarityVS1 </span></span>
+<span id="cb97-3"><a href="model_evaluation.html#cb97-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     8.47e-07    -1.76e-05    -2.13e-04    -1.73e-04    -1.27e-04    -2.33e-04 </span></span>
+<span id="cb97-4"><a href="model_evaluation.html#cb97-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  clarityVVS2  clarityVVS1    clarityIF       colorI       colorH       colorG </span></span>
+<span id="cb97-5"><a href="model_evaluation.html#cb97-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    -1.44e-04    -2.14e-04    -9.50e-05     3.54e-05     5.40e-05     5.50e-05 </span></span>
+<span id="cb97-6"><a href="model_evaluation.html#cb97-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       colorF       colorE       colorD      cutGood cutVery Good   cutPremium </span></span>
+<span id="cb97-7"><a href="model_evaluation.html#cb97-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     2.69e-05     6.76e-05    -1.47e-05     1.27e-04     1.04e-04     1.30e-04 </span></span>
+<span id="cb97-8"><a href="model_evaluation.html#cb97-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     cutIdeal </span></span>
+<span id="cb97-9"><a href="model_evaluation.html#cb97-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     5.90e-05</span></span></code></pre></div>
+<p>The coefficients of the two models are very close. In the following, we’ll focus on the model from <code>stan_glm()</code>, since it provides more information.</p>
+<p>Let’s first look at the coefficients.</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="model_evaluation.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_stan_glm, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb98-2"><a href="model_evaluation.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stan_glm</span></span>
+<span id="cb98-3"><a href="model_evaluation.html#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  family:       gaussian [identity]</span></span>
+<span id="cb98-4"><a href="model_evaluation.html#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  formula:      log(price) ~ log(carat) + clarity + color + cut</span></span>
+<span id="cb98-5"><a href="model_evaluation.html#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  observations: 53405</span></span>
+<span id="cb98-6"><a href="model_evaluation.html#cb98-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  predictors:   19</span></span>
+<span id="cb98-7"><a href="model_evaluation.html#cb98-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb98-8"><a href="model_evaluation.html#cb98-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              Median MAD_SD</span></span>
+<span id="cb98-9"><a href="model_evaluation.html#cb98-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)  7.381  0.006 </span></span>
+<span id="cb98-10"><a href="model_evaluation.html#cb98-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(carat)   1.889  0.001 </span></span>
+<span id="cb98-11"><a href="model_evaluation.html#cb98-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; claritySI2   0.400  0.005 </span></span>
+<span id="cb98-12"><a href="model_evaluation.html#cb98-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; claritySI1   0.563  0.005 </span></span>
+<span id="cb98-13"><a href="model_evaluation.html#cb98-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; clarityVS2   0.713  0.005 </span></span>
+<span id="cb98-14"><a href="model_evaluation.html#cb98-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; clarityVS1   0.784  0.006 </span></span>
+<span id="cb98-15"><a href="model_evaluation.html#cb98-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; clarityVVS2  0.919  0.006 </span></span>
+<span id="cb98-16"><a href="model_evaluation.html#cb98-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; clarityVVS1  0.992  0.006 </span></span>
+<span id="cb98-17"><a href="model_evaluation.html#cb98-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; clarityIF    1.087  0.006 </span></span>
+<span id="cb98-18"><a href="model_evaluation.html#cb98-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colorI       0.136  0.003 </span></span>
+<span id="cb98-19"><a href="model_evaluation.html#cb98-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colorH       0.259  0.003 </span></span>
+<span id="cb98-20"><a href="model_evaluation.html#cb98-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colorG       0.348  0.003 </span></span>
+<span id="cb98-21"><a href="model_evaluation.html#cb98-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colorF       0.413  0.003 </span></span>
+<span id="cb98-22"><a href="model_evaluation.html#cb98-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colorE       0.455  0.003 </span></span>
+<span id="cb98-23"><a href="model_evaluation.html#cb98-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colorD       0.509  0.003 </span></span>
+<span id="cb98-24"><a href="model_evaluation.html#cb98-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; cutGood      0.078  0.004 </span></span>
+<span id="cb98-25"><a href="model_evaluation.html#cb98-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; cutVery Good 0.115  0.004 </span></span>
+<span id="cb98-26"><a href="model_evaluation.html#cb98-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; cutPremium   0.139  0.004 </span></span>
+<span id="cb98-27"><a href="model_evaluation.html#cb98-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; cutIdeal     0.160  0.004 </span></span>
+<span id="cb98-28"><a href="model_evaluation.html#cb98-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb98-29"><a href="model_evaluation.html#cb98-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Auxiliary parameter(s):</span></span>
+<span id="cb98-30"><a href="model_evaluation.html#cb98-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Median MAD_SD</span></span>
+<span id="cb98-31"><a href="model_evaluation.html#cb98-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sigma 0.132  0.000 </span></span>
+<span id="cb98-32"><a href="model_evaluation.html#cb98-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb98-33"><a href="model_evaluation.html#cb98-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ------</span></span>
+<span id="cb98-34"><a href="model_evaluation.html#cb98-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For help interpreting the printed output see ?print.stanreg</span></span>
+<span id="cb98-35"><a href="model_evaluation.html#cb98-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * For info on the priors used see ?prior_summary.stanreg</span></span></code></pre></div>
+<p>The <code>(Intercept)</code> coefficient implies that a one-carat diamond with the lowest quality <code>clarity</code>, <code>color</code> and <code>cut</code> would have a price of approximately $exp(7.381), or $1,605. This is close to the minimum price in the data of one-carat diamonds.</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="model_evaluation.html#cb99-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb99-2"><a href="model_evaluation.html#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">near</span>(carat, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb99-3"><a href="model_evaluation.html#cb99-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(price) <span class="sc">%&gt;%</span> </span>
+<span id="cb99-4"><a href="model_evaluation.html#cb99-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>()</span>
+<span id="cb99-5"><a href="model_evaluation.html#cb99-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1681</span></span></code></pre></div>
+<p>The <code>log(carat)</code> coefficient implies that the power law for <code>carat</code> has a power of approximately 1.89.</p>
+<p>For the factors <code>clarity</code>, <code>color</code>, and <code>cut</code>, the levels are in the order of increasing quality. For example, IF is the highest quality of <code>clarity</code>, and D is the highest quality of <code>color</code>. We can see that the coefficients for the factor levels increase with increasing quality, as expected. The parameters for <code>color</code> level I and for all <code>cut</code> levels are comparable in size to <code>sigma</code>, an estimate of the standard deviation for the residuals, so we should not assume that these parameters are very reliable measures. In our EDA, we saw that diamonds with high-quality <code>cut</code> are common, and <code>cut</code> appears to have the least impact of the four Cs on price.</p>
+<p>By applying <code>log()</code> to both sides of the formula defining our function family, we obtain the function</p>
+<p><code>price = 1605 * g_clarity(clarity) * g_color(color) * g_cut(cut) * carat^1.89</code></p>
+<p>where, for example,</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="model_evaluation.html#cb100-1" aria-hidden="true" tabindex="-1"></a>g_cut <span class="ot">&lt;-</span> <span class="cf">function</span>(cut) {</span>
+<span id="cb100-2"><a href="model_evaluation.html#cb100-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb100-3"><a href="model_evaluation.html#cb100-3" aria-hidden="true" tabindex="-1"></a>    cut <span class="sc">==</span> <span class="st">&quot;Fair&quot;</span>      <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb100-4"><a href="model_evaluation.html#cb100-4" aria-hidden="true" tabindex="-1"></a>    cut <span class="sc">==</span> <span class="st">&quot;Good&quot;</span>      <span class="sc">~</span> <span class="fl">1.08</span>,</span>
+<span id="cb100-5"><a href="model_evaluation.html#cb100-5" aria-hidden="true" tabindex="-1"></a>    cut <span class="sc">==</span> <span class="st">&quot;Very Good&quot;</span> <span class="sc">~</span> <span class="fl">1.12</span>,</span>
+<span id="cb100-6"><a href="model_evaluation.html#cb100-6" aria-hidden="true" tabindex="-1"></a>    cut <span class="sc">==</span> <span class="st">&quot;Premium&quot;</span>   <span class="sc">~</span> <span class="fl">1.15</span>,</span>
+<span id="cb100-7"><a href="model_evaluation.html#cb100-7" aria-hidden="true" tabindex="-1"></a>    cut <span class="sc">==</span> <span class="st">&quot;Ideal&quot;</span>     <span class="sc">~</span> <span class="fl">1.17</span></span>
+<span id="cb100-8"><a href="model_evaluation.html#cb100-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb100-9"><a href="model_evaluation.html#cb100-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Here each value is <code>exp()</code> applied to the parameter value. The omitted level for each factor, Fair for <code>cut</code>, is included in the intercept, so we use the value of <code>exp(0) = 1</code>.</p>
+<p>Let’s look at the multipliers associated with the factor levels.</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="model_evaluation.html#cb101-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> </span>
+<span id="cb101-2"><a href="model_evaluation.html#cb101-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(fit_stan_glm) <span class="sc">%&gt;%</span> </span>
+<span id="cb101-3"><a href="model_evaluation.html#cb101-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb101-4"><a href="model_evaluation.html#cb101-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(name, <span class="st">&quot;^c&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb101-5"><a href="model_evaluation.html#cb101-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract</span>(</span>
+<span id="cb101-6"><a href="model_evaluation.html#cb101-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> name,</span>
+<span id="cb101-7"><a href="model_evaluation.html#cb101-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;var&quot;</span>, <span class="st">&quot;level&quot;</span>),</span>
+<span id="cb101-8"><a href="model_evaluation.html#cb101-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">regex =</span> <span class="st">&quot;([a-z]+)([A-Z]+.*)&quot;</span></span>
+<span id="cb101-9"><a href="model_evaluation.html#cb101-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb101-10"><a href="model_evaluation.html#cb101-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">exp</span>(value))</span>
+<span id="cb101-11"><a href="model_evaluation.html#cb101-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-12"><a href="model_evaluation.html#cb101-12" aria-hidden="true" tabindex="-1"></a>v <span class="sc">%&gt;%</span> </span>
+<span id="cb101-13"><a href="model_evaluation.html#cb101-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(var, value)) <span class="sc">+</span></span>
+<span id="cb101-14"><a href="model_evaluation.html#cb101-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb101-15"><a href="model_evaluation.html#cb101-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb101-16"><a href="model_evaluation.html#cb101-16" aria-hidden="true" tabindex="-1"></a>  ggrepel<span class="sc">::</span><span class="fu">geom_text_repel</span>(</span>
+<span id="cb101-17"><a href="model_evaluation.html#cb101-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> level),</span>
+<span id="cb101-18"><a href="model_evaluation.html#cb101-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_x =</span> <span class="fl">0.1</span>,</span>
+<span id="cb101-19"><a href="model_evaluation.html#cb101-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">&quot;y&quot;</span>,</span>
+<span id="cb101-20"><a href="model_evaluation.html#cb101-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb101-21"><a href="model_evaluation.html#cb101-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.segment.length =</span> <span class="dv">2</span></span>
+<span id="cb101-22"><a href="model_evaluation.html#cb101-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb101-23"><a href="model_evaluation.html#cb101-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="cn">NA</span>)) <span class="sc">+</span></span>
+<span id="cb101-24"><a href="model_evaluation.html#cb101-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb101-25"><a href="model_evaluation.html#cb101-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Multipliers associated with different diamond quality levels&quot;</span>,</span>
+<span id="cb101-26"><a href="model_evaluation.html#cb101-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb101-27"><a href="model_evaluation.html#cb101-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Multiplier&quot;</span></span>
+<span id="cb101-28"><a href="model_evaluation.html#cb101-28" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>As we saw in our EDA, <code>clarity</code> has the greatest impact on price, followed by <code>color</code> and <code>cut</code>. The model predicts that the price of diamonds with the best <code>clarity</code>, IF, will be 2.96 times the price for comparable diamonds of the worst <code>clarity</code>. The best <code>color</code>, D, has a multiplier of 1.66. And the best <code>cut</code>, Ideal, has a multiplier of only 1.17. The relatively small effect of <code>cut</code> could be seen during model selection. Adding <code>cut</code> to the model improved performance, but much less than adding <code>clarity</code> or <code>color</code>.</p>
+<p>Just as we did in Chapter 4, let’s check the residuals of the model by plotting the error ratios.</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="model_evaluation.html#cb102-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> </span>
+<span id="cb102-2"><a href="model_evaluation.html#cb102-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb102-3"><a href="model_evaluation.html#cb102-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb102-4"><a href="model_evaluation.html#cb102-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pred =</span> <span class="fu">predict</span>(fit_stan_glm) <span class="sc">%&gt;%</span> <span class="fu">exp</span>(),</span>
+<span id="cb102-5"><a href="model_evaluation.html#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">error_ratio =</span> price <span class="sc">/</span> pred</span>
+<span id="cb102-6"><a href="model_evaluation.html#cb102-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb102-7"><a href="model_evaluation.html#cb102-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-8"><a href="model_evaluation.html#cb102-8" aria-hidden="true" tabindex="-1"></a>v <span class="sc">%&gt;%</span> </span>
+<span id="cb102-9"><a href="model_evaluation.html#cb102-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(pred, error_ratio)) <span class="sc">+</span></span>
+<span id="cb102-10"><a href="model_evaluation.html#cb102-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.01</span>) <span class="sc">+</span></span>
+<span id="cb102-11"><a href="model_evaluation.html#cb102-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb102-12"><a href="model_evaluation.html#cb102-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb102-13"><a href="model_evaluation.html#cb102-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb102-14"><a href="model_evaluation.html#cb102-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb102-15"><a href="model_evaluation.html#cb102-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb102-16"><a href="model_evaluation.html#cb102-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Ratios of actual price / predicted price&quot;</span>,</span>
+<span id="cb102-17"><a href="model_evaluation.html#cb102-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Predicted price&quot;</span>,</span>
+<span id="cb102-18"><a href="model_evaluation.html#cb102-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Error ratio&quot;</span></span>
+<span id="cb102-19"><a href="model_evaluation.html#cb102-19" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="model_evaluation_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The first takeaway is that the error ratios are much closer to 1 for our final model than they were for the simple model we looked at in Chapter 4. For predicted prices less than about $800, we again see that the actual price is higher than the predicted price. For higher predicted prices, the smooth line is fairly close to 1.</p>
+<p>Let’s look at the distribution of <code>error_ratio</code>.</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="model_evaluation.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(v<span class="sc">$</span>error_ratio, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>, <span class="fl">0.975</span>))</span>
+<span id="cb103-2"><a href="model_evaluation.html#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2.5%    5%   50%   95% 97.5% </span></span>
+<span id="cb103-3"><a href="model_evaluation.html#cb103-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.776 0.810 0.999 1.249 1.306</span></span></code></pre></div>
+<p>The median <code>error_ratio</code> is very close to 1. Approximately 95% of the diamonds are within the range of 22% less and 31% more than the predictions. This is a much tighter range than with the simplest model. Many other factors, such as regional variation, affect price. So it is rather surprising that we can make such accurate predictions with only four predictor variables.</p>
+</div>
+<div id="summary-5" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Summary<a href="model_evaluation.html#summary-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In model selection:</p>
+<ul>
+<li>The greater the complexity of a model, the greater the likelihood that it will overfit its training data and not generalize and work well with new data.</li>
+<li>To avoid overfitting and to select models that optimize predictive performance, we need to estimate the predictive performance on new data.</li>
+<li>Classical modeling typically uses cross-validation to estimate predictive performance.</li>
+<li>Bayesian modeling can estimate predictive performance directly from the initial modeling process without having to fit additional models as with cross-validation.</li>
+</ul>
+</div>
+<div id="to-learn-more" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> To learn more<a href="model_evaluation.html#to-learn-more" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Data modeling is a very large subject, and we’ve only provided a brief overview of the process and some useful tools and packages. Here are ways to learn more.</p>
+<p>As we’ve seen, in supervised learning where the goal is to make accurate predictions, it is important to understand your data, properly prepare your data, and then explore possible function families with which to model it. A good resource to learn more about this process is Kuhn and Johnson, <a href="https://bookdown.org/max/FES/">Feature Engineering and Selection</a>.</p>
+<p>We used some functions from the <a href="https://www.tidymodels.org/">tidymodels</a> ecosystem of R packages for modeling. A good source to go deeper is Kuhn and Silge, <a href="https://www.tmwr.org/">Tidy Modeling with R</a>.</p>
+<p>A good introduction to Bayesian modeling is Gelman, Hill, and Vehtari, <a href="https://avehtari.github.io/ROS-Examples/">Regression and Other Stories</a>. Gelman and Vehtari are active in the Stan project, and the book uses <code>stan_glm()</code> for both linear and other general linear models. Tidyverse implementations of examples from the book are available <a href="https://github.com/behrman/ros#readme">here</a>. To go deeper into the workflow of Bayesian data analysis and modeling see Gelman, et al., <a href="http://www.stat.columbia.edu/~gelman/research/unpublished/Bayesian_Workflow_article.pdf">Bayesian Workflow</a>.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="fitting_basics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/dcl-docs/model/edit/master/model_evaluation.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

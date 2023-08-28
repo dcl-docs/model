@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1 Model basics | Data Modeling</title>
+  <meta name="description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1 Model basics | Data Modeling" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="github-repo" content="dcl-docs/model" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1 Model basics | Data Modeling" />
+  
+  <meta name="twitter:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  
+
+<meta name="author" content="Sara Altman, Bill Behrman" />
+
+
+<meta name="date" content="2022-04-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="understand_your_data.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Modeling</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-read-this-book"><i class="fa fa-check"></i>How to read this book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#an-evolving-book"><i class="fa fa-check"></i>An evolving book</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="model_basics.html"><a href="model_basics.html"><i class="fa fa-check"></i><b>1</b> Model basics</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="model_basics.html"><a href="model_basics.html#what-is-a-model"><i class="fa fa-check"></i><b>1.1</b> What is a model?</a></li>
+<li class="chapter" data-level="1.2" data-path="model_basics.html"><a href="model_basics.html#supervised-learning"><i class="fa fa-check"></i><b>1.2</b> Supervised learning</a></li>
+<li class="chapter" data-level="1.3" data-path="model_basics.html"><a href="model_basics.html#choosing-a-function-family"><i class="fa fa-check"></i><b>1.3</b> Choosing a function family</a></li>
+<li class="chapter" data-level="1.4" data-path="model_basics.html"><a href="model_basics.html#classical-modeling"><i class="fa fa-check"></i><b>1.4</b> Classical modeling</a></li>
+<li class="chapter" data-level="1.5" data-path="model_basics.html"><a href="model_basics.html#bayesian-modeling"><i class="fa fa-check"></i><b>1.5</b> Bayesian modeling</a></li>
+<li class="chapter" data-level="1.6" data-path="model_basics.html"><a href="model_basics.html#summary"><i class="fa fa-check"></i><b>1.6</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="understand_your_data.html"><a href="understand_your_data.html"><i class="fa fa-check"></i><b>2</b> Understand your data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="understand_your_data.html"><a href="understand_your_data.html#understand-your-variables"><i class="fa fa-check"></i><b>2.1</b> Understand your variables</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="understand_your_data.html"><a href="understand_your_data.html#read-the-documentation"><i class="fa fa-check"></i><b>2.1.1</b> Read the documentation</a></li>
+<li class="chapter" data-level="2.1.2" data-path="understand_your_data.html"><a href="understand_your_data.html#glimpse"><i class="fa fa-check"></i><b>2.1.2</b> <code>glimpse()</code></a></li>
+<li class="chapter" data-level="2.1.3" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-1"><i class="fa fa-check"></i><b>2.1.3</b> <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="understand_your_data.html"><a href="understand_your_data.html#check-for-problems"><i class="fa fa-check"></i><b>2.2</b> Check for problems</a></li>
+<li class="chapter" data-level="2.3" data-path="understand_your_data.html"><a href="understand_your_data.html#d-eda"><i class="fa fa-check"></i><b>2.3</b> 1D EDA</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="understand_your_data.html"><a href="understand_your_data.html#variable-types"><i class="fa fa-check"></i><b>2.3.1</b> Variable types</a></li>
+<li class="chapter" data-level="2.3.2" data-path="understand_your_data.html"><a href="understand_your_data.html#continuous-variables"><i class="fa fa-check"></i><b>2.3.2</b> Continuous variables</a></li>
+<li class="chapter" data-level="2.3.3" data-path="understand_your_data.html"><a href="understand_your_data.html#discrete-variables"><i class="fa fa-check"></i><b>2.3.3</b> Discrete variables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-2"><i class="fa fa-check"></i><b>2.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="determine_functional_form.html"><a href="determine_functional_form.html"><i class="fa fa-check"></i><b>3</b> Determine functional form</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#formulas"><i class="fa fa-check"></i><b>3.1</b> Formulas</a></li>
+<li class="chapter" data-level="3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#continuous-predictors"><i class="fa fa-check"></i><b>3.2</b> Continuous predictors</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#transformations"><i class="fa fa-check"></i><b>3.2.1</b> Transformations</a></li>
+<li class="chapter" data-level="3.2.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks"><i class="fa fa-check"></i><b>3.2.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="determine_functional_form.html"><a href="determine_functional_form.html#discrete-predictors"><i class="fa fa-check"></i><b>3.3</b> Discrete predictors</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#functional-form"><i class="fa fa-check"></i><b>3.3.1</b> Functional form</a></li>
+<li class="chapter" data-level="3.3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks-1"><i class="fa fa-check"></i><b>3.3.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="determine_functional_form.html"><a href="determine_functional_form.html#summary-3"><i class="fa fa-check"></i><b>3.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="fitting_basics.html"><a href="fitting_basics.html"><i class="fa fa-check"></i><b>4</b> Fitting basics</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-model"><i class="fa fa-check"></i><b>4.1</b> Fitting a model</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-classical-model"><i class="fa fa-check"></i><b>4.1.1</b> Fitting a classical model</a></li>
+<li class="chapter" data-level="4.1.2" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-bayesian-model"><i class="fa fa-check"></i><b>4.1.2</b> Fitting a Bayesian model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="fitting_basics.html"><a href="fitting_basics.html#tidymodels"><i class="fa fa-check"></i><b>4.1.3</b> Tidymodels</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-a-model"><i class="fa fa-check"></i><b>4.2</b> Checking a model</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="fitting_basics.html"><a href="fitting_basics.html#making-predictions"><i class="fa fa-check"></i><b>4.2.1</b> Making predictions</a></li>
+<li class="chapter" data-level="4.2.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-predictions"><i class="fa fa-check"></i><b>4.2.2</b> Checking predictions</a></li>
+<li class="chapter" data-level="4.2.3" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-residuals"><i class="fa fa-check"></i><b>4.2.3</b> Checking residuals</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="fitting_basics.html"><a href="fitting_basics.html#summary-4"><i class="fa fa-check"></i><b>4.3</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="model_evaluation.html"><a href="model_evaluation.html"><i class="fa fa-check"></i><b>5</b> Model evaluation</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="model_evaluation.html"><a href="model_evaluation.html#model-overfitting"><i class="fa fa-check"></i><b>5.1</b> Model overfitting</a></li>
+<li class="chapter" data-level="5.2" data-path="model_evaluation.html"><a href="model_evaluation.html#model-selection"><i class="fa fa-check"></i><b>5.2</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="model_evaluation.html"><a href="model_evaluation.html#classical-modeling-1"><i class="fa fa-check"></i><b>5.2.1</b> Classical modeling</a></li>
+<li class="chapter" data-level="5.2.2" data-path="model_evaluation.html"><a href="model_evaluation.html#bayesian-modeling-1"><i class="fa fa-check"></i><b>5.2.2</b> Bayesian modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="model_evaluation.html"><a href="model_evaluation.html#final-model"><i class="fa fa-check"></i><b>5.3</b> Final model</a></li>
+<li class="chapter" data-level="5.4" data-path="model_evaluation.html"><a href="model_evaluation.html#summary-5"><i class="fa fa-check"></i><b>5.4</b> Summary</a></li>
+<li class="chapter" data-level="5.5" data-path="model_evaluation.html"><a href="model_evaluation.html#to-learn-more"><i class="fa fa-check"></i><b>5.5</b> To learn more</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Modeling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="model-basics" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> Model basics<a href="model_basics.html#model-basics" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="what-is-a-model" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> What is a model?<a href="model_basics.html#what-is-a-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The world is complicated and messy, and there are endless details to even simple phenomena. To understand and navigate the world, we construct and use models.</p>
+<p>For example, think about traffic. You probably have a simple mental model that says traffic will be worse at rush hour than at two in the morning. You can use this model to describe how traffic varies throughout the day, but you can also use it to predict the level of traffic at a given hour.</p>
+<p>Your mental model of traffic, like any model, is an approximation. It tries to capture relevant information while ignoring noise and less important details. Your traffic mental model will never fully explain traffic, and so you’ll never be a perfect predictor of how many cars will be on the road at any given time. However, if it’s a good model, it will be useful.</p>
+<p>The type of models we’ll discuss in this book are similar to your mental model of traffic: they are approximations; you can use them to both describe and predict the world; and, while they will never be completely accurate, they can be useful.</p>
+</div>
+<div id="supervised-learning" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Supervised learning<a href="model_basics.html#supervised-learning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>You can divide up the world of models into two categories: <em>supervised</em> and <em>unsupervised</em>. In the following, we’ll discuss supervised learning, but it’s useful to understand the difference between the two.</p>
+<p>Supervised models are functions. They approximate the relationship of one variable to others. The variable you want to explain (e.g., traffic) is called the <em>response</em> and the variables (e.g, time of day) you use to explain the response are called <em>predictors</em>.</p>
+<p>Unsupervised models don’t have a response variable. Instead of trying to understand a relationship between predictors and a response, unsupervised models try to find patterns in data.</p>
+<p>When building a supervised model, your job as the modeler is to find a function that approximates your data. Functions map from one or more variables (e.g., time) to another (e.g., amount of traffic). You can use your approximation function to understand and describe your data, as well as make predictions about your response variable.</p>
+<p>There are an infinite number of types of functions, so how do you know where to look? The first step is to explore your data and determine which <em>function family</em> (or families) would best approximate your data. Function families are sets of functions with the same functional form. In the next section, we’ll talk more about the linear function family. Then, in Chapter 3, we’ll discuss how to use exploratory data analysis to choose a function family to approximate your data.</p>
+</div>
+<div id="choosing-a-function-family" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Choosing a function family<a href="model_basics.html#choosing-a-function-family" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe’s quartet</a> is a set of four small data sets. In this section, we’ll use a slightly modified version of the first data set in the quartet.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">x_1</th>
+<th align="right">y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">8.04</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">6.95</td>
+</tr>
+<tr class="odd">
+<td align="right">13</td>
+<td align="right">7.64</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">8.81</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="right">8.33</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
+<td align="right">9.90</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">7.24</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">4.25</td>
+</tr>
+<tr class="odd">
+<td align="right">12</td>
+<td align="right">10.84</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">4.82</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">5.68</td>
+</tr>
+</tbody>
+</table>
+<p>Recall that we said the first step to fitting a model is to determine which function family best approximates your data. In modeling, some of the most common and useful function families are linear. There are an infinite number of linear function families and, later, we’ll talk about how to decide exactly which family to use. For now, we’ll introduce the family of linear functions of a single variable. Functions in this family take the following form:</p>
+<p><code>y = a_0 + a_1 * x_1</code> .</p>
+<p><code>x_1</code> is your input variable, the variable that you supply to the function in hopes of approximating some other variable. In our traffic example, <code>x_1</code> is the time of day.</p>
+<p><code>a_0</code> and <code>a_1</code> are the <em>parameters</em>. These two numbers define the line. The only difference between functions in the family of linear functions are their values of <code>a_0</code> and <code>a_1</code>.</p>
+<p>To visualize this, here’s a plot of many different lines, each of which has a different combination of <code>a_0</code> and <code>a_1</code>.</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><code>a_0</code> defines the y-intercept, the y-value your function will produce when <code>x_1</code> is 0. <code>a_1</code> is the slope, which tells you how much <code>y</code> changes for every one unit increase in <code>x_1</code>. These two parameters define a linear function, and so to fit a linear model, you just have to determine which <code>a_0</code> and <code>a_1</code> best approximates your data.</p>
+<p>As you’ll learn in Chapter 3, visualization is crucial to determining functional form. Let’s visualize the relationship between <code>x_1</code> (the predictor) and <code>y</code> (the response).</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The relationship between <code>x_1</code> and <code>y</code> looks linear, so a function in the linear family will likely make a good approximation. There are infinitely many functions you could use.</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Let’s pick one function and take a closer look.</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>By glancing at the plot, you can tell that this function isn’t doing the best job of approximating our data. Most of the points where <code>x_1 &lt; 9</code> fall above our line, and most of the points where <code>x_1 &gt; 9</code> fall below the line.</p>
+<p>The distances between the line and each of the data points are called <em>residuals</em> (or errors).</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Each residual represents the actual value of <code>y</code> associated for a given <code>x_1</code> and the <code>y</code> value that the model predicts for that <code>x_1</code>. The larger a residual, the worse your model approximates <code>y</code> at that value of <code>x_1</code>.</p>
+<p>We now turn to two methods for modeling your data, once you’ve chosen a function family with which to model.</p>
+</div>
+<div id="classical-modeling" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Classical modeling<a href="model_basics.html#classical-modeling" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Classical modeling finds the function in a function family for which the data would be most likely. For a linear function family, and with the assumption that the residuals are normally distributed with mean 0, this is equivalent to finding the function in the family that minimizes the sum of the squares of the residuals. In this case, the method is referred to as least squares regression.</p>
+<p>The R function <code>lm()</code> fits linear models using classical least squares regression. <code>lm()</code> needs two arguments: a function family and your data. In later chapters, you’ll learn how use <code>lm()</code>. For now, we’ll just show you the results for our example data.</p>
+<p>Here’s the model that <code>lm()</code> came up with:</p>
+<p><code>y = 3.0 + 0.5 * x_1</code> .</p>
+<p>And here’s the model plotted with the data:</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>You can tell from the plot that this fitted model does a much better job of approximating our data than our previous attempt.</p>
+<p>Again, <code>a_0</code> is the intercept, so we know that our model predicts that <code>y</code> will be 3.0 when <code>x_1</code> is 0. <code>a_1</code> is the slope, which means that our model predicts a 0.5 increase in <code>y</code> each time <code>x_1</code> increases by 1.</p>
+</div>
+<div id="bayesian-modeling" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> Bayesian modeling<a href="model_basics.html#bayesian-modeling" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In addition to providing the parameters for a function from a function family, the Bayesian formulation provides an estimate of the parameters’ probability distribution. This enables you to understand the uncertainties in the model and its predictions. Bayesian modeling also allows you to incorporate additional prior information into the modeling process.</p>
+<p>The <code>stan_glm()</code> function in the <a href="https://mc-stan.org/rstanarm/">rstanarm</a> package fits generalized linear models using Bayesian modeling. It needs two arguments: a function family and your data. In later chapters, you’ll learn how use <code>stan_glm()</code>. For now, we’ll just show you the results for our example data.</p>
+<p>Here’s the model that <code>stan_glm()</code> came up with:</p>
+<p><code>y = 3.0 + 0.5 * x_1</code> .</p>
+<p>And here’s the model plotted with the data:</p>
+<p><img src="model_basics_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><code>stan_glm()</code> provides distributions for the parameters <code>a_0</code> and <code>a_1</code>. The values above are the medians of these distributions. These values are very close to those returned by <code>lm()</code>. The joint distribution of the parameters and the standard deviation of the residuals allows us to express the uncertainties in the model and its predictions. Predictive uncertainties are shown in the grey ribbons in the plot.</p>
+</div>
+<div id="summary" class="section level2 hasAnchor" number="1.6">
+<h2><span class="header-section-number">1.6</span> Summary<a href="model_basics.html#summary" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this chapter, we went over the basics of a supervised model. Before you can fit a model, however, you first have to understand your data and check for any problems. The simple data used in this chapter doesn’t measure anything real, but you’ll typically be fitting models to complex, messy datasets. In the next chapter, we’ll discuss how to use exploratory data analysis to understand and prepare your data before starting the modeling process.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="understand_your_data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/dcl-docs/model/edit/master/model_basics.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

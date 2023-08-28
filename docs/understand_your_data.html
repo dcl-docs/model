@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Understand your data | Data Modeling</title>
+  <meta name="description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Understand your data | Data Modeling" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  <meta name="github-repo" content="dcl-docs/model" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Understand your data | Data Modeling" />
+  
+  <meta name="twitter:description" content="This book is a practical introduction to modeling using the tidyverse." />
+  
+
+<meta name="author" content="Sara Altman, Bill Behrman" />
+
+
+<meta name="date" content="2022-04-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="model_basics.html"/>
+<link rel="next" href="determine_functional_form.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Modeling</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-read-this-book"><i class="fa fa-check"></i>How to read this book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#an-evolving-book"><i class="fa fa-check"></i>An evolving book</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="model_basics.html"><a href="model_basics.html"><i class="fa fa-check"></i><b>1</b> Model basics</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="model_basics.html"><a href="model_basics.html#what-is-a-model"><i class="fa fa-check"></i><b>1.1</b> What is a model?</a></li>
+<li class="chapter" data-level="1.2" data-path="model_basics.html"><a href="model_basics.html#supervised-learning"><i class="fa fa-check"></i><b>1.2</b> Supervised learning</a></li>
+<li class="chapter" data-level="1.3" data-path="model_basics.html"><a href="model_basics.html#choosing-a-function-family"><i class="fa fa-check"></i><b>1.3</b> Choosing a function family</a></li>
+<li class="chapter" data-level="1.4" data-path="model_basics.html"><a href="model_basics.html#classical-modeling"><i class="fa fa-check"></i><b>1.4</b> Classical modeling</a></li>
+<li class="chapter" data-level="1.5" data-path="model_basics.html"><a href="model_basics.html#bayesian-modeling"><i class="fa fa-check"></i><b>1.5</b> Bayesian modeling</a></li>
+<li class="chapter" data-level="1.6" data-path="model_basics.html"><a href="model_basics.html#summary"><i class="fa fa-check"></i><b>1.6</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="understand_your_data.html"><a href="understand_your_data.html"><i class="fa fa-check"></i><b>2</b> Understand your data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="understand_your_data.html"><a href="understand_your_data.html#understand-your-variables"><i class="fa fa-check"></i><b>2.1</b> Understand your variables</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="understand_your_data.html"><a href="understand_your_data.html#read-the-documentation"><i class="fa fa-check"></i><b>2.1.1</b> Read the documentation</a></li>
+<li class="chapter" data-level="2.1.2" data-path="understand_your_data.html"><a href="understand_your_data.html#glimpse"><i class="fa fa-check"></i><b>2.1.2</b> <code>glimpse()</code></a></li>
+<li class="chapter" data-level="2.1.3" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-1"><i class="fa fa-check"></i><b>2.1.3</b> <code>summary()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="understand_your_data.html"><a href="understand_your_data.html#check-for-problems"><i class="fa fa-check"></i><b>2.2</b> Check for problems</a></li>
+<li class="chapter" data-level="2.3" data-path="understand_your_data.html"><a href="understand_your_data.html#d-eda"><i class="fa fa-check"></i><b>2.3</b> 1D EDA</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="understand_your_data.html"><a href="understand_your_data.html#variable-types"><i class="fa fa-check"></i><b>2.3.1</b> Variable types</a></li>
+<li class="chapter" data-level="2.3.2" data-path="understand_your_data.html"><a href="understand_your_data.html#continuous-variables"><i class="fa fa-check"></i><b>2.3.2</b> Continuous variables</a></li>
+<li class="chapter" data-level="2.3.3" data-path="understand_your_data.html"><a href="understand_your_data.html#discrete-variables"><i class="fa fa-check"></i><b>2.3.3</b> Discrete variables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="understand_your_data.html"><a href="understand_your_data.html#summary-2"><i class="fa fa-check"></i><b>2.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="determine_functional_form.html"><a href="determine_functional_form.html"><i class="fa fa-check"></i><b>3</b> Determine functional form</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#formulas"><i class="fa fa-check"></i><b>3.1</b> Formulas</a></li>
+<li class="chapter" data-level="3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#continuous-predictors"><i class="fa fa-check"></i><b>3.2</b> Continuous predictors</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#transformations"><i class="fa fa-check"></i><b>3.2.1</b> Transformations</a></li>
+<li class="chapter" data-level="3.2.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks"><i class="fa fa-check"></i><b>3.2.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="determine_functional_form.html"><a href="determine_functional_form.html#discrete-predictors"><i class="fa fa-check"></i><b>3.3</b> Discrete predictors</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="determine_functional_form.html"><a href="determine_functional_form.html#functional-form"><i class="fa fa-check"></i><b>3.3.1</b> Functional form</a></li>
+<li class="chapter" data-level="3.3.2" data-path="determine_functional_form.html"><a href="determine_functional_form.html#visual-checks-1"><i class="fa fa-check"></i><b>3.3.2</b> Visual checks</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="determine_functional_form.html"><a href="determine_functional_form.html#summary-3"><i class="fa fa-check"></i><b>3.4</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="fitting_basics.html"><a href="fitting_basics.html"><i class="fa fa-check"></i><b>4</b> Fitting basics</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-model"><i class="fa fa-check"></i><b>4.1</b> Fitting a model</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-classical-model"><i class="fa fa-check"></i><b>4.1.1</b> Fitting a classical model</a></li>
+<li class="chapter" data-level="4.1.2" data-path="fitting_basics.html"><a href="fitting_basics.html#fitting-a-bayesian-model"><i class="fa fa-check"></i><b>4.1.2</b> Fitting a Bayesian model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="fitting_basics.html"><a href="fitting_basics.html#tidymodels"><i class="fa fa-check"></i><b>4.1.3</b> Tidymodels</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-a-model"><i class="fa fa-check"></i><b>4.2</b> Checking a model</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="fitting_basics.html"><a href="fitting_basics.html#making-predictions"><i class="fa fa-check"></i><b>4.2.1</b> Making predictions</a></li>
+<li class="chapter" data-level="4.2.2" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-predictions"><i class="fa fa-check"></i><b>4.2.2</b> Checking predictions</a></li>
+<li class="chapter" data-level="4.2.3" data-path="fitting_basics.html"><a href="fitting_basics.html#checking-residuals"><i class="fa fa-check"></i><b>4.2.3</b> Checking residuals</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="fitting_basics.html"><a href="fitting_basics.html#summary-4"><i class="fa fa-check"></i><b>4.3</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="model_evaluation.html"><a href="model_evaluation.html"><i class="fa fa-check"></i><b>5</b> Model evaluation</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="model_evaluation.html"><a href="model_evaluation.html#model-overfitting"><i class="fa fa-check"></i><b>5.1</b> Model overfitting</a></li>
+<li class="chapter" data-level="5.2" data-path="model_evaluation.html"><a href="model_evaluation.html#model-selection"><i class="fa fa-check"></i><b>5.2</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="model_evaluation.html"><a href="model_evaluation.html#classical-modeling-1"><i class="fa fa-check"></i><b>5.2.1</b> Classical modeling</a></li>
+<li class="chapter" data-level="5.2.2" data-path="model_evaluation.html"><a href="model_evaluation.html#bayesian-modeling-1"><i class="fa fa-check"></i><b>5.2.2</b> Bayesian modeling</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="model_evaluation.html"><a href="model_evaluation.html#final-model"><i class="fa fa-check"></i><b>5.3</b> Final model</a></li>
+<li class="chapter" data-level="5.4" data-path="model_evaluation.html"><a href="model_evaluation.html#summary-5"><i class="fa fa-check"></i><b>5.4</b> Summary</a></li>
+<li class="chapter" data-level="5.5" data-path="model_evaluation.html"><a href="model_evaluation.html#to-learn-more"><i class="fa fa-check"></i><b>5.5</b> To learn more</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Modeling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="understand-your-data" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Understand your data<a href="understand_your_data.html#understand-your-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="understand_your_data.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<p>The <code>diamonds</code> dataset, in the <a href="https://ggplot2.tidyverse.org/">ggplot2</a> package, contains information on 53,940 round diamonds from the <a href="https://www.diamondse.info">Loose Diamonds Search Engine</a>.</p>
+<p>Each row of <code>diamonds</code> represents the features of a single diamond, including a set of characteristics called the four Cs: carat, clarity, color, and cut.</p>
+<p>Over the next several chapters, we’ll model the relationship between the four Cs and diamond price, but before we dive into modeling, it’s important to understand our data. In this chapter, we’ll explore <code>diamonds</code>, visualize the important variables, look for errors and outliers, and create a dataset that is ready for modeling.</p>
+<div id="understand-your-variables" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Understand your variables<a href="understand_your_data.html#understand-your-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="read-the-documentation" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Read the documentation<a href="understand_your_data.html#read-the-documentation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>When working with a new dataset, the first step is to read the documentation. <code>diamonds</code> is built into ggplot2 and you can find the documentation at <code>?diamonds</code>. The <a href="https://www.diamondse.info">Loose Diamonds Search Engine</a>, the original source, also contains helpful information about the variables.</p>
+<p>As we said earlier, diamonds have a set of features called the four Cs: carat, clarity, color, and cut. <code>diamonds</code> contains these four features, as well as information on price and dimension. Here’s an overview of the different variables, obtained from the <code>?diamonds</code> page and the original website.</p>
+<ul>
+<li><p><code>carat</code> is a measure of diamond weight. One carat is equivalent to 0.2 grams.</p></li>
+<li><p><code>clarity</code> refers to how clear a diamond is. Diamonds often contain imperfections like cracks or mineral deposits. The fewer and less noticeable a diamond’s imperfections, the better its clarity. <code>clarity</code> contains 8 ordered levels, from “I1” (the worst) to “IF” (the best).</p></li>
+<li><p><code>color</code> refers to the color of the diamond. Colorless diamonds are considered better than diamonds with a yellow tint. <code>diamonds</code> contains diamonds of 7 different colors, represented by different letters. “D” - “F” diamonds are considered colorless, while “G” - “J” diamonds have a very faint color.</p></li>
+<li><p><code>cut</code> refers to how a rough diamond is shaped into a finished diamond. Better cuts create more symmetrical and luminous diamonds. <code>cut</code> has 5 ordered levels: “Fair,” “Good,” “Very Good,” “Premium,” “Ideal.”</p></li>
+<li><p><code>x</code>, <code>y</code>, <code>z</code>, <code>depth</code>, and <code>table</code> are various measures of a diamond’s size, in millimeters.</p></li>
+</ul>
+</div>
+<div id="glimpse" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> <code>glimpse()</code><a href="understand_your_data.html#glimpse" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>glimpse()</code> returns a useful snapshot of a dataset.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="understand_your_data.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(diamonds)</span>
+<span id="cb7-2"><a href="understand_your_data.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 53,940</span></span>
+<span id="cb7-3"><a href="understand_your_data.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 10</span></span>
+<span id="cb7-4"><a href="understand_your_data.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ carat   &lt;dbl&gt; 0.23, 0.21, 0.23, 0.29, 0.31, 0.24, 0.24, 0.26, 0.22, 0.23, 0.…</span></span>
+<span id="cb7-5"><a href="understand_your_data.html#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ cut     &lt;ord&gt; Ideal, Premium, Good, Premium, Good, Very Good, Very Good, Ver…</span></span>
+<span id="cb7-6"><a href="understand_your_data.html#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ color   &lt;ord&gt; E, E, E, I, J, J, I, H, E, H, J, J, F, J, E, E, I, J, J, J, I,…</span></span>
+<span id="cb7-7"><a href="understand_your_data.html#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ clarity &lt;ord&gt; SI2, SI1, VS1, VS2, SI2, VVS2, VVS1, SI1, VS2, VS1, SI1, VS1, …</span></span>
+<span id="cb7-8"><a href="understand_your_data.html#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ depth   &lt;dbl&gt; 61.5, 59.8, 56.9, 62.4, 63.3, 62.8, 62.3, 61.9, 65.1, 59.4, 64…</span></span>
+<span id="cb7-9"><a href="understand_your_data.html#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ table   &lt;dbl&gt; 55, 61, 65, 58, 58, 57, 57, 55, 61, 61, 55, 56, 61, 54, 62, 58…</span></span>
+<span id="cb7-10"><a href="understand_your_data.html#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ price   &lt;int&gt; 326, 326, 327, 334, 335, 336, 336, 337, 337, 338, 339, 340, 34…</span></span>
+<span id="cb7-11"><a href="understand_your_data.html#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ x       &lt;dbl&gt; 3.95, 3.89, 4.05, 4.20, 4.34, 3.94, 3.95, 4.07, 3.87, 4.00, 4.…</span></span>
+<span id="cb7-12"><a href="understand_your_data.html#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ y       &lt;dbl&gt; 3.98, 3.84, 4.07, 4.23, 4.35, 3.96, 3.98, 4.11, 3.78, 4.05, 4.…</span></span>
+<span id="cb7-13"><a href="understand_your_data.html#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39, 2.…</span></span></code></pre></div>
+<p><code>glimpse()</code> shows us the number of diamonds (53,940) and variables (10), and a peek at the values in each column. We can also see the different variables types: double (<code>dbl</code>), ordered (<code>ord</code>), and integer (<code>int</code>). We’ll talk more about variable type later on in this chapter.</p>
+</div>
+<div id="summary-1" class="section level3 hasAnchor" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> <code>summary()</code><a href="understand_your_data.html#summary-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>summary()</code> is another helpful overview function.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="understand_your_data.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(diamonds)</span>
+<span id="cb8-2"><a href="understand_your_data.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      carat             cut        color        clarity          depth     </span></span>
+<span id="cb8-3"><a href="understand_your_data.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Min.   :0.20   Fair     : 1610   D: 6775   SI1    :13065   Min.   :43.0  </span></span>
+<span id="cb8-4"><a href="understand_your_data.html#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:0.40   Good     : 4906   E: 9797   VS2    :12258   1st Qu.:61.0  </span></span>
+<span id="cb8-5"><a href="understand_your_data.html#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Median :0.70   Very Good:12082   F: 9542   SI2    : 9194   Median :61.8  </span></span>
+<span id="cb8-6"><a href="understand_your_data.html#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Mean   :0.80   Premium  :13791   G:11292   VS1    : 8171   Mean   :61.7  </span></span>
+<span id="cb8-7"><a href="understand_your_data.html#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1.04   Ideal    :21551   H: 8304   VVS2   : 5066   3rd Qu.:62.5  </span></span>
+<span id="cb8-8"><a href="understand_your_data.html#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Max.   :5.01                     I: 5422   VVS1   : 3655   Max.   :79.0  </span></span>
+<span id="cb8-9"><a href="understand_your_data.html#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                                   J: 2808   (Other): 2531                 </span></span>
+<span id="cb8-10"><a href="understand_your_data.html#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      table          price             x               y              z       </span></span>
+<span id="cb8-11"><a href="understand_your_data.html#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Min.   :43.0   Min.   :  326   Min.   : 0.00   Min.   : 0.0   Min.   : 0.0  </span></span>
+<span id="cb8-12"><a href="understand_your_data.html#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:56.0   1st Qu.:  950   1st Qu.: 4.71   1st Qu.: 4.7   1st Qu.: 2.9  </span></span>
+<span id="cb8-13"><a href="understand_your_data.html#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Median :57.0   Median : 2401   Median : 5.70   Median : 5.7   Median : 3.5  </span></span>
+<span id="cb8-14"><a href="understand_your_data.html#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Mean   :57.5   Mean   : 3933   Mean   : 5.73   Mean   : 5.7   Mean   : 3.5  </span></span>
+<span id="cb8-15"><a href="understand_your_data.html#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:59.0   3rd Qu.: 5324   3rd Qu.: 6.54   3rd Qu.: 6.5   3rd Qu.: 4.0  </span></span>
+<span id="cb8-16"><a href="understand_your_data.html#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Max.   :95.0   Max.   :18823   Max.   :10.74   Max.   :58.9   Max.   :31.8  </span></span>
+<span id="cb8-17"><a href="understand_your_data.html#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span></code></pre></div>
+<p>Notice that there are no <code>NA</code>’s in the data (for non-character variables, <code>summary()</code> displays the number of <code>NA</code>s in each column, if any exist).</p>
+<p>Take a look at the minimum and maximum values for each variable. <code>carat</code> and <code>price</code> both cover a large range of values. <code>x</code>, <code>y</code>, and <code>z</code> all have 0 as a minimum value, even though it’s impossible for a diamond to actually have a length, width, or depth of 0 mm. <code>y</code> and <code>z</code> also have very large maximums. We’ll investigate these values in the next sections.</p>
+</div>
+</div>
+<div id="check-for-problems" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Check for problems<a href="understand_your_data.html#check-for-problems" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>x</code>, <code>y</code>, and <code>z</code> all contain some suspicious values. There are diamonds with 0s for these dimensions, which is impossible. There are also diamonds with large, improbable dimensions. A diamond with a <code>y</code> (width) of 58.9 mm, or 2.32 inches, would be similar in size to <a href="https://en.wikipedia.org/wiki/Cullinan_Diamond#Diamonds_cut_from_the_Cullinan">some of the largest diamonds in the world</a>, and would surely cost more than $18,000.</p>
+<p>We should check how many diamonds have an <code>x</code>, <code>y</code>, or <code>z</code> of 0.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="understand_your_data.html#cb9-1" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="understand_your_data.html#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">==</span> <span class="dv">0</span> <span class="sc">|</span> y <span class="sc">==</span> <span class="dv">0</span> <span class="sc">|</span> z <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="understand_your_data.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>()</span>
+<span id="cb9-4"><a href="understand_your_data.html#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 20</span></span></code></pre></div>
+<p>Luckily, there are only 20 (out of over 50,000), so we can just remove them.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="understand_your_data.html#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span></span>
+<span id="cb10-2"><a href="understand_your_data.html#cb10-2" aria-hidden="true" tabindex="-1"></a>  diamonds <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="understand_your_data.html#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>, y <span class="sc">&gt;</span> <span class="dv">0</span>, z <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code></pre></div>
+<p>Now, we can visualize the distributions to investigate the suspiciously high values. Boxplots are a good choice when you’re looking for outliers.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="understand_your_data.html#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="understand_your_data.html#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, <span class="fu">factor</span>(<span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="understand_your_data.html#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb11-4"><a href="understand_your_data.html#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">breaks =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> <span class="cn">NULL</span>, <span class="at">name =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><code>x</code> has outliers, but they aren’t very extreme. A diamond with an 10mm (0.39 in) length seems plausible.</p>
+<p>How about <code>y</code> and <code>z</code>?</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="understand_your_data.html#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="understand_your_data.html#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(y, <span class="fu">factor</span>(<span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="understand_your_data.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb12-4"><a href="understand_your_data.html#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">breaks =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> <span class="cn">NULL</span>, <span class="at">name =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="understand_your_data.html#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="understand_your_data.html#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(z, <span class="fu">factor</span>(<span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="understand_your_data.html#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="understand_your_data.html#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">breaks =</span> <span class="cn">NULL</span>, <span class="at">labels =</span> <span class="cn">NULL</span>, <span class="at">name =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The large values of <code>y</code> and <code>z</code> we saw in the <code>summary()</code> output are clearly extreme outliers. We’ll remove these 3 diamonds.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="understand_your_data.html#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span></span>
+<span id="cb14-2"><a href="understand_your_data.html#cb14-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="understand_your_data.html#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(y <span class="sc">&lt;</span> <span class="dv">20</span>, z <span class="sc">&lt;</span> <span class="dv">10</span>)</span></code></pre></div>
+<p>We also noted that <code>carat</code> and <code>price</code> both cover a large range of values. We’ll take a closer look in the next section.</p>
+</div>
+<div id="d-eda" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> 1D EDA<a href="understand_your_data.html#d-eda" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now that we’ve removed problematic data, we can explore each of our variables. One-dimensional exploratory data analysis or 1D EDA refers to the fact that, for now, we’ll just look at each variable by itself. In the next chapter, we’ll start exploring the relationships between variables.</p>
+<div id="variable-types" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Variable types<a href="understand_your_data.html#variable-types" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>First, it’s important to understand the difference between <em>continuous</em> and <em>discrete</em> variables.</p>
+<p>Continuous variables can take on an infinite number of possible values. <code>carat</code>, for example, is a continuous variable. A diamond can be 1.00 carats, 1.001 carats, 1.0001 carats, etc. R considers both integers and doubles to be continuous variables.</p>
+<p>Discrete variables can take on only a finite number of possible values. In <code>diamonds</code>, <code>cut</code> is a discrete variable, as a diamond can be in only one of 6 different cut groups.</p>
+<p>Characters, logicals, and factors are discrete variables. R also further divides factors into ordered and unordered factors. Recall from the <code>glimpse()</code> output that <code>clarity</code>, <code>color</code>, and <code>cut</code> all have type <code>&lt;ord&gt;</code>, which indicates an ordered factor. As we’ll explain later, many modeling algorithms treat ordered factors differently than unordered factors or character variables.</p>
+</div>
+<div id="continuous-variables" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Continuous variables<a href="understand_your_data.html#continuous-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We’ll use histograms to understand our continuous variables’ distributions. First, let’s look at <code>carat</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="understand_your_data.html#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="understand_your_data.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="understand_your_data.html#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.01</span>) </span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Earlier, we mentioned that <code>carat</code> has a large range. Our histogram makes it clear that the distribution has a very long tail. Most diamonds are under 2.5 carats, but the diamonds above 2.5 carats still account for over half of the range.</p>
+<p>Building a model requires sufficient data. We can expect to build a fairly accurate model for the diamonds under 2.5 carats, but there aren’t enough diamonds above 2.5 carats. These outlier, high-carat diamonds could distort our model, so we’ll restrict our attention to 99% of the diamonds and ignore the largest 1%.</p>
+<p>99% of our diamonds are less than or equal to 2.18 carats.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="understand_your_data.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(df<span class="sc">$</span>carat, <span class="at">probs =</span> <span class="fl">0.99</span>)</span>
+<span id="cb16-2"><a href="understand_your_data.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  99% </span></span>
+<span id="cb16-3"><a href="understand_your_data.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2.18</span></span></code></pre></div>
+<p>We’ll filter <code>df</code> to exclude diamonds above the 99% quantile.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="understand_your_data.html#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> </span>
+<span id="cb17-2"><a href="understand_your_data.html#cb17-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="understand_your_data.html#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(carat <span class="sc">&lt;=</span> <span class="fu">quantile</span>(df<span class="sc">$</span>carat, <span class="at">probs =</span> <span class="fl">0.99</span>))</span></code></pre></div>
+<p>Now that we’ve focused the data, let’s visualize the distribution again.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="understand_your_data.html#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="understand_your_data.html#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="understand_your_data.html#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.01</span>)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Notice the spikiness of the distribution. It will be easier to tell where these spikes are if we add more x-axis breaks.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="understand_your_data.html#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="understand_your_data.html#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(carat)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="understand_your_data.html#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.01</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="understand_your_data.html#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">0.2</span>, <span class="fl">2.2</span>, <span class="fl">0.1</span>), <span class="at">minor_breaks =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The spikes appear at or slightly above the even sizes of 0.3, 0.4, 0.5, 0.7, 0.9, 1.0, 1.2, 1.5, 1.7, and 2.0 carats. The diamonds in <code>diamonds</code> are cut from raw diamonds, so these spikes suggest that diamonds tend to be marketed at these sizes. Engagement rings, for example, tend to be around 1 carat, which could explain that spike.</p>
+<p>Now, let’s look at price.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="understand_your_data.html#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="understand_your_data.html#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(price)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="understand_your_data.html#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">50</span>)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The <code>price</code> distribution also has a long tail, even though we’ve filtered out the largest diamonds. Interestingly, there’s a gap in the distribution around $1,500, probably caused by an error importing the data.</p>
+<p>With simple 1D EDA, we can already draw a conclusion for modeling this data. Notice how the <code>price</code> distribution doesn’t follow the same spiky pattern as the <code>carat</code> distribution, suggesting that <code>price</code> is not just a simple linear function of <code>carat</code>. We’ll come back to this idea in the next chapter.</p>
+</div>
+<div id="discrete-variables" class="section level3 hasAnchor" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> Discrete variables<a href="understand_your_data.html#discrete-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Now, we can turn to the discrete Cs: <code>clarity</code>, <code>color</code>, and <code>cut</code>. For discrete variables, we’ll use <code>geom_bar()</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="understand_your_data.html#cb21-1" aria-hidden="true" tabindex="-1"></a>plot_bar <span class="ot">&lt;-</span> <span class="cf">function</span>(var, <span class="at">data =</span> df) {</span>
+<span id="cb21-2"><a href="understand_your_data.html#cb21-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="understand_your_data.html#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>({{ var }})) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="understand_your_data.html#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() </span>
+<span id="cb21-5"><a href="understand_your_data.html#cb21-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-6"><a href="understand_your_data.html#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="understand_your_data.html#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_bar</span>(clarity)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The best clarity classes are relatively rare, and most diamonds are in the SI1 category, the third worst. There are also very few diamonds with the worst clarity, I1.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="understand_your_data.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_bar</span>(cut)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Interestingly, <code>cut</code> is very different. Ideal cut diamonds are very common, and the number of diamonds in each category increases as quality increases. Maybe <code>cut</code> is a feature that diamond manufacturers have more control over, whereas clarity is more a feature of the raw diamond.</p>
+<p>The factor levels of <code>clarity</code> and <code>cut</code> are both in ascending order of quality, but <code>color</code> is in descending order.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="understand_your_data.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_bar</span>(color)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>D is the best color and J is the worst. To transform <code>color</code> into ascending order, we can use <code>fct_rev()</code> to reverse the order of the factor levels.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="understand_your_data.html#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span></span>
+<span id="cb24-2"><a href="understand_your_data.html#cb24-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="understand_your_data.html#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">color =</span> <span class="fu">fct_rev</span>(color))</span></code></pre></div>
+<p>Now, <code>color</code> will plot in ascending order.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="understand_your_data.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_bar</span>(color)</span></code></pre></div>
+<p><img src="understand_your_data_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The most common color is G, which is in the middle of the distribution. There are more diamonds in the top half of the distribution than in the bottom.</p>
+</div>
+</div>
+<div id="summary-2" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Summary<a href="understand_your_data.html#summary-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before constructing a model, take the time to explore and understand your data. It’s easier to build a good model if you understand what your variables actually measure, and it’s important to check for errors that need to be removed. You may also, like we did, want to filter your data to focus on where most of the data lies. Otherwise, you might end up building a model heavily influenced by outliers.</p>
+<p>In the next chapter, we’ll continue our EDA of <code>diamonds</code> in preparation for modeling by examining the relationship between the four Cs and <code>price</code>.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="model_basics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="determine_functional_form.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/dcl-docs/model/edit/master/understand_your_data.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
